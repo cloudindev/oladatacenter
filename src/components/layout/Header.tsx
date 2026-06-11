@@ -14,7 +14,7 @@ export function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-white/5 backdrop-blur-xl bg-[#0a0f1c]/95">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex items-center gap-2">
           <Image 
             src="/ola-datacenter-logo.jpg" 
             alt="OLA Datacenter" 
@@ -22,13 +22,14 @@ export function Header() {
             height={40} 
             className="h-8 w-auto object-contain"
           />
+          <span className="text-white/60 font-medium text-sm border border-white/20 rounded px-1.5 py-0.5">DC</span>
         </Link>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-white/70 h-full">
           {/* Products & Solutions Mega Menu */}
           <div className="group/navItem h-full flex items-center">
-            <Link href="#products" className="hover:text-primary hover:drop-shadow-[0_0_8px_rgba(0,255,199,0.5)] transition-all flex items-center gap-1 uppercase tracking-wide">
+            <Link href="#products" className="hover:text-primary hover:drop-shadow-[0_0_8px_rgba(0,255,199,0.5)] transition-all flex items-center gap-1">
               {t("Products & Solutions", "Productos y Soluciones")}
               <svg className="w-4 h-4 opacity-70 group-hover/navItem:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
             </Link>
@@ -73,8 +74,8 @@ export function Header() {
               </div>
             </div>
           </div>
-          <Link href="#company" className="hover:text-primary hover:drop-shadow-[0_0_8px_rgba(0,255,199,0.5)] transition-all uppercase tracking-wide">{t("Company", "Empresa")}</Link>
-          <Link href="#resources" className="hover:text-primary hover:drop-shadow-[0_0_8px_rgba(0,255,199,0.5)] transition-all uppercase tracking-wide">{t("Resources", "Recursos")}</Link>
+          <Link href="#company" className="hover:text-primary hover:drop-shadow-[0_0_8px_rgba(0,255,199,0.5)] transition-all">{t("Company", "Empresa")}</Link>
+          <Link href="#resources" className="hover:text-primary hover:drop-shadow-[0_0_8px_rgba(0,255,199,0.5)] transition-all">{t("Resources", "Recursos")}</Link>
         </nav>
 
         {/* Right Actions */}

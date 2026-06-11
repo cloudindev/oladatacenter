@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
 
 export function Footer() {
@@ -14,8 +15,14 @@ export function Footer() {
           {/* Brand Col */}
           <div className="lg:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4">
-              <span className="font-bold text-xl tracking-tight text-white">OLA</span>
-              <span className="text-text-muted font-medium text-sm border border-border-dark rounded px-1">DC</span>
+              <Image 
+                src="/ola-datacenter-logo.jpg" 
+                alt="OLA Datacenter" 
+                width={140} 
+                height={40} 
+                className="h-8 w-auto object-contain opacity-90"
+              />
+              <span className="text-text-muted font-medium text-sm border border-border-dark rounded px-1.5 py-0.5">DC</span>
             </Link>
             <p className="text-sm text-text-muted mb-6">
               {t("Powerful AI cloud infrastructure, engineered in Spain.", "Infraestructura cloud para IA potente, diseñada en España.")}

@@ -1,5 +1,6 @@
 import React from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/Button"
 
 export function DatacenterBanner() {
@@ -8,24 +9,17 @@ export function DatacenterBanner() {
       <div className="container mx-auto px-4">
         <div className="relative rounded-3xl overflow-hidden bg-bg-dark text-white min-h-[400px] shadow-2xl">
           
-          {/* Background Image / Composition */}
-          {/* Since we don't have the final image, we use a dark gradient with some abstract lighting simulating the building */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c]/90 to-transparent z-0" />
-          <div className="absolute right-0 bottom-0 top-0 w-2/3 z-0 opacity-80 mix-blend-screen bg-gradient-to-bl from-blue-900/40 via-transparent to-transparent" />
-          
-          {/* Simulated Building for placeholder */}
-          <div className="absolute right-10 bottom-0 w-[500px] h-[200px] z-0 hidden md:block">
-            <div className="w-full h-full bg-[#111] rounded-t-lg border-t border-x border-white/10 relative overflow-hidden">
-              <div className="absolute top-4 right-4 font-bold text-white tracking-widest text-2xl">OLA</div>
-              {/* Windows grid */}
-              <div className="absolute bottom-0 left-0 right-0 h-3/4 flex flex-wrap gap-1 p-2">
-                {[...Array(40)].map((_, i) => (
-                  <div key={i} className="flex-1 min-w-[20px] h-full bg-blue-400/20 rounded-sm border border-blue-400/10" />
-                ))}
-              </div>
-            </div>
-            {/* Ground / glow */}
-            <div className="absolute -bottom-4 left-[-10%] right-[-10%] h-8 bg-green-900/30 blur-xl rounded-[100%]" />
+          {/* Background Image */}
+          <div className="absolute inset-0 z-0">
+            <Image 
+              src="/ola-ai-datacenter.jpg" 
+              alt="OLA AI Datacenter" 
+              fill 
+              className="object-cover object-center" 
+              quality={90}
+            />
+            {/* Overlay gradient so text is readable */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c]/70 to-transparent" />
           </div>
 
           <div className="relative z-10 p-10 md:p-16 max-w-2xl h-full flex flex-col justify-center">

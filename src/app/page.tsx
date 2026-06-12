@@ -12,7 +12,6 @@ import { DatacenterBanner } from "@/components/sections/DatacenterBanner"
 // V1 Sections (Dark Theme) - Restored
 import { Hero } from "@/components/sections/Hero"
 import { PromiseSection } from "@/components/sections/PromiseSection"
-import { HardwareSection } from "@/components/sections/HardwareSection"
 import { CloudSection } from "@/components/sections/CloudSection"
 import { StatsBar } from "@/components/sections/StatsBar"
 import { CtaBanner } from "@/components/sections/CtaBanner"
@@ -34,7 +33,6 @@ export default function Home() {
         {/* OLD V1 DESIGN SECTIONS (Restored) */}
         <Hero />
         <PromiseSection />
-        <HardwareSection />
         <CloudSection />
         <StatsBar />
         <CtaBanner />

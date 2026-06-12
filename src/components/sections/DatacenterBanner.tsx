@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/Button"
 export function DatacenterBanner() {
   return (
     <section className="bg-bg-light pb-24">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-6">
-        <div className="relative rounded-3xl overflow-hidden bg-bg-dark text-white min-h-[320px] shadow-2xl">
+      <div className="max-w-[1600px] mx-auto px-10">
+        <div className="relative rounded-2xl overflow-hidden bg-bg-dark text-white min-h-[320px] shadow-2xl">
           
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
@@ -15,7 +15,7 @@ export function DatacenterBanner() {
               src="/ola-ai-datacenter.jpg" 
               alt="OLA AI Datacenter" 
               fill 
-              className="object-cover object-center" 
+              className="object-cover object-bottom" 
               quality={90}
             />
             {/* Overlay gradient so text is readable */}

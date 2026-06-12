@@ -14,8 +14,6 @@ import { Hero } from "@/components/sections/Hero"
 import { PromiseSection } from "@/components/sections/PromiseSection"
 import { CloudSection } from "@/components/sections/CloudSection"
 import { StatsBar } from "@/components/sections/StatsBar"
-import { CtaBanner } from "@/components/sections/CtaBanner"
-
 
 export default function Home() {
   return (
@@ -28,14 +26,15 @@ export default function Home() {
         <ArchitectureSection />
         <HardwareSectionV2 />
         <SolutionsSection />
-        <DatacenterBanner />
 
         {/* OLD V1 DESIGN SECTIONS (Restored) */}
         <Hero />
         <PromiseSection />
         <CloudSection />
         <StatsBar />
-        <CtaBanner />
+
+        {/* FINAL CLOSING BANNER */}
+        <DatacenterBanner />
       </main>
       <Footer />
     </>

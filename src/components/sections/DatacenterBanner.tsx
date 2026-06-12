@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/Button"
 export function DatacenterBanner() {
   return (
     <section className="bg-bg-light pb-24">
-      <div className="container mx-auto px-4">
-        <div className="relative rounded-3xl overflow-hidden bg-bg-dark text-white min-h-[400px] shadow-2xl">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-6">
+        <div className="relative rounded-3xl overflow-hidden bg-bg-dark text-white min-h-[320px] shadow-2xl">
           
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
@@ -22,17 +22,17 @@ export function DatacenterBanner() {
             <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c]/70 to-transparent" />
           </div>
 
-          <div className="relative z-10 p-10 md:p-16 max-w-2xl h-full flex flex-col justify-center">
-            <div className="text-[#00FFC7] text-xs font-bold tracking-widest uppercase mb-4">
+          <div className="relative z-10 p-8 md:p-12 lg:p-14 max-w-2xl h-full flex flex-col justify-center">
+            <div className="text-[#00FFC7] text-xs font-bold tracking-widest uppercase mb-3">
               SOVEREIGN BY DESIGN
             </div>
             
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white leading-tight mb-6">
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white leading-tight mb-5">
               Your data. Your rules.<br />
               Our infrastructure.
             </h2>
             
-            <p className="text-white/70 mb-10 max-w-md leading-relaxed">
+            <p className="text-white/70 mb-8 max-w-md leading-relaxed">
               All our data centers are located in Spain, powered by 100% renewable energy and built to the highest standards of security and compliance.
             </p>
             

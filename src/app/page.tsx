@@ -12,7 +12,6 @@ import { DatacenterBanner } from "@/components/sections/DatacenterBanner"
 import { Hero } from "@/components/sections/Hero"
 import { PromiseSection } from "@/components/sections/PromiseSection"
 import { CloudSection } from "@/components/sections/CloudSection"
-import { StatsBar } from "@/components/sections/StatsBar"
 
 export default function Home() {
   return (
@@ -29,7 +28,6 @@ export default function Home() {
         <Hero />
         <PromiseSection />
         <CloudSection />
-        <StatsBar />
 
         {/* FINAL CLOSING BANNER */}
         <DatacenterBanner />

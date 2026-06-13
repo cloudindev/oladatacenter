@@ -97,22 +97,16 @@ export function Footer() {
         {/* Sub-brands */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-12 md:gap-24 mb-10 pl-2">
           <div>
-            <div className="text-[11px] text-teal-400 mb-2 font-medium">Build and deploy</div>
-            <div className="text-2xl font-bold tracking-tighter text-white flex items-center gap-1.5">
-              OLA<span className="text-teal-400 text-xl font-black rotate-12">△</span>CLOUD
-            </div>
+            <div className="text-[11px] text-teal-400 mb-3 font-medium">Build and deploy</div>
+            <Image src="/olacloud-logo.png" alt="OLA CLOUD" width={140} height={30} className="h-5 md:h-6 w-auto object-contain" />
           </div>
           <div>
-            <div className="text-[11px] text-blue-500 mb-2 font-medium">Managed Cloud</div>
-            <div className="text-2xl font-bold tracking-tighter text-white flex items-center gap-1">
-              CLOUDMAX<span className="text-white text-[10px] uppercase font-normal tracking-normal mb-3">®</span>
-            </div>
+            <div className="text-[11px] text-blue-500 mb-3 font-medium">Managed Cloud</div>
+            <Image src="/cloudm.png" alt="CLOUDMAX" width={140} height={30} className="h-5 md:h-6 w-auto object-contain" />
           </div>
           <div>
-            <div className="text-[11px] text-cyan-400 mb-2 font-medium">Hosting</div>
-            <div className="text-2xl font-bold tracking-tighter text-white flex items-center gap-1.5">
-              cloudin<Cloud className="w-5 h-5 text-white stroke-[2.5]" />
-            </div>
+            <div className="text-[11px] text-cyan-400 mb-3 font-medium">Hosting</div>
+            <Image src="/cloudin-logo.png" alt="cloudin" width={140} height={30} className="h-5 md:h-6 w-auto object-contain" />
           </div>
         </div>
 

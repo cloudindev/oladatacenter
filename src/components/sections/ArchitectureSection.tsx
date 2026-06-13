@@ -237,9 +237,8 @@ export function ArchitectureSection() {
                   return (
                     <div
                       key={layer.id}
-                      className="absolute inset-0 transition-all duration-500 ease-out preserve-3d cursor-pointer group/layer"
+                      className="absolute inset-0 transition-all duration-500 ease-out preserve-3d"
                       style={{ transform: `translateZ(${elevationZ}px)` }}
-                      onMouseEnter={() => setActiveLayer(layer.id)}
                     >
                       {/* Glow shadow underneath (only when active) */}
                       {isActive && (
@@ -248,7 +247,7 @@ export function ArchitectureSection() {
                       
                       {/* TOP FACE */}
                       <div className={`absolute inset-0 border-[1.5px] border-bg-dark/80 bg-white transition-all duration-300 overflow-hidden
-                        ${isActive ? 'opacity-100 shadow-xl' : 'opacity-60 group-hover/layer:opacity-80'}
+                        ${isActive ? 'opacity-100 shadow-xl' : 'opacity-60'}
                       `}>
                         <LayerContent id={layer.id} isActive={isActive} />
                       </div>
@@ -256,7 +255,7 @@ export function ArchitectureSection() {
                       {/* BOTTOM-LEFT FACE (Thickness) - Maps to original left edge */}
                       <div 
                         className={`absolute top-0 left-0 w-[12px] h-full bg-slate-100 border-[1.5px] border-l-0 border-bg-dark/80 origin-left transition-all duration-300
-                          ${isActive ? 'opacity-100' : 'opacity-60 group-hover/layer:opacity-80'}
+                          ${isActive ? 'opacity-100' : 'opacity-60'}
                         `}
                         style={{ transform: 'rotateY(90deg)' }}
                       />
@@ -264,7 +263,7 @@ export function ArchitectureSection() {
                       {/* BOTTOM-RIGHT FACE (Thickness) - Maps to original bottom edge */}
                       <div 
                         className={`absolute top-full left-0 w-full h-[12px] bg-slate-200 border-[1.5px] border-t-0 border-bg-dark/80 origin-top transition-all duration-300
-                          ${isActive ? 'opacity-100' : 'opacity-60 group-hover/layer:opacity-80'}
+                          ${isActive ? 'opacity-100' : 'opacity-60'}
                         `}
                         style={{ transform: 'rotateX(-90deg)' }}
                       />

@@ -60,7 +60,7 @@ export function HardwareSection() {
             The OLADC server line.
           </h2>
           <p className="text-lg text-text-muted">
-            Built, sold and colocated in our own facility. Buy the box, operate it from anywhere.
+            Built for Cloud. Design for AI. Colocated in our own facility or buy the AI box and operate it from anywhere.
           </p>
         </div>
 

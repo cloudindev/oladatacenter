@@ -92,15 +92,15 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-12 md:gap-24 mb-10 pl-2">
           <div>
             <div className="text-[11px] text-teal-400 mb-3 font-medium">Build and deploy</div>
-            <Image src="/olacloud-logo.png" alt="OLA CLOUD" width={140} height={30} className="h-5 md:h-6 w-auto object-contain brightness-0 invert opacity-90" />
+            <Image src="/olacloud-logo.png" alt="OLA CLOUD" width={140} height={30} className="h-5 md:h-6 w-auto object-contain" />
           </div>
           <div>
             <div className="text-[11px] text-blue-500 mb-3 font-medium">Managed Cloud</div>
-            <Image src="/cloudm.png" alt="CLOUDMAX" width={140} height={30} className="h-5 md:h-6 w-auto object-contain brightness-0 invert opacity-90" />
+            <Image src="/cloudm.png" alt="CLOUDMAX" width={140} height={30} className="h-5 md:h-6 w-auto object-contain" />
           </div>
           <div>
             <div className="text-[11px] text-cyan-400 mb-3 font-medium">Hosting</div>
-            <Image src="/cloudin-logo.png" alt="cloudin" width={140} height={30} className="h-5 md:h-6 w-auto object-contain brightness-0 invert opacity-90" />
+            <Image src="/cloudin-logo.png" alt="cloudin" width={140} height={30} className="h-5 md:h-6 w-auto object-contain" />
           </div>
         </div>
 

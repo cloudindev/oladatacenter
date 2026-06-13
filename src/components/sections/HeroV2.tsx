@@ -13,16 +13,16 @@ export function HeroV2() {
           src="/ola-datacenter-hero.jpg" 
           alt="OLA Datacenter Corridor" 
           fill 
-          className="object-cover object-[75%_center] md:object-right" 
+          className="object-cover md:object-contain object-right [mask-image:linear-gradient(to_right,transparent,black_15%)]" 
           quality={100}
           priority
         />
         
-        {/* White fade from left to right */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 md:via-white/80 to-transparent w-full md:w-[80%] lg:w-[70%]" />
+        {/* Overlay gradient extended to completely hide the hard edge of the image on the left */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white via-[40%] to-transparent w-full pointer-events-none" />
         
         {/* Subtle global white wash for mobile readability if image is too bright */}
-        <div className="absolute inset-0 bg-white/30 md:hidden" />
+        <div className="absolute inset-0 bg-white/30 md:hidden pointer-events-none" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -34,10 +34,9 @@ export function HeroV2() {
           </div>
           
           <h1 className="text-5xl sm:text-6xl lg:text-[5rem] font-bold tracking-tight text-bg-dark leading-[1.05] mb-8">
-            The cloud<br />
+            The AI cloud<br />
             infrastructure<br />
-            built for<br />
-            what's next.
+            for next-gen.
           </h1>
           
           <p className="text-lg text-bg-dark/70 max-w-lg mb-10 leading-relaxed font-medium">

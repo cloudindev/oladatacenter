@@ -12,6 +12,7 @@ const LAYERS = [
     desc: 'Build, run and scale intelligent applications.', 
     icon: LayoutGrid, 
     color: 'text-pink-500',
+    bgHover: 'bg-pink-500/10',
     glowColor: 'bg-pink-500',
     translateZ: 200
   },
@@ -21,6 +22,7 @@ const LAYERS = [
     desc: 'Orchestrate models, data and workloads.', 
     icon: Cloud, 
     color: 'text-purple-500', 
+    bgHover: 'bg-purple-500/10',
     glowColor: 'bg-purple-500',
     translateZ: 150
   },
@@ -30,6 +32,7 @@ const LAYERS = [
     desc: 'Built-in protection at every layer.', 
     icon: Shield, 
     color: 'text-blue-500', 
+    bgHover: 'bg-blue-500/10',
     glowColor: 'bg-blue-500',
     translateZ: 100
   },
@@ -39,6 +42,7 @@ const LAYERS = [
     desc: 'Low-latency compute, closer to your users.', 
     icon: Network, 
     color: 'text-sky-500', 
+    bgHover: 'bg-sky-500/10',
     glowColor: 'bg-sky-500',
     translateZ: 50
   },
@@ -48,6 +52,7 @@ const LAYERS = [
     desc: 'High-performance, sovereign and sustainable data centers.', 
     icon: Server, 
     color: 'text-slate-500', 
+    bgHover: 'bg-slate-500/10',
     glowColor: 'bg-slate-400',
     translateZ: 0
   },
@@ -247,28 +252,20 @@ export function ArchitectureSection() {
                         <LayerContent id={layer.id} isActive={isActive} />
                       </div>
                       
-                      {/* LEFT FACE (Thickness) */}
+                      {/* BOTTOM-LEFT FACE (Thickness) */}
                       <div 
-                        className={`absolute top-full left-0 w-full h-[12px] bg-slate-100 border-[1.5px] border-t-0 border-bg-dark/80 origin-top transition-all duration-300
+                        className={`absolute top-full left-0 w-full h-[16px] bg-white border-[1.5px] border-t-0 border-bg-dark/80 origin-top transition-all duration-300
                           ${isActive ? 'opacity-100' : 'opacity-60'}
                         `}
-                        style={{ transform: 'rotateX(-90deg)' }}
+                        style={{ transform: 'rotateX(90deg)' }}
                       />
                       
-                      {/* RIGHT FACE (Thickness) */}
+                      {/* BOTTOM-RIGHT FACE (Thickness) */}
                       <div 
-                        className={`absolute top-0 left-full w-[12px] h-full bg-slate-200 border-[1.5px] border-l-0 border-bg-dark/80 origin-left transition-all duration-300
+                        className={`absolute top-0 left-full w-[16px] h-full bg-[#f1f5f9] border-[1.5px] border-l-0 border-bg-dark/80 origin-left transition-all duration-300
                           ${isActive ? 'opacity-100' : 'opacity-60'}
                         `}
-                        style={{ transform: 'rotateY(90deg)' }}
-                      />
-                      
-                      {/* Corner connecting lines to fix 3D gaps if any */}
-                      <div 
-                         className={`absolute top-full left-full w-[12px] h-[12px] bg-bg-dark/80 origin-top-left transition-all duration-300
-                           ${isActive ? 'opacity-100' : 'opacity-60'}
-                         `}
-                         style={{ transform: 'rotateX(-90deg) rotateY(90deg)' }}
+                        style={{ transform: 'rotateY(-90deg)' }}
                       />
                     </div>
                   )
@@ -277,7 +274,7 @@ export function ArchitectureSection() {
             </div>
 
             {/* RIGHT COLUMN: Layer List */}
-            <div className="w-full lg:w-1/3 flex flex-col gap-1 z-10">
+            <div className="w-full lg:w-1/3 flex flex-col gap-2 z-10">
               {LAYERS.map((layer) => {
                 const Icon = layer.icon
                 const isActive = activeLayer === layer.id
@@ -286,21 +283,20 @@ export function ArchitectureSection() {
                   <div 
                     key={layer.id}
                     onMouseEnter={() => setActiveLayer(layer.id)}
-                    className="flex items-start gap-4 p-4 rounded-xl transition-all cursor-pointer group"
+                    className={`flex items-start gap-4 p-4 rounded-xl transition-all cursor-pointer border border-transparent
+                      ${isActive ? layer.bgHover + ' border-black/5' : 'hover:bg-black/5'}
+                    `}
                   >
-                    <div className={`mt-1 p-2 rounded-lg bg-white shadow-sm border transition-colors duration-300 
-                      ${isActive ? 'border-transparent ' + layer.color : 'border-border-base/10 text-bg-dark/30 group-hover:text-bg-dark/50'}`}>
-                      <Icon size={20} strokeWidth={isActive ? 2 : 1.5} />
+                    <div className={`mt-1 p-2 rounded-lg bg-white shadow-sm border transition-colors duration-300 ${isActive ? 'border-transparent ' + layer.color : 'border-border-base/10 text-bg-dark/40'}`}>
+                      <Icon size={20} strokeWidth={1.5} />
                     </div>
                     <div>
-                      <h3 className={`font-semibold text-base transition-colors duration-300 ${isActive ? 'text-bg-dark' : 'text-bg-dark/40 group-hover:text-bg-dark/70'}`}>
+                      <h3 className={`font-semibold text-base transition-colors duration-300 ${isActive ? layer.color : 'text-bg-dark'}`}>
                         {layer.title}
                       </h3>
-                      <div className={`overflow-hidden transition-all duration-300 ${isActive ? 'max-h-20 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}>
-                        <p className="text-bg-dark/60 text-sm leading-relaxed">
-                          {layer.desc}
-                        </p>
-                      </div>
+                      <p className="text-bg-dark/60 text-sm mt-1 leading-relaxed">
+                        {layer.desc}
+                      </p>
                     </div>
                   </div>
                 )

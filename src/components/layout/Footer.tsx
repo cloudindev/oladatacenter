@@ -34,10 +34,11 @@ export function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-6 text-xs uppercase tracking-widest">{t("Datacenter")}</h4>
             <ul className="space-y-4 text-sm text-text-muted/80">
-              <li><Link href="#" className="hover:text-white transition-colors">DC Edge</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">DC AI</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">{t("Colocation", "Colocation")}</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">{t("Tour the facility", "Visitar instalaciones")}</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Colocation</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">On-premise Cloud</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">AI Servers</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Bare metal</Link></li>
+              <li><Link href="#" className="hover:text-white transition-colors">Hosting</Link></li>
             </ul>
           </div>
 

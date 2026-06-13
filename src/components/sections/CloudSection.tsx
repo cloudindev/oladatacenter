@@ -74,13 +74,7 @@ export function CloudSection() {
             </div>
           </div>
 
-          <div className="bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
-            <div>
-               <Network className="w-6 h-6 text-primary mb-4" />
-               <h4 className="font-bold text-text-base mb-2">Network</h4>
-               <p className="text-sm text-text-muted">Private backbone & Anycast routing.</p>
-            </div>
-          </div>
+
 
           <div className="md:col-span-2 bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
             <div>
@@ -91,7 +85,7 @@ export function CloudSection() {
             </div>
           </div>
 
-          <div className="md:col-span-2 bg-bg-dark border border-border-dark rounded-2xl p-6 hover:shadow-xl transition-shadow group flex flex-col justify-between relative overflow-hidden">
+          <div className="bg-bg-dark border border-border-dark rounded-2xl p-6 hover:shadow-xl transition-shadow group flex flex-col justify-between relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent pointer-events-none" />
             <div className="relative z-10">
                <GitBranch className="w-6 h-6 text-primary mb-4" />

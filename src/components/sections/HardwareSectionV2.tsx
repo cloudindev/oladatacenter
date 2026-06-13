@@ -1,16 +1,20 @@
+"use client"
+
 import React from "react"
 import Link from "next/link"
+import { useLanguage } from "@/context/LanguageContext"
 
 export function HardwareSectionV2() {
+  const { t } = useLanguage()
   const servers = [
     {
       id: "c1",
-      label: "1U - ENTRY",
+      label: t("1U - ENTRY", "1U - ENTRADA"),
       name: "OLADC C1",
       specs: [
         { label: "CPU", value: "AMD EPYC 9304" },
-        { label: "Drives", value: "4 × NVMe U.2" },
-        { label: "RAM", value: "up to 384 GB" },
+        { label: t("Drives", "Discos"), value: "4 × NVMe U.2" },
+        { label: "RAM", value: t("up to 384 GB", "hasta 384 GB") },
         { label: "Net", value: "2 × 25 GbE" }
       ],
       price: "€129",
@@ -18,12 +22,12 @@ export function HardwareSectionV2() {
     },
     {
       id: "c2",
-      label: "2U - BALANCED",
+      label: t("2U - BALANCED", "2U - BALANCEADO"),
       name: "OLADC C2",
       specs: [
         { label: "CPU", value: "2 × EPYC 9334" },
-        { label: "Drives", value: "12 × NVMe U.2" },
-        { label: "RAM", value: "up to 2 TB" },
+        { label: t("Drives", "Discos"), value: "12 × NVMe U.2" },
+        { label: "RAM", value: t("up to 2 TB", "hasta 2 TB") },
         { label: "Net", value: "2 × 100 GbE" }
       ],
       price: "€349",
@@ -35,8 +39,8 @@ export function HardwareSectionV2() {
       name: "OLADC AI1",
       specs: [
         { label: "CPU", value: "2 × EPYC 9004" },
-        { label: "Interconnect", value: "NVLink + 400G" },
-        { label: "RAM", value: "up to 3 TB" },
+        { label: t("Interconnect", "Interconexión"), value: "NVLink + 400G" },
+        { label: "RAM", value: t("up to 3 TB", "hasta 3 TB") },
         { label: "Net", value: "2 × 400 GbE" }
       ],
       price: "€4,990",
@@ -55,15 +59,15 @@ export function HardwareSectionV2() {
               02 - HARDWARE
             </div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-bg-dark mb-4">
-              The OLADC server line.
+              {t("The OLADC server line.", "La línea de servidores OLADC.")}
             </h2>
             <p className="text-lg text-bg-dark/60">
-              Built for Cloud. Design for AI. Colocated in our own facility or buy the AI box and operate it from anywhere.
+              {t("Built for Cloud. Design for AI. Colocated in our own facility or buy the AI box and operate it from anywhere.", "Creado para la Nube. Diseñado para IA. Ubicado en nuestras propias instalaciones o compra el equipo y opéralo desde cualquier parte.")}
             </p>
           </div>
           <div>
-            <Link href="#servers" className="text-primary font-medium hover:text-primary-hover inline-flex items-center gap-1 transition-colors">
-              View all servers <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            <Link href="/products" className="text-primary font-medium hover:text-primary-hover inline-flex items-center gap-1 transition-colors">
+              {t("View all servers", "Ver todos los servidores")} <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </Link>
           </div>
         </div>
@@ -76,7 +80,7 @@ export function HardwareSectionV2() {
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-[10px] font-bold text-bg-dark/40 uppercase tracking-widest">{server.label}</span>
                 {server.isNew && (
-                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">NEW</span>
+                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">{t("NEW", "NUEVO")}</span>
                 )}
               </div>
               
@@ -118,12 +122,12 @@ export function HardwareSectionV2() {
               {/* Footer */}
               <div className="flex items-center justify-between mt-auto">
                 <div>
-                  <span className="text-sm text-bg-dark/60">from </span>
+                  <span className="text-sm text-bg-dark/60">{t("from ", "desde ")}</span>
                   <span className="text-xl font-bold text-bg-dark">{server.price}</span>
-                  <span className="text-sm text-bg-dark/60"> /mo</span>
+                  <span className="text-sm text-bg-dark/60">{t(" /mo", " /mes")}</span>
                 </div>
-                <Link href={`#configure-${server.id}`} className="text-primary text-sm font-medium hover:text-primary-hover inline-flex items-center gap-1 transition-colors">
-                  Configure <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                <Link href={`/datacenter/bare-metal`} className="text-primary text-sm font-medium hover:text-primary-hover inline-flex items-center gap-1 transition-colors">
+                  {t("Configure", "Configurar")} <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </Link>
               </div>
 

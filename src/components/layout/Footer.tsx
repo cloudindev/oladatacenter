@@ -32,43 +32,43 @@ export function Footer() {
 
           {/* Links Cols */}
           <div>
-            <h4 className="font-semibold text-white mb-6 text-xs uppercase tracking-widest">{t("Datacenter")}</h4>
+            <h4 className="font-semibold text-white mb-6 text-xs uppercase tracking-widest">{t("Datacenter", "Datacenter")}</h4>
             <ul className="space-y-4 text-sm text-text-muted/80">
-              <li><Link href="#" className="hover:text-white transition-colors">Colocation</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">On-premise Cloud</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">AI Servers</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Bare metal</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Hosting</Link></li>
+              <li><Link href="/datacenter/colocation" className="hover:text-white transition-colors">{t("Colocation", "Colocation")}</Link></li>
+              <li><Link href="/datacenter/on-premise" className="hover:text-white transition-colors">{t("On-premise Cloud", "Cloud On-premise")}</Link></li>
+              <li><Link href="/datacenter/ai-servers" className="hover:text-white transition-colors">{t("AI Servers", "Servidores IA")}</Link></li>
+              <li><Link href="/datacenter/bare-metal" className="hover:text-white transition-colors">{t("Bare metal", "Bare metal")}</Link></li>
+              <li><Link href="/datacenter/hosting" className="hover:text-white transition-colors">{t("Hosting", "Hosting")}</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold text-white mb-6 text-xs uppercase tracking-widest">{t("Servers", "Servidores")}</h4>
             <ul className="space-y-4 text-sm text-text-muted/80">
-              <li><Link href="#" className="hover:text-white transition-colors">OLADC C1</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">OLADC C2</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">OLADC AI1</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">{t("Configurator", "Configurador")}</Link></li>
+              <li><Link href="/datacenter/bare-metal" className="hover:text-white transition-colors">OLADC C1</Link></li>
+              <li><Link href="/datacenter/bare-metal" className="hover:text-white transition-colors">OLADC C2</Link></li>
+              <li><Link href="/datacenter/bare-metal" className="hover:text-white transition-colors">OLADC AI1</Link></li>
+              <li><Link href="/servers/configurator" className="hover:text-white transition-colors">{t("Configurator", "Configurador")}</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-semibold text-white mb-6 text-xs uppercase tracking-widest">{t("Cloud")}</h4>
+            <h4 className="font-semibold text-white mb-6 text-xs uppercase tracking-widest">{t("Cloud", "Cloud")}</h4>
             <ul className="space-y-4 text-sm text-text-muted/80">
-              <li><Link href="#" className="hover:text-white transition-colors">AI Cloud</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Compute</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Database</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Storage</Link></li>
+              <li><Link href="/cloud/ai" className="hover:text-white transition-colors">{t("AI Cloud", "Cloud IA")}</Link></li>
+              <li><Link href="/cloud/compute" className="hover:text-white transition-colors">{t("Compute", "Cómputo")}</Link></li>
+              <li><Link href="/cloud/database" className="hover:text-white transition-colors">{t("Database", "Bases de datos")}</Link></li>
+              <li><Link href="/cloud/storage" className="hover:text-white transition-colors">{t("Storage", "Almacenamiento")}</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-semibold text-white mb-6 text-xs uppercase tracking-widest">{t("Company", "Empresa")}</h4>
             <ul className="space-y-4 text-sm text-text-muted/80">
-              <li><Link href="#" className="hover:text-white transition-colors">{t("About OLA", "Sobre OLA")}</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">{t("Sustainability", "Sostenibilidad")}</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">{t("Careers", "Carreras")}</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">{t("News", "Noticias")}</Link></li>
+              <li><Link href="/company/about" className="hover:text-white transition-colors">{t("About OLA", "Sobre OLA")}</Link></li>
+              <li><Link href="/company/sustainability" className="hover:text-white transition-colors">{t("Sustainability", "Sostenibilidad")}</Link></li>
+              <li><Link href="/company/careers" className="hover:text-white transition-colors">{t("Careers", "Carreras")}</Link></li>
+              <li><Link href="/company/news" className="hover:text-white transition-colors">{t("News", "Noticias")}</Link></li>
             </ul>
           </div>
         </div>
@@ -91,15 +91,15 @@ export function Footer() {
         {/* Sub-brands */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-12 md:gap-24 mb-10 pl-2">
           <div>
-            <div className="text-[11px] text-teal-400 mb-3 font-medium">Build and deploy</div>
+            <div className="text-[11px] text-teal-400 mb-3 font-medium">{t("Build and deploy", "Construye y despliega")}</div>
             <Image src="/olacloud-logo.png" alt="OLA CLOUD" width={140} height={30} className="h-5 md:h-6 w-auto object-contain object-left" />
           </div>
           <div>
-            <div className="text-[11px] text-blue-500 mb-3 font-medium">Managed Cloud</div>
+            <div className="text-[11px] text-blue-500 mb-3 font-medium">{t("Managed Cloud", "Cloud Gestionado")}</div>
             <Image src="/cloudm.png" alt="CLOUDMAX" width={140} height={30} className="h-5 md:h-6 w-auto object-contain object-left" />
           </div>
           <div>
-            <div className="text-[11px] text-cyan-400 mb-3 font-medium">Hosting</div>
+            <div className="text-[11px] text-cyan-400 mb-3 font-medium">{t("Hosting", "Hosting")}</div>
             <Image src="/cloudin-logo.png" alt="cloudin" width={140} height={30} className="h-5 md:h-6 w-auto object-contain object-left" />
           </div>
         </div>
@@ -112,9 +112,9 @@ export function Footer() {
             <span>Tier III · RGPD · PCI DSS</span>
           </div>
           <div className="flex gap-6">
-            <Link href="#" className="hover:text-white transition-colors">Legal</Link>
-            <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Cookies</Link>
+            <Link href="/legal/terms" className="hover:text-white transition-colors">{t("Legal", "Aviso Legal")}</Link>
+            <Link href="/legal/privacy" className="hover:text-white transition-colors">{t("Privacy", "Privacidad")}</Link>
+            <Link href="/legal/cookies" className="hover:text-white transition-colors">{t("Cookies", "Cookies")}</Link>
           </div>
         </div>
       </div>

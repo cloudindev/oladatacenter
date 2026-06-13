@@ -5,43 +5,51 @@ import { SectionLabel } from "@/components/ui/SectionLabel"
 import { Badge } from "@/components/ui/Badge"
 import { ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/context/LanguageContext"
+import Link from "next/link"
 
 const SERVERS = [
   {
     id: "c1",
-    badge: "1U · ENTRY",
+    badgeEn: "1U · ENTRY",
+    badgeEs: "1U · ENTRADA",
     title: "OLADC C1",
     cpu: "AMD EPYC 9304",
     drives: "4 × NVMe U.2",
-    ram: "up to 384 GB",
+    ramEn: "up to 384 GB",
+    ramEs: "hasta 384 GB",
     net: "2 × 25 GbE",
-    price: "from €129 /mo",
+    price: "€129",
     highlight: false,
     new: false,
     rackSize: "1U",
   },
   {
     id: "c2",
-    badge: "2U · BALANCED",
+    badgeEn: "2U · BALANCED",
+    badgeEs: "2U · BALANCEADO",
     title: "OLADC C2",
     cpu: "2 × EPYC 9334",
     drives: "12 × NVMe U.2",
-    ram: "up to 2 TB",
+    ramEn: "up to 2 TB",
+    ramEs: "hasta 2 TB",
     net: "2 × 100 GbE",
-    price: "from €349 /mo",
+    price: "€349",
     highlight: false,
     new: false,
     rackSize: "2U",
   },
   {
     id: "ai1",
-    badge: "4U · AI / GPU",
+    badgeEn: "4U · AI / GPU",
+    badgeEs: "4U · IA / GPU",
     title: "OLADC AI1",
     cpu: "2 × EPYC 9004",
     drives: "NVLink + 400G",
-    ram: "up to 3 TB",
+    ramEn: "up to 3 TB",
+    ramEs: "hasta 3 TB",
     net: "2 × 400 GbE",
-    price: "from €4,990 /mo",
+    price: "€4,990",
     highlight: true,
     new: true,
     rackSize: "4U",
@@ -49,6 +57,8 @@ const SERVERS = [
 ]
 
 export function HardwareSection() {
+  const { t } = useLanguage()
+
   return (
     <section id="servers" className="py-24 md:py-32 bg-[#e2e8f0]/30">
       <div className="container mx-auto px-4 max-w-6xl">
@@ -57,10 +67,10 @@ export function HardwareSection() {
         <div className="mb-16">
           <SectionLabel>02 · HARDWARE</SectionLabel>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-text-base mb-4">
-            The OLADC server line.
+            {t("The OLADC server line.", "La línea de servidores OLADC.")}
           </h2>
           <p className="text-lg text-text-muted">
-            Built for Cloud. Design for AI. Colocated in our own facility or buy the AI box and operate it from anywhere.
+            {t("Built for Cloud. Design for AI. Colocated in our own facility or buy the AI box and operate it from anywhere.", "Creado para la Nube. Diseñado para IA. Ubicado en nuestras propias instalaciones o compra el equipo y opéralo desde cualquier parte.")}
           </p>
         </div>
 
@@ -76,9 +86,9 @@ export function HardwareSection() {
             >
               <div className="flex items-center gap-2 mb-6">
                 <Badge variant={server.highlight ? "new" : "default"} className={cn(!server.highlight && "bg-surface-dark text-text-muted")}>
-                  {server.badge}
+                  {t(server.badgeEn, server.badgeEs)}
                 </Badge>
-                {server.new && <Badge variant="new">NEW</Badge>}
+                {server.new && <Badge variant="new">{t("NEW", "NUEVO")}</Badge>}
               </div>
 
               <h3 className="text-2xl font-bold text-white mb-6">{server.title}</h3>
@@ -106,12 +116,12 @@ export function HardwareSection() {
                   <span className="text-white text-sm font-medium">{server.cpu}</span>
                 </div>
                 <div className="flex justify-between border-b border-border-dark/50 pb-2">
-                  <span className="text-text-muted text-sm">{server.id === "ai1" ? "Interconnect" : "Drives"}</span>
+                  <span className="text-text-muted text-sm">{server.id === "ai1" ? t("Interconnect", "Interconexión") : t("Drives", "Discos")}</span>
                   <span className="text-white text-sm font-medium">{server.drives}</span>
                 </div>
                 <div className="flex justify-between border-b border-border-dark/50 pb-2">
                   <span className="text-text-muted text-sm">RAM</span>
-                  <span className="text-white text-sm font-medium">{server.ram}</span>
+                  <span className="text-white text-sm font-medium">{t(server.ramEn, server.ramEs)}</span>
                 </div>
                 <div className="flex justify-between border-b border-border-dark/50 pb-2">
                   <span className="text-text-muted text-sm">Net</span>
@@ -122,11 +132,13 @@ export function HardwareSection() {
               {/* Footer */}
               <div className="flex items-center justify-between pt-4 mt-auto">
                 <div className="text-white font-medium">
-                  {server.price}
+                  <span className="text-sm font-normal text-white/60">{t("from ", "desde ")}</span>{server.price}<span className="text-sm font-normal text-white/60">{t(" /mo", " /mes")}</span>
                 </div>
-                <span className="text-primary font-medium flex items-center group-hover:underline cursor-pointer text-sm">
-                  Configure <ArrowRight className="w-4 h-4 ml-1" />
-                </span>
+                <Link href="/datacenter/bare-metal">
+                  <span className="text-primary font-medium flex items-center group-hover:underline cursor-pointer text-sm transition-all">
+                    {t("Configure", "Configurar")} <ArrowRight className="w-4 h-4 ml-1" />
+                  </span>
+                </Link>
               </div>
 
             </div>
@@ -134,9 +146,11 @@ export function HardwareSection() {
         </div>
 
         <div className="mt-12 text-center">
-          <p className="text-text-base font-medium flex items-center justify-center gap-2 hover:text-primary cursor-pointer transition-colors">
-            Buy the hardware and colocate it free for 12 months in OLA DC. Hardware-as-a-Service <ArrowRight className="w-4 h-4" />
-          </p>
+          <Link href="/datacenter/hosting">
+            <p className="text-text-base font-medium flex items-center justify-center gap-2 hover:text-primary cursor-pointer transition-colors">
+              {t("Buy the hardware and colocate it free for 12 months in OLA DC. Hardware-as-a-Service", "Compra el hardware y alójalo gratis durante 12 meses en OLA DC. Hardware como Servicio")} <ArrowRight className="w-4 h-4" />
+            </p>
+          </Link>
         </div>
 
       </div>

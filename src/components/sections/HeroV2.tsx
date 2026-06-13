@@ -1,9 +1,14 @@
+"use client"
+
 import React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/Button"
+import { useLanguage } from "@/context/LanguageContext"
 
 export function HeroV2() {
+  const { t } = useLanguage()
+
   return (
     <section className="relative pt-32 pb-24 md:pt-48 md:pb-40 overflow-hidden bg-white min-h-[90vh] flex items-center">
       
@@ -29,30 +34,30 @@ export function HeroV2() {
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 mb-6">
             <span className="text-primary text-xs font-bold tracking-widest uppercase">
-              ✦ Built for cloud. Design for AI
+              {t("✦ Built for cloud. Design for AI", "✦ Creado para la nube. Diseñado para IA")}
             </span>
           </div>
           
           <h1 className="text-5xl sm:text-6xl lg:text-[5rem] font-bold tracking-tight text-bg-dark leading-[1.05] mb-8">
-            The AI cloud<br />
-            infrastructure<br />
-            for next-gen.
+            {t("The AI cloud", "La nube de IA")} <br />
+            {t("infrastructure", "e infraestructura")} <br />
+            {t("for next-gen.", "de nueva generación.")}
           </h1>
           
           <p className="text-lg text-bg-dark/70 max-w-lg mb-10 leading-relaxed font-medium">
-            Sovereign infrastructure. Extreme performance.<br className="hidden sm:block" />
-            Designed to power AI and mission-critical workloads.
+            {t("Sovereign infrastructure. Extreme performance.", "Infraestructura soberana. Rendimiento extremo.")} <br className="hidden sm:block" />
+            {t("Designed to power AI and mission-critical workloads.", "Diseñada para potenciar IA y cargas críticas.")}
           </p>
           
           <div className="flex flex-wrap items-center gap-4">
-            <Link href="#solutions">
+            <Link href="/products">
               <Button className="bg-[#0a0f1c] text-white hover:bg-[#0a0f1c]/90 rounded-[4px] px-8 py-6 text-sm font-semibold shadow-sm transition-all hover:scale-105">
-                Explore solutions →
+                {t("Explore solutions →", "Explorar soluciones →")}
               </Button>
             </Link>
-            <Link href="#contact">
+            <Link href="/contact">
               <Button variant="outline" className="bg-transparent border-[#0a0f1c]/20 text-[#0a0f1c] hover:bg-[#0a0f1c]/5 rounded-[4px] px-8 py-6 text-sm font-semibold transition-all">
-                Talk to an expert
+                {t("Talk to an expert", "Hablar con un experto")}
               </Button>
             </Link>
           </div>

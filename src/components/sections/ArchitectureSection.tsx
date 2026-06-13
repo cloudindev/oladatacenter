@@ -4,12 +4,15 @@ import React, { useState } from "react"
 import { Button } from "@/components/ui/Button"
 import { LayoutGrid, Cloud, Shield, Network, Server } from "lucide-react"
 import Link from "next/link"
+import { useLanguage } from "@/context/LanguageContext"
 
 const LAYERS = [
   { 
     id: 'applications', 
-    title: 'Applications', 
-    desc: 'Build, run and scale intelligent applications.', 
+    titleEn: 'Applications', 
+    titleEs: 'Aplicaciones',
+    descEn: 'Build, run and scale intelligent applications.', 
+    descEs: 'Construye, ejecuta y escala aplicaciones inteligentes.',
     icon: LayoutGrid, 
     color: 'text-pink-500',
     bgHover: 'bg-pink-500/10',
@@ -18,8 +21,10 @@ const LAYERS = [
   },
   { 
     id: 'ai-cloud', 
-    title: 'AI Cloud', 
-    desc: 'Orchestrate models, data and workloads.', 
+    titleEn: 'AI Cloud', 
+    titleEs: 'Cloud IA',
+    descEn: 'Orchestrate models, data and workloads.', 
+    descEs: 'Orquesta modelos, datos y cargas de trabajo.',
     icon: Cloud, 
     color: 'text-purple-500', 
     bgHover: 'bg-purple-500/10',
@@ -28,8 +33,10 @@ const LAYERS = [
   },
   { 
     id: 'security', 
-    title: 'Security', 
-    desc: 'Built-in protection at every layer.', 
+    titleEn: 'Security', 
+    titleEs: 'Seguridad',
+    descEn: 'Built-in protection at every layer.', 
+    descEs: 'Protección integrada en cada capa.',
     icon: Shield, 
     color: 'text-blue-500', 
     bgHover: 'bg-blue-500/10',
@@ -38,8 +45,10 @@ const LAYERS = [
   },
   { 
     id: 'edge', 
-    title: 'Edge', 
-    desc: 'Low-latency compute, closer to your users.', 
+    titleEn: 'Edge', 
+    titleEs: 'Edge',
+    descEn: 'Low-latency compute, closer to your users.', 
+    descEs: 'Cómputo de baja latencia, más cerca de tus usuarios.',
     icon: Network, 
     color: 'text-sky-500', 
     bgHover: 'bg-sky-500/10',
@@ -48,8 +57,10 @@ const LAYERS = [
   },
   { 
     id: 'infrastructure', 
-    title: 'Infrastructure', 
-    desc: 'High-performance, sovereign and sustainable data centers.', 
+    titleEn: 'Infrastructure', 
+    titleEs: 'Infraestructura',
+    descEn: 'High-performance, sovereign and sustainable data centers.', 
+    descEs: 'Datacenters sostenibles, soberanos y de alto rendimiento.',
     icon: Server, 
     color: 'text-slate-500', 
     bgHover: 'bg-slate-500/10',
@@ -168,6 +179,7 @@ const LayerContent = ({ id, isActive }: { id: string, isActive: boolean }) => {
 
 export function ArchitectureSection() {
   const [activeLayer, setActiveLayer] = useState<string | null>('ai-cloud')
+  const { t } = useLanguage()
 
   return (
     <section className="bg-bg-light py-24 overflow-hidden border-b border-border-base/10">
@@ -207,16 +219,16 @@ export function ArchitectureSection() {
                 01 / 02 / 03
               </div>
               <h2 className="text-4xl lg:text-5xl font-bold tracking-tight text-bg-dark leading-[1.1] mb-6">
-                A platform.<br />
-                Every layer<br />
-                purpose-built.
+                {t("A platform.", "Una plataforma.")}<br />
+                {t("Every layer", "Cada capa")}<br />
+                {t("purpose-built.", "diseñada a medida.")}
               </h2>
               <p className="text-bg-dark/70 text-sm md:text-base leading-relaxed mb-8 max-w-sm">
-                From sovereign infrastructure to intelligent applications, every layer is engineered to deliver performance, security and control at scale.
+                {t("From sovereign infrastructure to intelligent applications, every layer is engineered to deliver performance, security and control at scale.", "Desde infraestructura soberana hasta aplicaciones inteligentes, cada capa está diseñada para ofrecer rendimiento, seguridad y control a escala.")}
               </p>
-              <Link href="#platform">
+              <Link href="/products">
                 <Button variant="outline" className="border-border-base/20 text-bg-dark hover:bg-bg-dark/5 rounded-full px-8 py-6 text-sm font-semibold transition-all">
-                  See how it works →
+                  {t("See how it works →", "Ver cómo funciona →")}
                 </Button>
               </Link>
             </div>
@@ -292,10 +304,10 @@ export function ArchitectureSection() {
                     </div>
                     <div>
                       <h3 className={`font-semibold text-base transition-colors duration-300 ${isActive ? layer.color : 'text-bg-dark'}`}>
-                        {layer.title}
+                        {t(layer.titleEn, layer.titleEs)}
                       </h3>
                       <p className="text-bg-dark/60 text-sm mt-1 leading-relaxed">
-                        {layer.desc}
+                        {t(layer.descEn, layer.descEs)}
                       </p>
                     </div>
                   </div>

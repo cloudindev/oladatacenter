@@ -38,7 +38,6 @@ export function Footer() {
               <li><Link href="#" className="hover:text-white transition-colors">DC AI</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">{t("Colocation", "Colocation")}</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">{t("Tour the facility", "Visitar instalaciones")}</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">{t("Connectivity", "Conectividad")}</Link></li>
             </ul>
           </div>
 
@@ -67,7 +66,6 @@ export function Footer() {
             <ul className="space-y-4 text-sm text-text-muted/80">
               <li><Link href="#" className="hover:text-white transition-colors">{t("About OLA", "Sobre OLA")}</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">{t("Sustainability", "Sostenibilidad")}</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">{t("Customers", "Clientes")}</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">{t("Careers", "Carreras")}</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">{t("News", "Noticias")}</Link></li>
             </ul>
@@ -81,12 +79,12 @@ export function Footer() {
             <h3 className="text-xl font-bold text-white mb-2 tracking-tight">{t("Contacta con un experto", "Talk to an expert")}</h3>
             <p className="text-sm text-text-muted/80 max-w-2xl leading-relaxed">{t("Contacta con nuestro equipo, estaremos encantados de ayudarte a configurar tu nube.", "Contact our team, we will be happy to help you configure your cloud.")}</p>
           </div>
-          <button 
-            onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
+          <Link 
+            href="mailto:hola@oladc.es"
             className="text-sm font-medium text-white border border-white/20 px-6 py-2.5 rounded-lg hover:bg-white/5 transition-colors whitespace-nowrap"
           >
-            {t("Cambiar idioma →", "Switch to English →")}
-          </button>
+            {t("Contactar →", "Contact us →")}
+          </Link>
         </div>
 
         {/* Sub-brands */}
@@ -110,7 +108,7 @@ export function Footer() {
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-center md:text-left">
             <span>© 2026 OLA Datacenter</span>
             <span className="hidden sm:inline opacity-30">|</span>
-            <span>Tier III · ISO 27001 · ENS Alto · RGPD · PCI DSS</span>
+            <span>Tier III · RGPD · PCI DSS</span>
           </div>
           <div className="flex gap-6">
             <Link href="#" className="hover:text-white transition-colors">Legal</Link>

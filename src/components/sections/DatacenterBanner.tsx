@@ -15,11 +15,11 @@ export function DatacenterBanner() {
               src="/ola-ai-datacenter.jpg" 
               alt="OLA AI Datacenter" 
               fill 
-              className="object-cover object-bottom" 
-              quality={90}
+              className="object-cover md:object-contain object-right" 
+              quality={100}
             />
-            {/* Overlay gradient so text is readable */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c]/70 to-transparent" />
+            {/* Overlay gradient to blend the left edge of the image smoothly */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c] md:via-[#0a0f1c]/40 to-transparent w-full md:w-[75%]" />
           </div>
 
           <div className="relative z-10 p-8 md:p-12 lg:p-14 max-w-2xl h-full flex flex-col justify-center">

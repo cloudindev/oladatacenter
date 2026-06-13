@@ -252,20 +252,20 @@ export function ArchitectureSection() {
                         <LayerContent id={layer.id} isActive={isActive} />
                       </div>
                       
-                      {/* BOTTOM-LEFT FACE (Thickness) */}
+                      {/* BOTTOM-LEFT FACE (Thickness) - Maps to original left edge */}
                       <div 
-                        className={`absolute top-full left-0 w-full h-[16px] bg-white border-[1.5px] border-t-0 border-bg-dark/80 origin-top transition-all duration-300
+                        className={`absolute top-0 left-0 w-[12px] h-full bg-slate-100 border-[1.5px] border-l-0 border-bg-dark/80 origin-left transition-all duration-300
                           ${isActive ? 'opacity-100' : 'opacity-60'}
                         `}
-                        style={{ transform: 'rotateX(90deg)' }}
+                        style={{ transform: 'rotateY(90deg)' }}
                       />
                       
-                      {/* BOTTOM-RIGHT FACE (Thickness) */}
+                      {/* BOTTOM-RIGHT FACE (Thickness) - Maps to original bottom edge */}
                       <div 
-                        className={`absolute top-0 left-full w-[16px] h-full bg-[#f1f5f9] border-[1.5px] border-l-0 border-bg-dark/80 origin-left transition-all duration-300
+                        className={`absolute top-full left-0 w-full h-[12px] bg-slate-200 border-[1.5px] border-t-0 border-bg-dark/80 origin-top transition-all duration-300
                           ${isActive ? 'opacity-100' : 'opacity-60'}
                         `}
-                        style={{ transform: 'rotateY(-90deg)' }}
+                        style={{ transform: 'rotateX(-90deg)' }}
                       />
                     </div>
                   )

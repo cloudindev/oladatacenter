@@ -23,14 +23,11 @@ export function Footer() {
                 height={40} 
                 className="h-8 w-auto object-contain"
               />
+              <div className="text-[9px] text-emerald-400 font-bold tracking-[0.2em] mt-2">NEXT-GEN DATACENTER</div>
             </Link>
             <p className="text-sm text-text-muted/80 mb-6 leading-relaxed">
-              {t("Powerful AI cloud infrastructure, engineered in Spain.", "Infraestructura cloud para IA potente, diseñada en España.")}
+              {t("AI Cloud for the next big thing", "AI Cloud for the next big thing")}
             </p>
-            <div className="text-sm text-text-muted/80 space-y-1">
-              <p>hola@oladc.es</p>
-              <p>Madrid · Barcelona · Valencia</p>
-            </div>
           </div>
 
           {/* Links Cols */}
@@ -52,7 +49,6 @@ export function Footer() {
               <li><Link href="#" className="hover:text-white transition-colors">OLADC C2</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">OLADC AI1</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">{t("Configurator", "Configurador")}</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">HaaS program</Link></li>
             </ul>
           </div>
 
@@ -63,7 +59,6 @@ export function Footer() {
               <li><Link href="#" className="hover:text-white transition-colors">Compute</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Database</Link></li>
               <li><Link href="#" className="hover:text-white transition-colors">Storage</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Network</Link></li>
             </ul>
           </div>
 
@@ -79,12 +74,12 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Language Block */}
+        {/* Language Block / CTA */}
         <div className="bg-[#111827]/80 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-8">
           <div>
-            <div className="text-[11px] text-text-muted/60 uppercase tracking-widest mb-3">ES · VERSIÓN ESPAÑOLA</div>
-            <h3 className="text-xl font-bold text-white mb-2 tracking-tight">AI Cloud para empresas soberanas.</h3>
-            <p className="text-sm text-text-muted/80 max-w-2xl leading-relaxed">Datacenter, servidores dedicados y cloud — infraestructura premium para empresas que construyen su futuro en España.</p>
+            <div className="text-[11px] text-text-muted/60 uppercase tracking-widest mb-3">{t("TE AYUDAMOS", "WE CAN HELP")}</div>
+            <h3 className="text-xl font-bold text-white mb-2 tracking-tight">{t("Contacta con un experto", "Talk to an expert")}</h3>
+            <p className="text-sm text-text-muted/80 max-w-2xl leading-relaxed">{t("Contacta con nuestro equipo, estaremos encantados de ayudarte a configurar tu nube.", "Contact our team, we will be happy to help you configure your cloud.")}</p>
           </div>
           <button 
             onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
@@ -98,15 +93,15 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-12 md:gap-24 mb-10 pl-2">
           <div>
             <div className="text-[11px] text-teal-400 mb-3 font-medium">Build and deploy</div>
-            <Image src="/olacloud-logo.png" alt="OLA CLOUD" width={140} height={30} className="h-5 md:h-6 w-auto object-contain" />
+            <Image src="/olacloud-logo.png" alt="OLA CLOUD" width={140} height={30} className="h-5 md:h-6 w-auto object-contain brightness-0 invert opacity-90" />
           </div>
           <div>
             <div className="text-[11px] text-blue-500 mb-3 font-medium">Managed Cloud</div>
-            <Image src="/cloudm.png" alt="CLOUDMAX" width={140} height={30} className="h-5 md:h-6 w-auto object-contain" />
+            <Image src="/cloudm.png" alt="CLOUDMAX" width={140} height={30} className="h-5 md:h-6 w-auto object-contain brightness-0 invert opacity-90" />
           </div>
           <div>
             <div className="text-[11px] text-cyan-400 mb-3 font-medium">Hosting</div>
-            <Image src="/cloudin-logo.png" alt="cloudin" width={140} height={30} className="h-5 md:h-6 w-auto object-contain" />
+            <Image src="/cloudin-logo.png" alt="cloudin" width={140} height={30} className="h-5 md:h-6 w-auto object-contain brightness-0 invert opacity-90" />
           </div>
         </div>
 

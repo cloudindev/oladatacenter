@@ -21,9 +21,9 @@ export function Footer() {
                 alt="OLA Datacenter" 
                 width={140} 
                 height={40} 
-                className="h-8 w-auto object-contain"
+                className="h-8 w-auto object-contain object-left"
               />
-              <div className="text-[9px] text-emerald-400 font-bold tracking-[0.2em] mt-2">NEXT-GEN DATACENTER</div>
+              <div className="text-[7.5px] text-[#d8fff4] font-bold tracking-[0.25em] mt-0.5">NEXT-GEN DATACENTER</div>
             </Link>
             <p className="text-sm text-text-muted/80 mb-6 leading-relaxed">
               {t("AI Cloud for the next big thing", "AI Cloud for the next big thing")}

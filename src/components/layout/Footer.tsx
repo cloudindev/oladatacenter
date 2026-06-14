@@ -94,10 +94,7 @@ export function Footer() {
             <div className="text-[11px] text-teal-400 mb-3 font-medium">{t("Build and deploy", "Construye y despliega")}</div>
             <Image src="/olacloud-logo.png" alt="OLA CLOUD" width={140} height={30} className="h-5 md:h-6 w-auto object-contain object-left" />
           </div>
-          <div>
-            <div className="text-[11px] text-blue-500 mb-3 font-medium">{t("Managed Cloud", "Cloud Gestionado")}</div>
-            <Image src="/cloudm.png" alt="CLOUDMAX" width={140} height={30} className="h-5 md:h-6 w-auto object-contain object-left" />
-          </div>
+
           <div>
             <div className="text-[11px] text-cyan-400 mb-3 font-medium">{t("Hosting", "Hosting")}</div>
             <Image src="/cloudin-logo.png" alt="cloudin" width={140} height={30} className="h-5 md:h-6 w-auto object-contain object-left" />

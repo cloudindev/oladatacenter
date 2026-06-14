@@ -46,37 +46,34 @@ export default function Page() {
               </div>
             </div>
             
-            <div className="bg-[#111827] rounded-3xl p-8 border border-white/10 relative shadow-2xl">
-              <div className="absolute top-0 right-0 p-4">
+            <div className="bg-[#111827] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col relative">
+              <div className="absolute top-4 right-4 z-10">
                 <span className="bg-primary text-[#111827] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">{t("Most Popular", "Más Popular")}</span>
               </div>
-              <h3 className="text-2xl font-bold mb-2">OLADC AI1</h3>
-              <p className="text-white/50 text-sm mb-6">{t("Optimized for distributed training", "Optimizado para entrenamiento distribuido")}</p>
               
-              <div className="bg-white rounded-xl p-4 mb-8 flex justify-center">
-                <img src="/oladc-serverai.jpg" alt="OLADC AI1" className="w-full object-contain mix-blend-multiply" />
+              <div className="w-full bg-[#f8f9fa] border-b border-white/10">
+                <img src="/oladc-serverai.jpg" alt="OLADC AI1" className="w-full h-auto object-cover mix-blend-multiply" />
               </div>
 
-              <ul className="space-y-4 mb-8">
-                <li className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-white/70">CPU</span>
-                  <span className="font-semibold text-right">EPYC 4585PX</span>
-                </li>
-                <li className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-white/70">RAM</span>
-                  <span className="font-semibold text-right">192GB</span>
-                </li>
-                <li className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-white/70">{t("Storage", "Almacenamiento")}</span>
-                  <span className="font-semibold text-right">2x4TB + 4 GPU</span>
-                </li>
-              </ul>
-              
-              <div className="flex items-end justify-between mb-6">
+              <div className="p-8 flex flex-col flex-grow">
+                <h3 className="text-2xl font-bold mb-2">OLADC AI1</h3>
+                <p className="text-white/50 text-sm mb-8">{t("Optimized for distributed training", "Optimizado para entrenamiento distribuido")}</p>
+                
+                <ul className="space-y-4 flex-grow">
+                  <li className="flex justify-between border-b border-white/10 pb-2">
+                    <span className="text-white/70">CPU</span>
+                    <span className="font-semibold text-right">EPYC 4585PX</span>
+                  </li>
+                  <li className="flex justify-between border-b border-white/10 pb-2">
+                    <span className="text-white/70">RAM</span>
+                    <span className="font-semibold text-right">192GB</span>
+                  </li>
+                  <li className="flex justify-between border-b border-white/10 pb-2">
+                    <span className="text-white/70">{t("Storage", "Almacenamiento")}</span>
+                    <span className="font-semibold text-right">2x4TB + 4 GPU</span>
+                  </li>
+                </ul>
               </div>
-              <button className="w-full bg-primary text-[#111827] font-bold py-4 rounded-xl hover:bg-primary/90 transition-colors">
-                {t("Deploy Now", "Desplegar Ahora")}
-              </button>
             </div>
           </div>
         </div>

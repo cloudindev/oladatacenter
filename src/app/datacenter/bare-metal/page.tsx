@@ -30,73 +30,63 @@ export default function Page() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* C1 Server */}
-            <div className="bg-white rounded-2xl border border-border-base shadow-sm p-8 hover:shadow-lg transition-shadow">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-text-base mb-1">OLADC C1</h3>
-                  <p className="text-text-muted text-sm">{t("1U Entry Level", "1U Nivel de Entrada")}</p>
+            <div className="bg-white rounded-2xl border border-border-base shadow-sm hover:shadow-lg transition-shadow overflow-hidden flex flex-col">
+              
+              <div className="w-full bg-[#f8f9fa] border-b border-border-base/10">
+                <img src="/oladc-server.jpg" alt="OLADC C1" className="w-full h-auto object-cover mix-blend-multiply" />
+              </div>
+
+              <div className="p-8 flex flex-col flex-grow">
+                <div className="mb-8">
+                  <span className="text-text-muted text-xs font-bold uppercase tracking-widest">{t("1U Entry Level", "1U Nivel de Entrada")}</span>
+                  <h3 className="text-2xl font-bold text-text-base mt-1">OLADC C1</h3>
                 </div>
-                <div className="text-right">
+                
+                <div className="space-y-4 flex-grow">
+                  <div className="bg-bg-light rounded-lg p-4 flex justify-between">
+                    <span className="text-text-muted font-medium">CPU</span>
+                    <span className="text-text-base font-bold">EPYC 4565P</span>
+                  </div>
+                  <div className="bg-bg-light rounded-lg p-4 flex justify-between">
+                    <span className="text-text-muted font-medium">RAM</span>
+                    <span className="text-text-base font-bold">192GB</span>
+                  </div>
+                  <div className="bg-bg-light rounded-lg p-4 flex justify-between">
+                    <span className="text-text-muted font-medium">Storage</span>
+                    <span className="text-text-base font-bold">2x4TB U.3</span>
+                  </div>
                 </div>
               </div>
-              
-              <div className="w-full mb-8">
-                <img src="/oladc-server.jpg" alt="OLADC C1" className="w-full object-contain mix-blend-multiply" />
-              </div>
-              
-              <div className="space-y-4 mb-8">
-                <div className="bg-bg-light rounded-lg p-4 flex justify-between">
-                  <span className="text-text-muted font-medium">CPU</span>
-                  <span className="text-text-base font-bold">EPYC 4565P</span>
-                </div>
-                <div className="bg-bg-light rounded-lg p-4 flex justify-between">
-                  <span className="text-text-muted font-medium">RAM</span>
-                  <span className="text-text-base font-bold">192GB</span>
-                </div>
-                <div className="bg-bg-light rounded-lg p-4 flex justify-between">
-                  <span className="text-text-muted font-medium">Storage</span>
-                  <span className="text-text-base font-bold">2x4TB U.3</span>
-                </div>
-              </div>
-              
-              <button className="w-full py-3 rounded-lg border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-colors">
-                {t("Configure", "Configurar")}
-              </button>
             </div>
 
             {/* C2 Server */}
-            <div className="bg-white rounded-2xl border border-border-base shadow-sm p-8 hover:shadow-lg transition-shadow">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <h3 className="text-2xl font-bold text-text-base mb-1">OLADC C2</h3>
-                  <p className="text-text-muted text-sm">{t("2U High Density", "2U Alta Densidad")}</p>
-                </div>
-                <div className="text-right">
-                </div>
-              </div>
+            <div className="bg-white rounded-2xl border border-border-base shadow-sm hover:shadow-lg transition-shadow overflow-hidden flex flex-col">
               
-              <div className="w-full mb-8">
-                <img src="/oladc-server.jpg" alt="OLADC C2" className="w-full object-contain mix-blend-multiply" />
+              <div className="w-full bg-[#f8f9fa] border-b border-border-base/10">
+                <img src="/oladc-server.jpg" alt="OLADC C2" className="w-full h-auto object-cover mix-blend-multiply" />
               </div>
 
-              <div className="space-y-4 mb-8">
-                <div className="bg-bg-light rounded-lg p-4 flex justify-between">
-                  <span className="text-text-muted font-medium">CPU</span>
-                  <span className="text-text-base font-bold">EPYC 4565P</span>
+              <div className="p-8 flex flex-col flex-grow">
+                <div className="mb-8">
+                  <span className="text-text-muted text-xs font-bold uppercase tracking-widest">{t("2U High Density", "2U Alta Densidad")}</span>
+                  <h3 className="text-2xl font-bold text-text-base mt-1">OLADC C2</h3>
                 </div>
-                <div className="bg-bg-light rounded-lg p-4 flex justify-between">
-                  <span className="text-text-muted font-medium">RAM</span>
-                  <span className="text-text-base font-bold">192GB</span>
-                </div>
-                <div className="bg-bg-light rounded-lg p-4 flex justify-between">
-                  <span className="text-text-muted font-medium">Storage</span>
-                  <span className="text-text-base font-bold">24TB útiles</span>
+
+                <div className="space-y-4 flex-grow">
+                  <div className="bg-bg-light rounded-lg p-4 flex justify-between">
+                    <span className="text-text-muted font-medium">CPU</span>
+                    <span className="text-text-base font-bold">EPYC 4565P</span>
+                  </div>
+                  <div className="bg-bg-light rounded-lg p-4 flex justify-between">
+                    <span className="text-text-muted font-medium">RAM</span>
+                    <span className="text-text-base font-bold">192GB</span>
+                  </div>
+                  <div className="bg-bg-light rounded-lg p-4 flex justify-between">
+                    <span className="text-text-muted font-medium">Storage</span>
+                    <span className="text-text-base font-bold">24TB útiles</span>
+                  </div>
                 </div>
               </div>
-              
-              <button className="w-full py-3 rounded-lg border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-colors">
-                {t("Configure", "Configurar")}
-              </button>
             </div>
           </div>
         </div>

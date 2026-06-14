@@ -69,42 +69,38 @@ export function HardwareSectionV2() {
         {/* Server Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {servers.map((server) => (
-            <div key={server.id} className="bg-white rounded-2xl border border-border-base/10 p-8 shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full">
+            <div key={server.id} className="bg-white rounded-2xl border border-border-base/10 shadow-sm hover:shadow-md transition-shadow group flex flex-col h-full overflow-hidden">
               
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-[10px] font-bold text-bg-dark/40 uppercase tracking-widest">{server.label}</span>
-                {server.isNew && (
-                  <span className="bg-teal-50 text-teal-600 text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">{t("NEW", "NUEVO")}</span>
-                )}
-              </div>
-              
-              <h3 className="text-2xl font-bold text-bg-dark mb-8">{server.name}</h3>
-              
-              <div className="w-full h-32 flex items-center justify-center mb-8 relative">
+              {/* Image Full Width at Top */}
+              <div className="w-full bg-[#f8f9fa] border-b border-border-base/10">
                 <img 
                   src={server.id === 'ai1' ? "/oladc-serverai.jpg" : "/oladc-server.jpg"} 
                   alt={server.name} 
-                  className="w-full h-full object-contain mix-blend-multiply" 
+                  className="w-full h-auto object-cover mix-blend-multiply" 
                 />
               </div>
-              
-              {/* Specs */}
-              <div className="space-y-4 mb-10 flex-grow">
-                {server.specs.map((spec, i) => (
-                  <div key={i} className="flex justify-between items-end border-b border-gray-100 pb-2">
-                    <span className="text-sm text-bg-dark/50">{spec.label}</span>
-                    <span className="text-sm font-medium text-bg-dark text-right">{spec.value}</span>
-                  </div>
-                ))}
-              </div>
-              
-              {/* Footer */}
-              <div className="flex items-center justify-end mt-auto">
-                <Link href={`/datacenter/bare-metal`} className="text-primary text-sm font-medium hover:text-primary-hover inline-flex items-center gap-1 transition-colors">
-                  {t("Configure", "Configurar")} <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                </Link>
-              </div>
 
+              {/* Card Content with Padding */}
+              <div className="p-8 flex flex-col flex-grow">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-[10px] font-bold text-bg-dark/40 uppercase tracking-widest">{server.label}</span>
+                  {server.isNew && (
+                    <span className="bg-teal-50 text-teal-600 text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">{t("NEW", "NUEVO")}</span>
+                  )}
+                </div>
+                
+                <h3 className="text-2xl font-bold text-bg-dark mb-8">{server.name}</h3>
+                
+                {/* Specs */}
+                <div className="space-y-4 flex-grow">
+                  {server.specs.map((spec, i) => (
+                    <div key={i} className="flex justify-between items-end border-b border-gray-100 pb-2">
+                      <span className="text-sm text-bg-dark/50">{spec.label}</span>
+                      <span className="text-sm font-medium text-bg-dark text-right">{spec.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           ))}
         </div>

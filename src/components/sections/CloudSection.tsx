@@ -20,9 +20,9 @@ export function CloudSection() {
               The OLA Cloud platform — AI, compute, data and security on sovereign Spanish infrastructure.
             </p>
           </div>
-          <a href="#" className="text-primary font-medium flex items-center hover:underline">
-            olacloud.es <ArrowRight className="w-4 h-4 ml-1" />
-          </a>
+          <a href="#" className="text-teal-600 font-medium flex items-center hover:underline">
+             olacloud.es <ArrowRight className="w-4 h-4 ml-1" />
+           </a>
         </div>
 
         {/* Grid */}
@@ -52,7 +52,7 @@ export function CloudSection() {
           {/* Small Tiles */}
           <div className="bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
             <div>
-               <Server className="w-6 h-6 text-primary mb-4" />
+               <Server className="w-6 h-6 text-teal-600 mb-4" />
                <h4 className="font-bold text-text-base mb-2">Compute</h4>
                <p className="text-sm text-text-muted">Cloud servers with autoscaling + CI/CD.</p>
             </div>
@@ -60,7 +60,7 @@ export function CloudSection() {
           
           <div className="bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
             <div>
-               <Database className="w-6 h-6 text-primary mb-4" />
+               <Database className="w-6 h-6 text-teal-600 mb-4" />
                <h4 className="font-bold text-text-base mb-2">Database</h4>
                <p className="text-sm text-text-muted">Managed PostgreSQL, Redis & Mongo.</p>
             </div>
@@ -68,7 +68,7 @@ export function CloudSection() {
 
           <div className="bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
             <div>
-               <Box className="w-6 h-6 text-primary mb-4" />
+               <Box className="w-6 h-6 text-teal-600 mb-4" />
                <h4 className="font-bold text-text-base mb-2">Storage</h4>
                <p className="text-sm text-text-muted">S3 compatible object storage, archive and backup.</p>
             </div>
@@ -78,8 +78,8 @@ export function CloudSection() {
 
           <div className="md:col-span-2 bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
             <div>
-               <Shield className="w-6 h-6 text-primary mb-4" />
-               <div className="text-xs font-semibold text-primary mb-1 uppercase">PRIVATE CLOUD</div>
+               <Shield className="w-6 h-6 text-teal-600 mb-4" />
+               <div className="text-xs font-semibold text-teal-600 mb-1 uppercase">PRIVATE CLOUD</div>
                <h4 className="font-bold text-text-base mb-2 text-lg">Private Cloud</h4>
                <p className="text-sm text-text-muted">Dedicated tenancy. Your data stays in Spain — encrypted, isolated, audited.</p>
             </div>

@@ -55,18 +55,18 @@ export function HardwareSectionV2() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="max-w-2xl">
-            <div className="text-primary text-xs font-bold tracking-widest uppercase mb-4">
+            <div className="text-teal-600 text-xs font-bold tracking-widest uppercase mb-4">
               02 - HARDWARE
             </div>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-bg-dark mb-4">
-              {t("The OLADC server line.", "La línea de servidores OLADC.")}
+              {t("The OLA server line.", "La línea de servidores OLA.")}
             </h2>
-            <p className="text-lg text-bg-dark/60">
+            <p className="text-lg text-bg-dark/80">
               {t("Built for Cloud. Design for AI. Colocated in our own facility or buy the AI box and operate it from anywhere.", "Creado para la Nube. Diseñado para IA. Ubicado en nuestras propias instalaciones o compra el equipo y opéralo desde cualquier parte.")}
             </p>
           </div>
           <div>
-            <Link href="/products" className="text-primary font-medium hover:text-primary-hover inline-flex items-center gap-1 transition-colors">
+            <Link href="/products" className="text-teal-600 font-medium hover:text-teal-700 inline-flex items-center gap-1 transition-colors">
               {t("View all servers", "Ver todos los servidores")} <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </Link>
           </div>
@@ -80,7 +80,7 @@ export function HardwareSectionV2() {
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-[10px] font-bold text-bg-dark/40 uppercase tracking-widest">{server.label}</span>
                 {server.isNew && (
-                  <span className="bg-primary/10 text-primary text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">{t("NEW", "NUEVO")}</span>
+                  <span className="bg-teal-50 text-teal-600 text-[10px] font-bold px-2 py-0.5 rounded-sm uppercase tracking-wider">{t("NEW", "NUEVO")}</span>
                 )}
               </div>
               

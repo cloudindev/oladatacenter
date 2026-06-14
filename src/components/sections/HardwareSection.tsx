@@ -65,9 +65,9 @@ export function HardwareSection() {
         
         {/* Header */}
         <div className="mb-16">
-          <SectionLabel>02 · HARDWARE</SectionLabel>
+          <SectionLabel className="text-teal-600">02 · HARDWARE</SectionLabel>
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-text-base mb-4">
-            {t("The OLADC server line.", "La línea de servidores OLADC.")}
+            {t("The OLA server line.", "La línea de servidores OLA.")}
           </h2>
           <p className="text-lg text-text-muted">
             {t("Built for Cloud. Design for AI. Colocated in our own facility or buy the AI box and operate it from anywhere.", "Creado para la Nube. Diseñado para IA. Ubicado en nuestras propias instalaciones o compra el equipo y opéralo desde cualquier parte.")}

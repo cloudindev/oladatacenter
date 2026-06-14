@@ -15,7 +15,7 @@ export function DatacenterSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
           <div className="max-w-2xl">
-            <SectionLabel>01 · DATACENTER</SectionLabel>
+            <SectionLabel className="text-teal-600">01 · DATACENTER</SectionLabel>
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-text-base mb-4">
               Two facilities. One sovereign network.
             </h2>
@@ -37,13 +37,13 @@ export function DatacenterSection() {
               {/* Abstract Nodes Illustration */}
               <div className="h-40 w-full mb-8 relative flex items-center justify-center">
                  <div className="w-3/4 h-full relative">
-                    <svg viewBox="0 0 200 100" className="w-full h-full stroke-primary/40 stroke-1 fill-none">
+                    <svg viewBox="0 0 200 100" className="w-full h-full stroke-teal-600/40 stroke-1 fill-none">
                        <path d="M20,50 L80,20 L150,40 L180,80 L100,90 Z" strokeDasharray="4 4" className="animate-[dash_20s_linear_infinite]" />
-                       <circle cx="20" cy="50" r="4" className="fill-primary stroke-none" />
-                       <circle cx="80" cy="20" r="4" className="fill-primary stroke-none" />
-                       <circle cx="150" cy="40" r="4" className="fill-primary stroke-none" />
-                       <circle cx="180" cy="80" r="4" className="fill-primary stroke-none" />
-                       <circle cx="100" cy="90" r="4" className="fill-primary stroke-none" />
+                       <circle cx="20" cy="50" r="4" className="fill-teal-500 stroke-none" />
+                       <circle cx="80" cy="20" r="4" className="fill-teal-500 stroke-none" />
+                       <circle cx="150" cy="40" r="4" className="fill-teal-500 stroke-none" />
+                       <circle cx="180" cy="80" r="4" className="fill-teal-500 stroke-none" />
+                       <circle cx="100" cy="90" r="4" className="fill-teal-500 stroke-none" />
                     </svg>
                  </div>
               </div>
@@ -60,7 +60,7 @@ export function DatacenterSection() {
                  <span className="text-xs font-medium text-text-muted bg-bg-light px-2 py-1 rounded border border-border-base">Low latency</span>
                  <span className="text-xs font-medium text-text-muted bg-bg-light px-2 py-1 rounded border border-border-base">Edge inference</span>
                </div>
-               <span className="text-primary font-medium flex items-center group-hover:underline">
+               <span className="text-teal-600 font-medium flex items-center group-hover:underline">
                  Learn <ArrowRight className="w-4 h-4 ml-1" />
                </span>
             </div>

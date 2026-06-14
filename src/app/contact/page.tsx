@@ -32,7 +32,7 @@ export default function Page() {
               
               <div className="space-y-8">
                 <div className="flex gap-4">
-                  <div className="w-12 h-12 bg-primary/20 text-primary rounded-xl flex items-center justify-center text-xl shrink-0">📍</div>
+                  <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center text-xl shrink-0">📍</div>
                   <div>
                     <h3 className="font-bold text-text-base text-lg">{t("Headquarters & Datacenter MAD1", "Sede y Datacenter MAD1")}</h3>
                     <p className="text-text-muted">Parque Empresarial La Finca<br />28223 Pozuelo de Alarcón<br />Madrid, Spain</p>
@@ -43,8 +43,8 @@ export default function Page() {
                   <div>
                     <h3 className="font-bold text-text-base text-lg">{t("Email Us", "Escríbenos")}</h3>
                     <p className="text-text-muted">
-                      {t("Sales:", "Ventas:")} <a href="mailto:sales@oladc.es" className="text-primary hover:underline">sales@oladc.es</a><br />
-                      {t("Support:", "Soporte:")} <a href="mailto:support@oladc.es" className="text-primary hover:underline">support@oladc.es</a>
+                      {t("Sales:", "Ventas:")} <a href="mailto:sales@oladc.es" className="text-teal-600 hover:underline">sales@oladc.es</a><br />
+                      {t("Support:", "Soporte:")} <a href="mailto:support@oladc.es" className="text-teal-600 hover:underline">support@oladc.es</a>
                     </p>
                   </div>
                 </div>

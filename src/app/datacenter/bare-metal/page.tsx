@@ -37,7 +37,6 @@ export default function Page() {
                   <p className="text-text-muted text-sm">{t("1U Entry Level", "1U Nivel de Entrada")}</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-text-base">€129<span className="text-sm font-normal text-text-muted">/mo</span></div>
                 </div>
               </div>
               
@@ -73,7 +72,6 @@ export default function Page() {
                   <p className="text-text-muted text-sm">{t("2U High Density", "2U Alta Densidad")}</p>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-text-base">€349<span className="text-sm font-normal text-text-muted">/mo</span></div>
                 </div>
               </div>
               

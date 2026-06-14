@@ -73,10 +73,6 @@ export default function Page() {
               </ul>
               
               <div className="flex items-end justify-between mb-6">
-                <div>
-                  <div className="text-sm text-white/50">{t("Starting at", "Desde")}</div>
-                  <div className="text-4xl font-bold">€4,990<span className="text-lg text-white/50 font-normal">/mo</span></div>
-                </div>
               </div>
               <button className="w-full bg-primary text-[#111827] font-bold py-4 rounded-xl hover:bg-primary/90 transition-colors">
                 {t("Deploy Now", "Desplegar Ahora")}

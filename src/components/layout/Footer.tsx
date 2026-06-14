@@ -48,7 +48,6 @@ export function Footer() {
               <li><Link href="/datacenter/bare-metal" className="hover:text-white transition-colors">OLADC C1</Link></li>
               <li><Link href="/datacenter/bare-metal" className="hover:text-white transition-colors">OLADC C2</Link></li>
               <li><Link href="/datacenter/bare-metal" className="hover:text-white transition-colors">OLADC AI1</Link></li>
-              <li><Link href="/servers/configurator" className="hover:text-white transition-colors">{t("Configurator", "Configurador")}</Link></li>
             </ul>
           </div>
 
@@ -67,7 +66,6 @@ export function Footer() {
             <ul className="space-y-4 text-sm text-text-muted/80">
               <li><Link href="/company/about" className="hover:text-white transition-colors">{t("About OLA", "Sobre OLA")}</Link></li>
               <li><Link href="/company/sustainability" className="hover:text-white transition-colors">{t("Sustainability", "Sostenibilidad")}</Link></li>
-              <li><Link href="/company/careers" className="hover:text-white transition-colors">{t("Careers", "Carreras")}</Link></li>
               <li><Link href="/company/news" className="hover:text-white transition-colors">{t("News", "Noticias")}</Link></li>
             </ul>
           </div>
@@ -105,8 +103,6 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/5 text-[11px] text-text-muted/60 gap-4">
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 text-center md:text-left">
             <span>© 2026 OLA Datacenter</span>
-            <span className="hidden sm:inline opacity-30">|</span>
-            <span>Tier III · RGPD · PCI DSS</span>
           </div>
           <div className="flex gap-6">
             <Link href="/legal/terms" className="hover:text-white transition-colors">{t("Legal", "Aviso Legal")}</Link>

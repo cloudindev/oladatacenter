@@ -76,10 +76,7 @@ export default function Page() {
                     <span className="font-medium text-right">Madrid, ES (MAD1)</span>
                   </li>
                 </ul>
-                <div className="flex justify-between items-end mb-8">
-                  <span className="text-white/60">{t("Monthly Total", "Total Mensual")}</span>
-                  <span className="text-3xl font-bold text-primary">€129</span>
-                </div>
+
                 <button className="w-full bg-primary text-bg-dark font-bold py-3 rounded-xl hover:bg-primary/90 transition-colors">
                   {t("Checkout", "Finalizar Compra")}
                 </button>

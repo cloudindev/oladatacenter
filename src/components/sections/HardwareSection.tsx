@@ -130,10 +130,7 @@ export function HardwareSection() {
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between pt-4 mt-auto">
-                <div className="text-white font-medium">
-                  <span className="text-sm font-normal text-white/60">{t("from ", "desde ")}</span>{server.price}<span className="text-sm font-normal text-white/60">{t(" /mo", " /mes")}</span>
-                </div>
+              <div className="flex items-center justify-end pt-4 mt-auto">
                 <Link href="/datacenter/bare-metal">
                   <span className="text-primary font-medium flex items-center group-hover:underline cursor-pointer text-sm transition-all">
                     {t("Configure", "Configurar")} <ArrowRight className="w-4 h-4 ml-1" />

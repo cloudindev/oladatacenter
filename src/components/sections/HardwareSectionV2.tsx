@@ -120,12 +120,7 @@ export function HardwareSectionV2() {
               </div>
               
               {/* Footer */}
-              <div className="flex items-center justify-between mt-auto">
-                <div>
-                  <span className="text-sm text-bg-dark/60">{t("from ", "desde ")}</span>
-                  <span className="text-xl font-bold text-bg-dark">{server.price}</span>
-                  <span className="text-sm text-bg-dark/60">{t(" /mo", " /mes")}</span>
-                </div>
+              <div className="flex items-center justify-end mt-auto">
                 <Link href={`/datacenter/bare-metal`} className="text-primary text-sm font-medium hover:text-primary-hover inline-flex items-center gap-1 transition-colors">
                   {t("Configure", "Configurar")} <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </Link>

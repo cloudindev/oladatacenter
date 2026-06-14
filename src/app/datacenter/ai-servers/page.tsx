@@ -53,22 +53,22 @@ export default function Page() {
               <h3 className="text-2xl font-bold mb-2">OLADC AI1</h3>
               <p className="text-white/50 text-sm mb-6">{t("Optimized for distributed training", "Optimizado para entrenamiento distribuido")}</p>
               
+              <div className="bg-white rounded-xl p-4 mb-8 flex justify-center">
+                <img src="/oladc-serverai.jpg" alt="OLADC AI1" className="w-full object-contain mix-blend-multiply" />
+              </div>
+
               <ul className="space-y-4 mb-8">
                 <li className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-white/70">GPUs</span>
-                  <span className="font-semibold text-right">8x NVIDIA H100 80GB</span>
+                  <span className="text-white/70">CPU</span>
+                  <span className="font-semibold text-right">EPYC 4585PX</span>
                 </li>
                 <li className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-white/70">CPUs</span>
-                  <span className="font-semibold text-right">2x AMD EPYC 9004</span>
+                  <span className="text-white/70">RAM</span>
+                  <span className="font-semibold text-right">192GB</span>
                 </li>
                 <li className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-white/70">System RAM</span>
-                  <span className="font-semibold text-right">2 TB DDR5</span>
-                </li>
-                <li className="flex justify-between border-b border-white/10 pb-2">
-                  <span className="text-white/70">Local Storage</span>
-                  <span className="font-semibold text-right">30 TB NVMe Gen5</span>
+                  <span className="text-white/70">{t("Storage", "Almacenamiento")}</span>
+                  <span className="font-semibold text-right">2x4TB + 4 GPU</span>
                 </li>
               </ul>
               

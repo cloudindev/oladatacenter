@@ -40,22 +40,22 @@ export default function Page() {
                 </div>
               </div>
               
+              <div className="w-full mb-8">
+                <img src="/oladc-server.jpg" alt="OLADC C1" className="w-full object-contain mix-blend-multiply" />
+              </div>
+              
               <div className="space-y-4 mb-8">
                 <div className="bg-bg-light rounded-lg p-4 flex justify-between">
                   <span className="text-text-muted font-medium">CPU</span>
-                  <span className="text-text-base font-bold">AMD EPYC 9304 (32 Core)</span>
+                  <span className="text-text-base font-bold">EPYC 4565P</span>
                 </div>
                 <div className="bg-bg-light rounded-lg p-4 flex justify-between">
                   <span className="text-text-muted font-medium">RAM</span>
-                  <span className="text-text-base font-bold">384 GB DDR5</span>
+                  <span className="text-text-base font-bold">192GB</span>
                 </div>
                 <div className="bg-bg-light rounded-lg p-4 flex justify-between">
                   <span className="text-text-muted font-medium">Storage</span>
-                  <span className="text-text-base font-bold">4× 3.84TB NVMe</span>
-                </div>
-                <div className="bg-bg-light rounded-lg p-4 flex justify-between">
-                  <span className="text-text-muted font-medium">Network</span>
-                  <span className="text-text-base font-bold">2× 25 GbE</span>
+                  <span className="text-text-base font-bold">2x4TB U.3</span>
                 </div>
               </div>
               
@@ -75,22 +75,22 @@ export default function Page() {
                 </div>
               </div>
               
+              <div className="w-full mb-8">
+                <img src="/oladc-server.jpg" alt="OLADC C2" className="w-full object-contain mix-blend-multiply" />
+              </div>
+
               <div className="space-y-4 mb-8">
                 <div className="bg-bg-light rounded-lg p-4 flex justify-between">
                   <span className="text-text-muted font-medium">CPU</span>
-                  <span className="text-text-base font-bold">2× EPYC 9334 (128 Core)</span>
+                  <span className="text-text-base font-bold">EPYC 4565P</span>
                 </div>
                 <div className="bg-bg-light rounded-lg p-4 flex justify-between">
                   <span className="text-text-muted font-medium">RAM</span>
-                  <span className="text-text-base font-bold">2 TB DDR5</span>
+                  <span className="text-text-base font-bold">192GB</span>
                 </div>
                 <div className="bg-bg-light rounded-lg p-4 flex justify-between">
                   <span className="text-text-muted font-medium">Storage</span>
-                  <span className="text-text-base font-bold">12× 7.68TB NVMe</span>
-                </div>
-                <div className="bg-bg-light rounded-lg p-4 flex justify-between">
-                  <span className="text-text-muted font-medium">Network</span>
-                  <span className="text-text-base font-bold">2× 100 GbE</span>
+                  <span className="text-text-base font-bold">24TB útiles</span>
                 </div>
               </div>
               

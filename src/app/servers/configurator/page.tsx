@@ -42,16 +42,16 @@ export default function Page() {
 
               <h3 className="text-2xl font-bold text-text-base mb-6">{t("2. Memory (RAM)", "2. Memoria (RAM)")}</h3>
               <div className="grid grid-cols-3 gap-4 mb-12">
-                <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer text-center hover:border-gray-300">128 GB</div>
-                <div className="border-2 border-primary rounded-xl p-4 cursor-pointer text-center font-bold">384 GB</div>
+                <div className="border-2 border-primary rounded-xl p-4 cursor-pointer text-center font-bold">192 GB</div>
+                <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer text-center hover:border-gray-300">384 GB</div>
                 <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer text-center hover:border-gray-300">768 GB</div>
               </div>
 
               <h3 className="text-2xl font-bold text-text-base mb-6">{t("3. Primary Storage", "3. Almacenamiento Primario")}</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="border-2 border-primary rounded-xl p-4 cursor-pointer font-bold">4× 1.92TB NVMe</div>
-                <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer hover:border-gray-300">4× 3.84TB NVMe</div>
-                <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer hover:border-gray-300">4× 7.68TB NVMe</div>
+                <div className="border-2 border-primary rounded-xl p-4 cursor-pointer font-bold">2× 4TB U.3</div>
+                <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer hover:border-gray-300">4× 4TB U.3</div>
+                <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer hover:border-gray-300">8× 4TB U.3</div>
               </div>
             </div>
 
@@ -65,11 +65,11 @@ export default function Page() {
                   </li>
                   <li className="flex justify-between border-b border-white/10 pb-3">
                     <span className="text-white/60">RAM</span>
-                    <span className="font-medium text-right">384 GB DDR5</span>
+                    <span className="font-medium text-right">192 GB DDR5</span>
                   </li>
                   <li className="flex justify-between border-b border-white/10 pb-3">
                     <span className="text-white/60">Storage</span>
-                    <span className="font-medium text-right">4× 1.92TB NVMe</span>
+                    <span className="font-medium text-right">2× 4TB U.3</span>
                   </li>
                   <li className="flex justify-between border-b border-white/10 pb-3">
                     <span className="text-white/60">Datacenter</span>

@@ -12,12 +12,10 @@ export function HardwareSectionV2() {
       label: t("1U - ENTRY", "1U - ENTRADA"),
       name: "OLADC C1",
       specs: [
-        { label: "CPU", value: "AMD EPYC 9304" },
-        { label: t("Drives", "Discos"), value: "4 × NVMe U.2" },
-        { label: "RAM", value: t("up to 384 GB", "hasta 384 GB") },
-        { label: "Net", value: "2 × 25 GbE" }
+        { label: "CPU", value: "EPYC 4565P" },
+        { label: "RAM", value: "192GB" },
+        { label: t("Storage", "Almacenamiento"), value: "2x4TB U.3" }
       ],
-      price: "€129",
       isNew: false
     },
     {
@@ -25,12 +23,10 @@ export function HardwareSectionV2() {
       label: t("2U - BALANCED", "2U - BALANCEADO"),
       name: "OLADC C2",
       specs: [
-        { label: "CPU", value: "2 × EPYC 9334" },
-        { label: t("Drives", "Discos"), value: "12 × NVMe U.2" },
-        { label: "RAM", value: t("up to 2 TB", "hasta 2 TB") },
-        { label: "Net", value: "2 × 100 GbE" }
+        { label: "CPU", value: "EPYC 4565P" },
+        { label: "RAM", value: "192GB" },
+        { label: t("Storage", "Almacenamiento"), value: "24TB útiles" }
       ],
-      price: "€349",
       isNew: false
     },
     {
@@ -38,12 +34,10 @@ export function HardwareSectionV2() {
       label: "4U - AI / GPU",
       name: "OLADC AI1",
       specs: [
-        { label: "CPU", value: "2 × EPYC 9004" },
-        { label: t("Interconnect", "Interconexión"), value: "NVLink + 400G" },
-        { label: "RAM", value: t("up to 3 TB", "hasta 3 TB") },
-        { label: "Net", value: "2 × 400 GbE" }
+        { label: "CPU", value: "EPYC 4585PX" },
+        { label: "RAM", value: "192GB" },
+        { label: t("Storage", "Almacenamiento"), value: "2x4TB + 4 GPU" }
       ],
-      price: "€4,990",
       isNew: true
     }
   ]
@@ -86,27 +80,12 @@ export function HardwareSectionV2() {
               
               <h3 className="text-2xl font-bold text-bg-dark mb-8">{server.name}</h3>
               
-              {/* Image Placeholder */}
               <div className="w-full h-32 flex items-center justify-center mb-8 relative">
-                {/* Simulated Server Faceplate */}
-                <div className={`w-full bg-[#111] rounded shadow-inner border-y border-gray-700 flex flex-col justify-between p-1 overflow-hidden
-                  ${server.id === 'c1' ? 'h-8' : server.id === 'c2' ? 'h-16' : 'h-24'}`}>
-                  
-                  {/* Status LEDs */}
-                  <div className="flex gap-1 px-2 pt-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                  </div>
-                  
-                  {/* Drives Grid */}
-                  <div className="flex gap-0.5 px-1 pb-1 opacity-80">
-                    {[...Array(server.id === 'c1' ? 4 : server.id === 'c2' ? 12 : 8)].map((_, i) => (
-                      <div key={i} className="flex-1 h-full bg-[#222] border border-[#333] rounded-sm relative overflow-hidden group-hover:border-primary/30 transition-colors">
-                        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-blue-500/50" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <img 
+                  src={server.id === 'ai1' ? "/oladc-serverai.jpg" : "/oladc-server.jpg"} 
+                  alt={server.name} 
+                  className="w-full h-full object-contain mix-blend-multiply" 
+                />
               </div>
               
               {/* Specs */}

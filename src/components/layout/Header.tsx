@@ -75,7 +75,6 @@ export function Header() {
             </div>
           </div>
           <Link href="/company/about" className="hover:text-primary transition-colors">{t("Company", "Empresa")}</Link>
-          <Link href="/resources" className="hover:text-primary transition-colors">{t("Resources", "Recursos")}</Link>
         </nav>
 
         {/* Right Actions */}

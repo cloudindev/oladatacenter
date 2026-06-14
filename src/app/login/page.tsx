@@ -20,13 +20,43 @@ export default function Page() {
         subtitleEn="Manage your infrastructure."
         subtitleEs="Gestiona tu infraestructura."
       />
-      <div className="flex-1 container mx-auto px-4 py-24 max-w-4xl">
-        <div className="bg-bg-light/50 border border-border-base/10 rounded-2xl p-12 text-center">
-          <p className="text-bg-dark/50 text-lg font-medium">
-            {t("This section is currently under development. Check back soon for updates.", "Esta sección se encuentra actualmente en desarrollo. Vuelve pronto para ver las actualizaciones.")}
-          </p>
+      
+      <div className="flex-1 flex items-center justify-center bg-bg-light py-24">
+        <div className="w-full max-w-md px-4">
+          <div className="bg-white rounded-3xl border border-border-base shadow-2xl p-8">
+            <div className="text-center mb-8">
+              <div className="inline-block p-3 rounded-2xl bg-bg-dark mb-4">
+                <img src="/ola-datacenter-logo.jpg" alt="Logo" className="h-6" style={{ filter: 'brightness(0) invert(1)' }} />
+              </div>
+              <h2 className="text-2xl font-bold text-text-base">{t("Welcome back", "Bienvenido de nuevo")}</h2>
+              <p className="text-text-muted mt-2">{t("Sign in to your account", "Inicia sesión en tu cuenta")}</p>
+            </div>
+            
+            <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+              <div>
+                <label className="block text-sm font-medium text-text-base mb-2">{t("Email", "Correo electrónico")}</label>
+                <input type="email" className="w-full bg-bg-light border border-border-base rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="admin@company.com" />
+              </div>
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-medium text-text-base">{t("Password", "Contraseña")}</label>
+                  <a href="#" className="text-sm text-primary hover:underline">{t("Forgot?", "¿Olvidada?")}</a>
+                </div>
+                <input type="password" className="w-full bg-bg-light border border-border-base rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="••••••••" />
+              </div>
+              
+              <button className="w-full bg-bg-dark text-white font-bold py-3.5 rounded-xl hover:bg-black transition-colors mt-4">
+                {t("Sign in", "Iniciar sesión")}
+              </button>
+            </form>
+            
+            <div className="mt-8 text-center text-sm text-text-muted">
+              {t("Don't have an account?", "¿No tienes una cuenta?")} <a href="/contact" className="text-primary font-bold hover:underline">{t("Contact Sales", "Contacta con Ventas")}</a>
+            </div>
+          </div>
         </div>
       </div>
+    
       <Footer />
     </main>
   )

@@ -102,9 +102,11 @@ export function Header() {
             {t("Log in", "Entrar")}
           </Link>
           
-          <Button variant="primary" className="rounded-full shadow-sm">
-            {t("Talk to us →", "Habla con nosotros →")}
-          </Button>
+          <Link href="/contact">
+            <Button variant="primary" className="rounded-full shadow-sm">
+              {t("Talk to us →", "Habla con nosotros →")}
+            </Button>
+          </Link>
         </div>
       </div>
     </header>

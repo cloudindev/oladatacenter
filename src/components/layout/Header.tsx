@@ -31,17 +31,25 @@ export function Header() {
   )
 
   return (
-    <header className="fixed top-4 inset-x-0 z-50 flex justify-center pointer-events-none px-4">
+    <header className="fixed top-8 inset-x-0 z-50 flex justify-center pointer-events-none px-4">
       <div className="flex items-stretch gap-2 pointer-events-auto">
 
         {/* Left pill: logo + nav, expands into mega panel on hover */}
         <div className="relative" onMouseLeave={() => setMenu(null)}>
           <div
             className={cn(
-              "relative z-10 flex items-center gap-0.5 h-[52px] px-2.5 rounded-2xl transition-colors duration-300",
-              open ? "bg-white" : "bg-[rgba(10,10,10,0.55)] backdrop-blur-xl"
+              "relative z-10 flex items-center gap-0.5 h-[52px] px-2.5 rounded-[10px] overflow-clip transition-colors duration-300",
+              open ? "bg-white" : "bg-[rgba(8,8,6,0.55)] backdrop-blur-[7px]"
             )}
           >
+            {/* Animated aurora shimmer (hidden while the mega panel is open) */}
+            <span
+              aria-hidden
+              className={cn(
+                "nav-aurora absolute inset-0 -z-10 pointer-events-none transition-opacity duration-300",
+                open ? "opacity-0" : "opacity-100"
+              )}
+            />
             <Link href="/" className="flex items-center pl-1.5 pr-3">
               <Image
                 src="/ola-logo.png?v=2"
@@ -175,27 +183,28 @@ export function Header() {
           </div>
         </div>
 
-        {/* Right pill: login + CTA */}
-        <div className="flex items-center gap-2 h-[52px] px-2 rounded-2xl bg-white/90 backdrop-blur-xl shadow-lg">
+        {/* Right pill: frosted glass with white gradient tint, like raft.ai */}
+        <div className="flex items-center gap-3 h-[52px] pl-4 pr-1.5 rounded-[10px] backdrop-blur-[15px] bg-[linear-gradient(136deg,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0.2)_49.37%,rgba(255,255,255,0.3)_100%)] shadow-[0_4px_17px_rgba(122,122,122,0.21)]">
           <Link
             href="/login"
-            className="hidden sm:block text-sm font-medium text-neutral-500 hover:text-neutral-900 transition-colors px-1"
+            className="hidden sm:block text-sm font-normal text-black underline underline-offset-4 decoration-black/30 hover:decoration-black transition-colors"
           >
             {t("Log in", "Entrar")}
           </Link>
 
-          <Link href="/contact" className="group flex items-stretch h-9">
-            <span className="flex items-center bg-neutral-900 text-white text-sm font-semibold px-4 rounded-l-lg transition-colors group-hover:bg-neutral-800">
+          <span className="hidden sm:block w-px h-5 bg-[#b2b2b2]" aria-hidden />
+
+          {/* Raft-style CTA: transparent with white chip that expands on hover */}
+          <Link href="/contact" className="group relative flex items-center h-[38px] pl-3 pr-0.5 rounded-lg overflow-clip">
+            <span
+              aria-hidden
+              className="absolute inset-y-0.5 right-0.5 left-[calc(100%-38px)] rounded-md bg-white transition-[left] duration-[420ms] ease-out group-hover:left-0.5"
+            />
+            <span className="relative text-sm font-normal text-black mr-3">
               {t("Talk to us", "Habla con nosotros")}
             </span>
-            <span className="flex items-center justify-center w-9 bg-neutral-900 text-white rounded-r-lg border-l border-white/15 transition-colors group-hover:bg-neutral-800">
-              <svg
-                className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-              >
+            <span className="relative w-[34px] h-[34px] flex items-center justify-center text-black">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </span>

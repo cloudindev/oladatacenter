@@ -50,3 +50,35 @@ body {
     text-wrap: balance;
   }
 }
+
+/* Subtle animated aurora shimmer for the nav pill (raft.ai style) */
+@keyframes aurora-drift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.nav-aurora {
+  background-image: linear-gradient(
+    135deg,
+    rgba(60, 100, 200, 0.12) 0%,
+    rgba(150, 50, 180, 0.09) 25%,
+    rgba(10, 10, 8, 0) 50%,
+    rgba(50, 180, 130, 0.11) 75%,
+    rgba(60, 100, 200, 0.12) 100%
+  );
+  background-size: 250% 250%;
+  animation: aurora-drift 12s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-aurora {
+    animation: none;
+  }
+}

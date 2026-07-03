@@ -82,3 +82,28 @@ body {
     animation: none;
   }
 }
+
+/* Hero cloud: drifts left → right (~45s), waits 4s off-screen, re-enters from the left */
+@keyframes cloud-drift {
+  0% {
+    transform: translateX(-100%);
+  }
+  91.8% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(100vw);
+  }
+}
+
+.hero-cloud {
+  animation: cloud-drift 49s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cloud {
+    animation: none;
+    visibility: hidden;
+  }
+}

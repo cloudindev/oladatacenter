@@ -6,7 +6,7 @@ import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
 import { cn } from "@/lib/utils"
 
-type MenuKey = "products" | "company" | null
+type MenuKey = "products" | "solutions" | "company" | null
 
 export function Header() {
   const { t } = useLanguage()
@@ -17,7 +17,7 @@ export function Header() {
     <button
       onMouseEnter={() => setMenu(key)}
       className={cn(
-        "flex items-center gap-1.5 px-3.5 h-9 rounded-lg text-sm font-medium transition-colors duration-200",
+        "flex items-center gap-1.5 px-3.5 h-9 rounded-md text-xs font-normal transition-colors duration-200",
         open
           ? menu === key
             ? "bg-neutral-900 text-white"
@@ -31,14 +31,14 @@ export function Header() {
   )
 
   return (
-    <header className="fixed top-8 inset-x-0 z-50 flex justify-center pointer-events-none px-4">
+    <header className="fixed top-[29px] inset-x-0 z-50 flex justify-center pointer-events-none px-4">
       <div className="flex items-stretch gap-2 pointer-events-auto">
 
         {/* Left pill: logo + nav, expands into mega panel on hover */}
         <div className="relative" onMouseLeave={() => setMenu(null)}>
           <div
             className={cn(
-              "relative z-10 flex items-center gap-0.5 h-[52px] px-2.5 rounded-[10px] overflow-clip transition-colors duration-300",
+              "relative z-10 flex items-center gap-0.5 h-[52px] px-2.5 rounded-lg overflow-clip transition-colors duration-300",
               open ? "bg-white" : "bg-[rgba(8,8,6,0.55)] backdrop-blur-[7px]"
             )}
           >
@@ -65,23 +65,24 @@ export function Header() {
             </Link>
 
             <nav className="hidden md:flex items-center gap-0.5">
-              {navItem("products", t("Products", "Productos"))}
-              {navItem("company", t("Company", "Empresa"))}
+              {navItem("products", t("Private Cloud", "Cloud privado"))}
+              {navItem("solutions", t("Solutions", "Soluciones"))}
               <Link
                 href="/datacenter"
                 onMouseEnter={() => setMenu(null)}
                 className={cn(
-                  "px-3.5 h-9 flex items-center rounded-lg text-sm font-medium transition-colors duration-200",
+                  "px-3.5 h-9 flex items-center rounded-md text-xs font-normal transition-colors duration-200",
                   open ? "text-neutral-500 hover:text-neutral-900" : "text-white/80 hover:text-white"
                 )}
               >
                 {t("Datacenter", "Datacenter")}
               </Link>
+              {navItem("company", t("Company", "Empresa"))}
               <Link
                 href="/resources"
                 onMouseEnter={() => setMenu(null)}
                 className={cn(
-                  "px-3.5 h-9 flex items-center rounded-lg text-sm font-medium transition-colors duration-200",
+                  "px-3.5 h-9 flex items-center rounded-md text-xs font-normal transition-colors duration-200",
                   open ? "text-neutral-500 hover:text-neutral-900" : "text-white/80 hover:text-white"
                 )}
               >
@@ -93,7 +94,7 @@ export function Header() {
           {/* Mega panel */}
           <div
             className={cn(
-              "absolute -top-2 -left-2 w-[calc(100vw-2rem)] max-w-[820px] bg-white rounded-[24px] shadow-2xl border border-black/5 pt-[68px] px-4 pb-4 transition-all duration-300 origin-top-left",
+              "absolute -top-2 -left-2 w-[calc(100vw-2rem)] max-w-[820px] bg-white rounded-2xl shadow-2xl border border-black/5 pt-[68px] px-4 pb-4 transition-all duration-300 origin-top-left",
               open ? "opacity-100 scale-100 visible" : "opacity-0 scale-[0.98] invisible"
             )}
           >
@@ -103,7 +104,7 @@ export function Header() {
                   <Image src="/ola-ai-datacenter.jpg" alt="OLA AI Datacenter" fill className="object-cover" />
                 </div>
                 <div>
-                  <h4 className="text-neutral-400 font-semibold mb-3 text-[11px] tracking-[0.15em] uppercase">
+                  <h4 className="text-neutral-400 font-normal mb-3 text-[11px] tracking-[0.15em] uppercase">
                     {t("Datacenter", "Datacenter")}
                   </h4>
                   <ul className="space-y-1">
@@ -117,7 +118,7 @@ export function Header() {
                       <li key={item.href}>
                         <Link
                           href={item.href}
-                          className="block px-2 py-1.5 -mx-2 rounded-lg text-[15px] font-medium text-neutral-800 hover:bg-neutral-100 transition-colors"
+                          className="block px-2 py-1.5 -mx-2 rounded-md text-sm font-normal text-neutral-800 hover:bg-neutral-100 transition-colors"
                         >
                           {t(item.en, item.es)}
                         </Link>
@@ -126,7 +127,7 @@ export function Header() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="text-neutral-400 font-semibold mb-3 text-[11px] tracking-[0.15em] uppercase">
+                  <h4 className="text-neutral-400 font-normal mb-3 text-[11px] tracking-[0.15em] uppercase">
                     {t("AI Cloud", "Cloud IA")}
                   </h4>
                   <ul className="space-y-1">
@@ -140,7 +141,37 @@ export function Header() {
                       <li key={item.href}>
                         <Link
                           href={item.href}
-                          className="block px-2 py-1.5 -mx-2 rounded-lg text-[15px] font-medium text-neutral-800 hover:bg-neutral-100 transition-colors"
+                          className="block px-2 py-1.5 -mx-2 rounded-md text-sm font-normal text-neutral-800 hover:bg-neutral-100 transition-colors"
+                        >
+                          {t(item.en, item.es)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {menu === "solutions" && (
+              <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 p-4">
+                <div className="relative rounded-xl overflow-hidden min-h-[200px] hidden md:block">
+                  <Image src="/oladc-server.jpg" alt="OLA Datacenter Server" fill className="object-cover" />
+                </div>
+                <div>
+                  <h4 className="text-neutral-400 font-normal mb-3 text-[11px] tracking-[0.15em] uppercase">
+                    {t("Solutions", "Soluciones")}
+                  </h4>
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/cloud/managed", en: "Managed services", es: "Servicios gestionados" },
+                      { href: "/solutions/disaster-recovery", en: "Disaster Recovery & Backups", es: "Disaster Recovery y Backups" },
+                      { href: "/solutions/georeplicacion", en: "Synchronous geo-replication", es: "Georeplicación síncrona" },
+                      { href: "/solutions/migracion", en: "Cloud migration", es: "Migración a la nube" },
+                    ].map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className="block px-2 py-1.5 -mx-2 rounded-md text-sm font-normal text-neutral-800 hover:bg-neutral-100 transition-colors"
                         >
                           {t(item.en, item.es)}
                         </Link>
@@ -157,7 +188,7 @@ export function Header() {
                   <Image src="/ola-datacenter-hero.jpg" alt="OLA Datacenter" fill className="object-cover" />
                 </div>
                 <div>
-                  <h4 className="text-neutral-400 font-semibold mb-3 text-[11px] tracking-[0.15em] uppercase">
+                  <h4 className="text-neutral-400 font-normal mb-3 text-[11px] tracking-[0.15em] uppercase">
                     {t("Company", "Empresa")}
                   </h4>
                   <ul className="space-y-1">
@@ -170,7 +201,7 @@ export function Header() {
                       <li key={item.href}>
                         <Link
                           href={item.href}
-                          className="block px-2 py-1.5 -mx-2 rounded-lg text-[15px] font-medium text-neutral-800 hover:bg-neutral-100 transition-colors"
+                          className="block px-2 py-1.5 -mx-2 rounded-md text-sm font-normal text-neutral-800 hover:bg-neutral-100 transition-colors"
                         >
                           {t(item.en, item.es)}
                         </Link>
@@ -184,10 +215,10 @@ export function Header() {
         </div>
 
         {/* Right pill: frosted glass with white gradient tint, like raft.ai */}
-        <div className="flex items-center gap-3 h-[52px] pl-4 pr-1.5 rounded-[10px] backdrop-blur-[15px] bg-[linear-gradient(136deg,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0.2)_49.37%,rgba(255,255,255,0.3)_100%)] shadow-[0_4px_17px_rgba(122,122,122,0.21)]">
+        <div className="flex items-center gap-3 h-[52px] pl-4 pr-1.5 rounded-lg backdrop-blur-[15px] bg-[linear-gradient(136deg,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0.2)_49.37%,rgba(255,255,255,0.3)_100%)] shadow-[0_4px_17px_rgba(122,122,122,0.21)]">
           <Link
             href="/login"
-            className="hidden sm:block text-sm font-normal text-black underline underline-offset-4 decoration-black/30 hover:decoration-black transition-colors"
+            className="hidden sm:block text-xs font-normal text-black hover:opacity-70 transition-opacity"
           >
             {t("Log in", "Entrar")}
           </Link>
@@ -200,7 +231,7 @@ export function Header() {
               aria-hidden
               className="absolute inset-y-0.5 right-0.5 left-[calc(100%-38px)] rounded-md bg-white transition-[left] duration-[420ms] ease-out group-hover:left-0.5"
             />
-            <span className="relative text-sm font-normal text-black mr-3">
+            <span className="relative text-xs font-normal text-black mr-3">
               {t("Talk to us", "Habla con nosotros")}
             </span>
             <span className="relative w-[34px] h-[34px] flex items-center justify-center text-black">

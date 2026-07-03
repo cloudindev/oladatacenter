@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       { pathname: "/**", search: "" },
       // Cache-busted brand assets (e.g. /ola-logo.png?v=2)
       { pathname: "/ola-logo.png", search: "?v=2" },
+      { pathname: "/cloud.webp", search: "?v=2" },
     ],
   },
 };

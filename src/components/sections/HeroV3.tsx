@@ -148,6 +148,16 @@ export function HeroV3() {
         </div>
 
 
+        {/* Drifting cloud */}
+        <Image
+          src="/cloud.webp?v=2"
+          alt=""
+          aria-hidden
+          width={1122}
+          height={557}
+          className="hero-cloud absolute top-[16%] left-0 w-[220px] md:w-[280px] h-auto opacity-70 pointer-events-none select-none"
+        />
+
         {/* Cursor-following glow */}
         <div
           ref={glowRef}

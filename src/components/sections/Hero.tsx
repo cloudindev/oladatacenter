@@ -30,34 +30,37 @@ export function Hero() {
           <div className="max-w-2xl">
             <div className="text-xs font-semibold tracking-wider text-text-muted uppercase mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-text-muted" />
-              OLA DATACENTER · SPAIN
+              {t("OLA DATACENTER · SPAIN", "OLA DATACENTER · ESPAÑA")}
             </div>
-            
+
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-text-base mb-6 leading-[1.05]">
               AI Cloud <br/>
-              for what&apos;s <br/>
-              <span className="text-primary">sovereign</span>
+              {t("for what's", "para lo")} <br/>
+              <span className="text-primary">{t("sovereign", "soberano")}</span>
             </h1>
-            
+
             <div className="space-y-2 mb-10 max-w-lg">
               <p className="text-lg md:text-xl text-text-muted font-medium">
-                Datacenter, dedicated servers and cloud — engineered in Spain to power your AI workloads.
+                {t(
+                  "Datacenter, dedicated servers and cloud — engineered in Spain to power your AI workloads.",
+                  "Datacenter, servidores dedicados y cloud — diseñados en España para potenciar tus cargas de IA."
+                )}
               </p>
               <p className="text-base text-text-muted/80 italic">
                 {t(
                   "Datacenter, servidores dedicados y cloud — diseñados en España para tu IA.",
-                  "Datacenter, servidores dedicados y cloud — diseñados en España para tu IA."
+                  "Datacenter, dedicated servers and cloud — engineered in Spain for your AI."
                 )}
               </p>
             </div>
-            
+
             <div className="flex flex-wrap items-center gap-4">
               <Button variant="default" size="lg" className="rounded-full shadow-lg group">
-                Explore solutions
+                {t("Explore solutions", "Explorar soluciones")}
                 <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button variant="outline" size="lg" className="rounded-full bg-white/50 backdrop-blur-sm border-border-base/60">
-                Tour the DC
+                {t("Tour the DC", "Visita el DC")}
               </Button>
             </div>
           </div>
@@ -67,7 +70,7 @@ export function Hero() {
              {/* Abstract Floating Badges */}
              <div className="absolute top-20 left-10 md:left-20 z-20 animate-[bounce_8s_infinite] shadow-xl">
                <Badge className="bg-bg-light border border-border-base text-text-base shadow-sm py-1 px-3">
-                 DC AI · MADRID · &lt;12 ms latency · Tier III+
+                 {t("DC AI · MADRID · <12 ms latency · Tier III+", "DC IA · MADRID · <12 ms de latencia · Tier III+")}
                </Badge>
              </div>
              
@@ -96,7 +99,7 @@ export function Hero() {
           <span className="hidden sm:inline">·</span>
           <span>ENS Alto</span>
           <span className="hidden sm:inline">·</span>
-          <span>100% renewable</span>
+          <span>{t("100% renewable", "100% renovable")}</span>
           <span className="hidden sm:inline">·</span>
           <span>AS210882</span>
         </div>

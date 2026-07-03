@@ -13,7 +13,7 @@ interface LanguageContextProps {
 const LanguageContext = createContext<LanguageContextProps | undefined>(undefined)
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [lang, setLang] = useState<Language>("en")
+  const [lang, setLang] = useState<Language>("es")
 
   // Function to translate based on current language
   // If no esText is provided, it falls back to enText

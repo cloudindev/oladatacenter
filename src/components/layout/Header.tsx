@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 type MenuKey = "products" | "company" | null
 
 export function Header() {
-  const { lang, setLang, t } = useLanguage()
+  const { t } = useLanguage()
   const [menu, setMenu] = React.useState<MenuKey>(null)
   const open = menu !== null
 
@@ -42,18 +42,18 @@ export function Header() {
               open ? "bg-white" : "bg-[rgba(10,10,10,0.55)] backdrop-blur-xl"
             )}
           >
-            <Link href="/" className="flex items-center gap-1.5 pl-1.5 pr-3">
-              <span className={cn("font-bold tracking-tight text-base transition-colors", open ? "text-neutral-900" : "text-white")}>
-                OLA
-              </span>
-              <span
+            <Link href="/" className="flex items-center pl-1.5 pr-3">
+              <Image
+                src="/ola-logo.png?v=2"
+                alt="OLA Datacenter"
+                width={1082}
+                height={378}
+                priority
                 className={cn(
-                  "text-[10px] font-bold border rounded px-1 py-0.5 transition-colors",
-                  open ? "text-neutral-500 border-neutral-300" : "text-white/60 border-white/30"
+                  "h-[18px] w-auto transition-[filter] duration-300",
+                  open && "invert hue-rotate-180"
                 )}
-              >
-                DC
-              </span>
+              />
             </Link>
 
             <nav className="hidden md:flex items-center gap-0.5">
@@ -175,28 +175,8 @@ export function Header() {
           </div>
         </div>
 
-        {/* Right pill: language toggle + login + CTA */}
+        {/* Right pill: login + CTA */}
         <div className="flex items-center gap-2 h-[52px] px-2 rounded-2xl bg-white/90 backdrop-blur-xl shadow-lg">
-          <div
-            className="relative flex items-center bg-neutral-100 border border-neutral-200 rounded-full p-0.5 cursor-pointer select-none"
-            onClick={() => setLang(lang === "en" ? "es" : "en")}
-          >
-            <div
-              className={cn(
-                "absolute top-0.5 bottom-0.5 w-[32px] bg-white rounded-full shadow-sm transition-transform duration-300 ease-in-out",
-                lang === "es" ? "translate-x-[32px]" : "translate-x-0"
-              )}
-            />
-            <div className="relative z-10 flex text-[10px] font-bold uppercase tracking-wide">
-              <span className={cn("w-[32px] text-center py-1 transition-colors duration-300", lang === "en" ? "text-neutral-900" : "text-neutral-400")}>
-                EN
-              </span>
-              <span className={cn("w-[32px] text-center py-1 transition-colors duration-300", lang === "es" ? "text-neutral-900" : "text-neutral-400")}>
-                ES
-              </span>
-            </div>
-          </div>
-
           <Link
             href="/login"
             className="hidden sm:block text-sm font-medium text-neutral-500 hover:text-neutral-900 transition-colors px-1"

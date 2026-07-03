@@ -4,108 +4,221 @@ import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
-import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
+
+type MenuKey = "products" | "company" | null
 
 export function Header() {
   const { lang, setLang, t } = useLanguage()
+  const [menu, setMenu] = React.useState<MenuKey>(null)
+  const open = menu !== null
+
+  const navItem = (key: Exclude<MenuKey, null>, label: string) => (
+    <button
+      onMouseEnter={() => setMenu(key)}
+      className={cn(
+        "flex items-center gap-1.5 px-3.5 h-9 rounded-lg text-sm font-medium transition-colors duration-200",
+        open
+          ? menu === key
+            ? "bg-neutral-900 text-white"
+            : "text-neutral-500 hover:text-neutral-900"
+          : "text-white/80 hover:text-white"
+      )}
+    >
+      {label}
+      <span className={cn("text-xs transition-opacity", open && menu === key ? "opacity-70" : "opacity-40")}>+</span>
+    </button>
+  )
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border-base/10 bg-white/95 backdrop-blur-xl">
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <Image 
-            src="/ola-datacenter-logo.jpg" 
-            alt="OLA Datacenter" 
-            width={140} 
-            height={40} 
-            className="h-8 w-auto object-contain rounded-sm"
-          />
-          <span className="text-bg-dark/50 font-medium text-sm border border-bg-dark/20 rounded px-1.5 py-0.5">DC</span>
-        </Link>
+    <header className="fixed top-4 inset-x-0 z-50 flex justify-center pointer-events-none px-4">
+      <div className="flex items-stretch gap-2 pointer-events-auto">
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-bg-dark/80 h-full">
-          {/* Products & Solutions Mega Menu */}
-          <div className="group/navItem h-full flex items-center">
-            <Link href="/products" className="hover:text-primary transition-colors flex items-center gap-1">
-              {t("Products & Solutions", "Productos y Soluciones")}
-              <svg className="w-4 h-4 opacity-50 group-hover/navItem:rotate-180 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+        {/* Left pill: logo + nav, expands into mega panel on hover */}
+        <div className="relative" onMouseLeave={() => setMenu(null)}>
+          <div
+            className={cn(
+              "relative z-10 flex items-center gap-0.5 h-[52px] px-2.5 rounded-2xl transition-colors duration-300",
+              open ? "bg-white" : "bg-[rgba(10,10,10,0.55)] backdrop-blur-xl"
+            )}
+          >
+            <Link href="/" className="flex items-center gap-1.5 pl-1.5 pr-3">
+              <span className={cn("font-bold tracking-tight text-base transition-colors", open ? "text-neutral-900" : "text-white")}>
+                OLA
+              </span>
+              <span
+                className={cn(
+                  "text-[10px] font-bold border rounded px-1 py-0.5 transition-colors",
+                  open ? "text-neutral-500 border-neutral-300" : "text-white/60 border-white/30"
+                )}
+              >
+                DC
+              </span>
             </Link>
-            
-            {/* Mega Menu Dropdown */}
-            <div className="absolute top-[64px] left-0 w-full bg-white/95 backdrop-blur-2xl border-b border-border-base/10 opacity-0 invisible group-hover/navItem:opacity-100 group-hover/navItem:visible transition-all duration-300 shadow-xl">
-              <div className="container mx-auto px-4 py-8">
-                <div className="grid grid-cols-3 gap-12">
-                  {/* Column 1 - Datacenter */}
-                  <div>
-                    <h4 className="text-bg-dark font-semibold mb-4 text-xs tracking-wider uppercase opacity-40">{t("Datacenter", "Datacenter")}</h4>
-                    <ul className="space-y-4">
-                      <li><Link href="/datacenter/colocation" className="text-bg-dark/70 hover:text-primary transition-colors flex flex-col"><span className="font-medium text-base">{t("Colocation", "Colocation")}</span></Link></li>
-                      <li><Link href="/datacenter/on-premise" className="text-bg-dark/70 hover:text-primary transition-colors flex flex-col"><span className="font-medium text-base">{t("On-premise Cloud", "Cloud On-premise")}</span></Link></li>
-                      <li><Link href="/datacenter/ai-servers" className="text-bg-dark/70 hover:text-primary transition-colors flex flex-col"><span className="font-medium text-base">{t("AI Servers", "Servidores IA")}</span></Link></li>
-                      <li><Link href="/datacenter/bare-metal" className="text-bg-dark/70 hover:text-primary transition-colors flex flex-col"><span className="font-medium text-base">{t("Bare metal", "Bare metal")}</span></Link></li>
-                      <li><Link href="/datacenter/hosting" className="text-bg-dark/70 hover:text-primary transition-colors flex flex-col"><span className="font-medium text-base">{t("Hosting", "Hosting")}</span></Link></li>
-                    </ul>
-                  </div>
-                  {/* Column 2 - AI Cloud */}
-                  <div>
-                    <h4 className="text-bg-dark font-semibold mb-4 text-xs tracking-wider uppercase opacity-40">{t("AI Cloud", "Cloud IA")}</h4>
-                    <ul className="space-y-4">
-                      <li><Link href="/cloud/build" className="text-bg-dark/70 hover:text-primary transition-colors flex flex-col"><span className="font-medium text-base">{t("Build", "Construcción")}</span></Link></li>
-                      <li><Link href="/cloud/compute" className="text-bg-dark/70 hover:text-primary transition-colors flex flex-col"><span className="font-medium text-base">{t("Compute", "Cómputo")}</span></Link></li>
-                      <li><Link href="/cloud/storage" className="text-bg-dark/70 hover:text-primary transition-colors flex flex-col"><span className="font-medium text-base">{t("Storage", "Almacenamiento")}</span></Link></li>
-                      <li><Link href="/cloud/database" className="text-bg-dark/70 hover:text-primary transition-colors flex flex-col"><span className="font-medium text-base">{t("Databases", "Bases de datos")}</span></Link></li>
-                    </ul>
-                  </div>
-                  {/* Column 3 - Banner */}
-                  <div className="bg-bg-light p-6 rounded-xl border border-border-base/20 relative overflow-hidden group/featured flex flex-col justify-end min-h-[200px]">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-transparent opacity-50 group-hover/featured:opacity-100 transition-opacity duration-500" />
-                    <div className="relative z-10">
-                      <h4 className="text-bg-dark font-semibold mb-2 text-xl">{t("Managed solutions", "Soluciones gestionadas")}</h4>
-                      <p className="text-sm text-bg-dark/60 mb-4 leading-relaxed">{t("Let our experts design, build, and operate your critical infrastructure so you can focus on innovation.", "Deja que nuestros expertos diseñen, construyan y operen tu infraestructura crítica para que puedas centrarte en innovar.")}</p>
-                      <Link href="/cloud/managed" className="text-sm font-medium text-primary hover:text-primary-hover inline-flex items-center gap-1 transition-colors">
-                        {t("Explore services", "Explorar servicios")} <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-                      </Link>
-                    </div>
-                  </div>
+
+            <nav className="hidden md:flex items-center gap-0.5">
+              {navItem("products", t("Products", "Productos"))}
+              {navItem("company", t("Company", "Empresa"))}
+              <Link
+                href="/datacenter"
+                onMouseEnter={() => setMenu(null)}
+                className={cn(
+                  "px-3.5 h-9 flex items-center rounded-lg text-sm font-medium transition-colors duration-200",
+                  open ? "text-neutral-500 hover:text-neutral-900" : "text-white/80 hover:text-white"
+                )}
+              >
+                {t("Datacenter", "Datacenter")}
+              </Link>
+              <Link
+                href="/resources"
+                onMouseEnter={() => setMenu(null)}
+                className={cn(
+                  "px-3.5 h-9 flex items-center rounded-lg text-sm font-medium transition-colors duration-200",
+                  open ? "text-neutral-500 hover:text-neutral-900" : "text-white/80 hover:text-white"
+                )}
+              >
+                {t("Resources", "Recursos")}
+              </Link>
+            </nav>
+          </div>
+
+          {/* Mega panel */}
+          <div
+            className={cn(
+              "absolute -top-2 -left-2 w-[calc(100vw-2rem)] max-w-[820px] bg-white rounded-[24px] shadow-2xl border border-black/5 pt-[68px] px-4 pb-4 transition-all duration-300 origin-top-left",
+              open ? "opacity-100 scale-100 visible" : "opacity-0 scale-[0.98] invisible"
+            )}
+          >
+            {menu === "products" && (
+              <div className="grid grid-cols-1 md:grid-cols-[220px_1fr_1fr] gap-6 p-4">
+                <div className="relative rounded-xl overflow-hidden min-h-[210px] hidden md:block">
+                  <Image src="/ola-ai-datacenter.jpg" alt="OLA AI Datacenter" fill className="object-cover" />
+                </div>
+                <div>
+                  <h4 className="text-neutral-400 font-semibold mb-3 text-[11px] tracking-[0.15em] uppercase">
+                    {t("Datacenter", "Datacenter")}
+                  </h4>
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/datacenter/colocation", en: "Colocation", es: "Colocation" },
+                      { href: "/datacenter/on-premise", en: "On-premise Cloud", es: "Cloud On-premise" },
+                      { href: "/datacenter/ai-servers", en: "AI Servers", es: "Servidores IA" },
+                      { href: "/datacenter/bare-metal", en: "Bare metal", es: "Bare metal" },
+                      { href: "/datacenter/hosting", en: "Hosting", es: "Hosting" },
+                    ].map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className="block px-2 py-1.5 -mx-2 rounded-lg text-[15px] font-medium text-neutral-800 hover:bg-neutral-100 transition-colors"
+                        >
+                          {t(item.en, item.es)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-neutral-400 font-semibold mb-3 text-[11px] tracking-[0.15em] uppercase">
+                    {t("AI Cloud", "Cloud IA")}
+                  </h4>
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/cloud/build", en: "Build", es: "Construcción" },
+                      { href: "/cloud/compute", en: "Compute", es: "Cómputo" },
+                      { href: "/cloud/storage", en: "Storage", es: "Almacenamiento" },
+                      { href: "/cloud/database", en: "Databases", es: "Bases de datos" },
+                      { href: "/cloud/managed", en: "Managed solutions", es: "Soluciones gestionadas" },
+                    ].map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className="block px-2 py-1.5 -mx-2 rounded-lg text-[15px] font-medium text-neutral-800 hover:bg-neutral-100 transition-colors"
+                        >
+                          {t(item.en, item.es)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
-            </div>
-          </div>
-          <Link href="/company/about" className="hover:text-primary transition-colors">{t("Company", "Empresa")}</Link>
-        </nav>
+            )}
 
-        {/* Right Actions */}
-        <div className="flex items-center gap-6">
-          
-          {/* Sliding Language Toggle */}
-          <div className="relative flex items-center bg-gray-100 border border-gray-200 rounded-full p-1 cursor-pointer" onClick={() => setLang(lang === "en" ? "es" : "en")}>
-            <div 
+            {menu === "company" && (
+              <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 p-4">
+                <div className="relative rounded-xl overflow-hidden min-h-[180px] hidden md:block">
+                  <Image src="/ola-datacenter-hero.jpg" alt="OLA Datacenter" fill className="object-cover" />
+                </div>
+                <div>
+                  <h4 className="text-neutral-400 font-semibold mb-3 text-[11px] tracking-[0.15em] uppercase">
+                    {t("Company", "Empresa")}
+                  </h4>
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/company/about", en: "About us", es: "Sobre nosotros" },
+                      { href: "/company/sustainability", en: "Sustainability", es: "Sostenibilidad" },
+                      { href: "/company/news", en: "News", es: "Noticias" },
+                      { href: "/contact", en: "Contact", es: "Contacto" },
+                    ].map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          href={item.href}
+                          className="block px-2 py-1.5 -mx-2 rounded-lg text-[15px] font-medium text-neutral-800 hover:bg-neutral-100 transition-colors"
+                        >
+                          {t(item.en, item.es)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Right pill: language toggle + login + CTA */}
+        <div className="flex items-center gap-2 h-[52px] px-2 rounded-2xl bg-white/90 backdrop-blur-xl shadow-lg">
+          <div
+            className="relative flex items-center bg-neutral-100 border border-neutral-200 rounded-full p-0.5 cursor-pointer select-none"
+            onClick={() => setLang(lang === "en" ? "es" : "en")}
+          >
+            <div
               className={cn(
-                "absolute top-1 bottom-1 w-[38px] bg-white rounded-full shadow-sm transition-transform duration-300 ease-in-out",
-                lang === "es" ? "translate-x-[34px]" : "translate-x-0"
-              )} 
+                "absolute top-0.5 bottom-0.5 w-[32px] bg-white rounded-full shadow-sm transition-transform duration-300 ease-in-out",
+                lang === "es" ? "translate-x-[32px]" : "translate-x-0"
+              )}
             />
-            <div className="relative z-10 flex text-xs font-bold uppercase tracking-wide">
-              <span className={cn("w-[34px] text-center transition-colors duration-300", lang === "en" ? "text-bg-dark" : "text-bg-dark/40")}>
+            <div className="relative z-10 flex text-[10px] font-bold uppercase tracking-wide">
+              <span className={cn("w-[32px] text-center py-1 transition-colors duration-300", lang === "en" ? "text-neutral-900" : "text-neutral-400")}>
                 EN
               </span>
-              <span className={cn("w-[34px] text-center transition-colors duration-300", lang === "es" ? "text-bg-dark" : "text-bg-dark/40")}>
+              <span className={cn("w-[32px] text-center py-1 transition-colors duration-300", lang === "es" ? "text-neutral-900" : "text-neutral-400")}>
                 ES
               </span>
             </div>
           </div>
-          
-          <Link href="/login" className="hidden sm:block text-sm font-medium text-bg-dark/70 hover:text-bg-dark transition-colors">
+
+          <Link
+            href="/login"
+            className="hidden sm:block text-sm font-medium text-neutral-500 hover:text-neutral-900 transition-colors px-1"
+          >
             {t("Log in", "Entrar")}
           </Link>
-          
-          <Link href="/contact">
-            <Button variant="primary" className="rounded-full shadow-sm">
-              {t("Talk to us →", "Habla con nosotros →")}
-            </Button>
+
+          <Link href="/contact" className="group flex items-stretch h-9">
+            <span className="flex items-center bg-neutral-900 text-white text-sm font-semibold px-4 rounded-l-lg transition-colors group-hover:bg-neutral-800">
+              {t("Talk to us", "Habla con nosotros")}
+            </span>
+            <span className="flex items-center justify-center w-9 bg-neutral-900 text-white rounded-r-lg border-l border-white/15 transition-colors group-hover:bg-neutral-800">
+              <svg
+                className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </span>
           </Link>
         </div>
       </div>

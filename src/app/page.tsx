@@ -1,8 +1,8 @@
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 
-// V2 Sections (Light Theme)
-import { HeroV2 } from "@/components/sections/HeroV2"
+// V3 Hero (interactive, Raft-style)
+import { HeroV3 } from "@/components/sections/HeroV3"
 import { ArchitectureSection } from "@/components/sections/ArchitectureSection"
 import { HardwareSectionV2 } from "@/components/sections/HardwareSectionV2"
 import { SolutionsSection } from "@/components/sections/SolutionsSection"
@@ -18,8 +18,8 @@ export default function Home() {
     <>
       <Header />
       <main className="flex-1 bg-bg-light">
-        {/* NEW V2 DESIGN SECTIONS */}
-        <HeroV2 />
+        {/* NEW V3 HERO */}
+        <HeroV3 />
         <ArchitectureSection />
         <HardwareSectionV2 />
         <SolutionsSection />

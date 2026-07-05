@@ -7,10 +7,11 @@ import { useLanguage } from "@/context/LanguageContext"
 
 // Rotating words shown after "for" / "para"
 const WORDS = [
-  { en: "training.", es: "entrenamiento." },
-  { en: "inference.", es: "inferencia." },
-  { en: "sovereign data.", es: "datos soberanos." },
-  { en: "next-gen.", es: "nueva generación." },
+  { en: "agents", es: "agentes" },
+  { en: "inference", es: "inferencia" },
+  { en: "training", es: "training" },
+  { en: "RAG", es: "RAG" },
+  { en: "MLOps", es: "MLOps" },
 ]
 
 // Headline gradient, same as raft.ai (golden sweep from bottom-left into near-black)
@@ -30,19 +31,17 @@ export function HeroV3() {
   const frameRef = useRef<HTMLElement>(null)
   const sectionRef = useRef<HTMLDivElement>(null)
   const glowRef = useRef<HTMLDivElement>(null)
-  const bgRef = useRef<HTMLDivElement>(null)
   const rulerRef = useRef<HTMLSpanElement>(null)
 
   const [wordIndex, setWordIndex] = useState(0)
   const [wordVisible, setWordVisible] = useState(true)
   const [wordWidth, setWordWidth] = useState<number | null>(null)
 
-  // Cursor-following glow + subtle background parallax, spring-smoothed with rAF
+  // Cursor-following glow, spring-smoothed with rAF
   useEffect(() => {
     const section = sectionRef.current
     const glow = glowRef.current
-    const bg = bgRef.current
-    if (!section || !glow || !bg) return
+    if (!section || !glow) return
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     if (reduced) return
@@ -71,11 +70,6 @@ export function HeroV3() {
       current.x += (target.x - current.x) * 0.08
       current.y += (target.y - current.y) * 0.08
       glow.style.transform = `translate(${current.x - 330}px, ${current.y - 330}px)`
-
-      const rect = section.getBoundingClientRect()
-      const nx = current.x / rect.width - 0.5
-      const ny = current.y / rect.height - 0.5
-      bg.style.transform = `scale(1.08) translate(${nx * -18}px, ${ny * -12}px)`
 
       raf = requestAnimationFrame(loop)
     }
@@ -135,8 +129,8 @@ export function HeroV3() {
         ref={sectionRef}
         className="relative h-[calc(100vh-30px)] min-h-[660px] rounded-[21px] overflow-hidden flex flex-col justify-between"
       >
-        {/* Background image with parallax */}
-        <div ref={bgRef} className="absolute inset-0 will-change-transform scale-[1.08]">
+        {/* Background image */}
+        <div className="absolute inset-0">
           <Image
             src="/hero1.jpg"
             alt="OLA Datacenter"
@@ -175,7 +169,7 @@ export function HeroV3() {
             <span style={headlineGradient} className="block">
               {t("AI Cloud", "AI Cloud")}
             </span>
-            <span style={headlineGradient} className="block">
+            <span style={headlineGradient} className="block -mt-[0.16em]">
               {t("for", "para")}{" "}
               <span
                 className="inline-flex overflow-hidden align-bottom transition-[width] duration-500 ease-out"

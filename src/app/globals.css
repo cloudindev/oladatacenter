@@ -171,11 +171,11 @@ h1, h2, h3 {
 /* Variante clara: bloque blanco + chip oscuro (CTA secundario sobre imagen) */
 .ola-btn[data-variant="light"] {
   --bt-bg: #ffffff;
-  --bt-bg-h: #cef79e;
+  --bt-bg-h: #dcd9cb; /* ocre claro (hover), en lugar del verde menta */
   --bt-fg: #222f30;
   --bt-fg-h: #222f30;
   --blob: #222f30;
-  --blob-h: #cef79e;
+  --blob-h: #dcd9cb;
   --arrow-n: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%23fff' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
   --arrow-h: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%23222F30' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
 }

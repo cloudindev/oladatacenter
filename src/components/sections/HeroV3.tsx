@@ -5,9 +5,14 @@ import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
 import { ArrowCta } from "@/components/ui/ArrowCta"
 
-// Headline colour: solid charcoal token, as on integratedbio.com
+// Headline gradient (original look): golden sweep from bottom-left into near-black
 const headlineColor: React.CSSProperties = {
-  color: "var(--ag-sys-color-text-light)",
+  backgroundImage:
+    "radial-gradient(98% 164% at -5.4% 124.2%, rgb(255, 200, 102) 0%, rgb(141, 114, 67) 40%, rgb(62, 48, 24) 77%, rgb(19, 21, 23) 100%)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  color: "transparent",
   paddingBottom: "0.12em",
 }
 
@@ -127,8 +132,8 @@ export function HeroV3() {
         />
 
         {/* Headline block */}
-        <div className="relative z-10 px-6 pt-28 md:px-14 md:pt-36">
-          <h1 className="text-[13vw] sm:text-7xl lg:text-[6.5rem] font-light tracking-[-0.05em] leading-[0.98]">
+        <div className="relative z-10 px-6 pt-36 md:px-14 md:pt-52">
+          <h1 className="text-[13vw] sm:text-7xl lg:text-[6.5rem] font-medium tracking-[-0.05em] leading-[0.98]">
             <span style={headlineColor} className="block">
               Edge Green
             </span>

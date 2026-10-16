@@ -135,7 +135,7 @@ export function Header() {
         <Link
           href="/"
           aria-label="OLA Datacenter"
-          className={cn("absolute left-0 top-0 h-[52px] flex items-center px-4 rounded-lg pointer-events-auto", PILL_GLASS)}
+          className={cn("absolute left-0 top-0 h-[52px] flex items-center pointer-events-auto")}
         >
           <Image
             src="/ola-logo.png?v=2"
@@ -143,7 +143,7 @@ export function Header() {
             width={1082}
             height={378}
             priority
-            className="h-[18px] w-auto invert hue-rotate-180"
+            className="h-[24px] w-auto invert hue-rotate-180"
           />
         </Link>
 

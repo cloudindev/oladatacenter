@@ -18,7 +18,7 @@ import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
-import { RollButton } from "@/components/ui/RollButton"
+import { ArrowCta } from "@/components/ui/ArrowCta"
 import { cn } from "@/lib/utils"
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
@@ -283,9 +283,23 @@ export function Header() {
             )}
 
             {menu === "solutions" && (
-              <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 p-4 max-w-xl">
-                <div className="relative rounded-lg overflow-hidden min-h-[190px] hidden md:block">
-                  <Image src="/solutions-menu.jpg" alt="OLA Cloud Addons" fill className="object-cover" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
+                <div>
+                  {panelHeading(
+                    "/cloud/compute",
+                    t("Servers", "Servidores"),
+                    t(
+                      "Cloud servers ready in minutes, for any workload",
+                      "Servidores cloud listos en minutos, para cualquier carga de trabajo"
+                    )
+                  )}
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/cloud/compute", en: "Cloud VPS servers", es: "Servidores VPS Cloud" },
+                      { href: "/cloud/compute", en: "Windows VPS servers", es: "Servidores VPS Windows" },
+                      { href: "/cloud/compute", en: "Dedicated VPS servers", es: "Servidores VPS Dedicados" },
+                    ].map(panelLink)}
+                  </ul>
                 </div>
                 <div>
                   {panelHeading(
@@ -339,7 +353,7 @@ export function Header() {
             >
               {t("Log in", "Entrar")}
             </Link>
-            <RollButton href="/contact" label={t("Talk to us", "Habla con nosotros")} className="!h-10" />
+            <ArrowCta href="/contact">{t("Talk to us", "Habla con nosotros")}</ArrowCta>
           </div>
         </div>
       </div>

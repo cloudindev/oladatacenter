@@ -285,7 +285,7 @@ export function Header() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4">
                 <div>
                   {panelHeading(
-                    "/cloud/compute",
+                    "/datacenter/bare-metal",
                     t("Servers", "Servidores"),
                     t(
                       "Cloud servers ready in minutes, for any workload",
@@ -297,7 +297,6 @@ export function Header() {
                       { href: "/cloud/compute", en: "Cloud VPS servers", es: "Servidores VPS Cloud" },
                       { href: "/cloud/compute", en: "Windows VPS servers", es: "Servidores VPS Windows" },
                       { href: "/cloud/compute", en: "Dedicated VPS servers", es: "Servidores VPS Dedicados" },
-                      { href: "/datacenter/bare-metal", en: "Bare metal", es: "Bare metal" },
                     ].map(panelLink)}
                   </ul>
                 </div>

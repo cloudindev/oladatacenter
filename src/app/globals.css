@@ -136,3 +136,162 @@ h1, h2, h3 {
     visibility: hidden;
   }
 }
+
+/*
+ * Arrow CTA — replica de `.u-btn--1` de integratedbio.com.
+ * Anatomía: [bloque con esquina curva SVG] + [chip trapecio SVG con flecha].
+ * Hover (0.6s, cubic-bezier(.25,1,.5,1)):
+ *  - bloque: fondo/texto se invierten, hueco 16→12px y padding-right 8→14px
+ *  - chip: escala .875 (origen derecha) y cambia de color
+ *  - flecha: la actual sale por la derecha y entra otra desde la izquierda
+ * Solo se animan transform / background-position / fill / color (barato).
+ */
+.ola-btn {
+  --bt-bg: #222f30;
+  --bt-bg-h: #cef79e;
+  --bt-fg: #ffffff;
+  --bt-fg-h: #222f30;
+  --blob: #cef79e;
+  --blob-h: #222f30;
+  --arrow-n: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%23222F30' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
+  --arrow-h: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%23fff' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
+  --dur: 0.6s;
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+
+  display: inline-flex;
+  align-items: stretch;
+  height: 48px;
+  position: relative;
+  cursor: pointer;
+  text-decoration: none;
+  width: fit-content;
+  user-select: none;
+}
+
+/* Variante clara: bloque blanco + chip oscuro (CTA secundario sobre imagen) */
+.ola-btn[data-variant="light"] {
+  --bt-bg: #ffffff;
+  --bt-bg-h: #cef79e;
+  --bt-fg: #222f30;
+  --bt-fg-h: #222f30;
+  --blob: #222f30;
+  --blob-h: #cef79e;
+  --arrow-n: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%23fff' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
+  --arrow-h: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%23222F30' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
+}
+
+.ola-btn svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.ola-btn svg path {
+  transition: fill var(--dur) var(--ease);
+}
+
+.ola-btn__label {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--bt-bg);
+  color: var(--bt-fg);
+  border-radius: 12px 0 0 12px;
+  font-family: var(--font-mono);
+  font-size: max(0.75rem, min(calc(0.75rem + 0.002 * (100vw - 27.5rem)), 0.875rem));
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin-right: 16px;
+  padding: 8px 8px 8px 20px;
+  transition-property: background-color, color, margin-inline-end, padding-right;
+  transition-duration: var(--dur);
+  transition-timing-function: var(--ease);
+}
+
+.ola-btn__corner {
+  position: absolute;
+  top: 0;
+  right: -16px;
+  bottom: 0;
+  width: 18px;
+  height: 100%;
+  display: block;
+}
+
+.ola-btn__corner svg path {
+  fill: var(--bt-bg);
+}
+
+.ola-btn__icon {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  padding: 10px;
+  width: 51px;
+  height: 100%;
+  transform: scale(1);
+  transform-origin: center right;
+  transition: transform var(--dur) var(--ease);
+}
+
+.ola-btn__icon::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 4px;
+  width: calc(100% - 4px);
+  height: 100%;
+  z-index: 2;
+  background-image: var(--arrow-h), var(--arrow-n);
+  background-repeat: no-repeat;
+  background-size: 10px 10px;
+  background-position: center left -150%, center left 50%;
+  transition: background-position var(--dur) var(--ease);
+}
+
+.ola-btn__icon svg path {
+  fill: var(--blob);
+}
+
+.ola-btn:hover .ola-btn__label,
+.ola-btn:focus-visible .ola-btn__label {
+  background-color: var(--bt-bg-h);
+  color: var(--bt-fg-h);
+  margin-right: 12px;
+  padding-right: 14px;
+}
+
+.ola-btn:hover .ola-btn__corner svg path,
+.ola-btn:focus-visible .ola-btn__corner svg path {
+  fill: var(--bt-bg-h);
+}
+
+.ola-btn:hover .ola-btn__icon,
+.ola-btn:focus-visible .ola-btn__icon {
+  transform: scale(0.875);
+}
+
+.ola-btn:hover .ola-btn__icon::before,
+.ola-btn:focus-visible .ola-btn__icon::before {
+  background-position: center left 50%, center left 150%;
+}
+
+.ola-btn:hover .ola-btn__icon svg path,
+.ola-btn:focus-visible .ola-btn__icon svg path {
+  fill: var(--blob-h);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ola-btn__label,
+  .ola-btn__icon,
+  .ola-btn__icon::before,
+  .ola-btn svg path {
+    transition-duration: 0.01s;
+  }
+}

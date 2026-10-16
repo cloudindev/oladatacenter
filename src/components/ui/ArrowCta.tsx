@@ -2,79 +2,61 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { cn } from "@/lib/utils"
 
 // ─── 1. Interfaces ──────────────────────────────────────────────────────────
 export interface ArrowCtaProps {
   href: string
   children: React.ReactNode
-  /** dark: charcoal slab + mint chip (default). light: white slab + charcoal chip. */
+  /** dark: bloque oscuro + chip menta (por defecto). light: bloque blanco + chip oscuro. */
   variant?: "dark" | "light"
-  size?: "md" | "lg"
   className?: string
 }
 
-// ─── 2. Styles (design tokens only) ─────────────────────────────────────────
-const SLAB = {
-  dark: "bg-bg-dark text-text-dark",
-  light: "bg-surface-light text-text-base",
-} as const
-
-const CHIP = {
-  dark: "bg-primary text-bg-dark",
-  light: "bg-bg-dark text-primary",
-} as const
-
-const HEIGHT = { md: "h-10", lg: "h-12" } as const
-const CHIP_SIZE = { md: "w-10", lg: "w-12" } as const
-
-// Slanted right edge on the slab, like integratedbio.com's "DISCOVER OUR COMPANY".
-const SLANT: React.CSSProperties = {
-  clipPath: "polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%)",
-}
+// ─── 2. Styles ──────────────────────────────────────────────────────────────
+// Todo el estilo y la animación viven en globals.css (`.ola-btn*`), porque
+// dependen de pseudo-elementos (::before con la flecha) y de `fill` de SVG,
+// que no se pueden expresar bien con utilidades de Tailwind.
 
 // ─── 3/4. Component + render ────────────────────────────────────────────────
 /**
- * IntegratedBio-style call to action: a mono-uppercase slab with a slanted
- * edge followed by a detached square arrow chip. On hover the chip slides
- * right and the arrow nudges. Pure CSS transitions — no JS cost per frame.
+ * CTA con flecha: réplica de `.u-btn--1` de integratedbio.com.
+ * Rendimiento: solo se animan transform, background-position, fill y color
+ * (sin layout thrash); no hay JS por frame.
+ * A11y: los SVG son decorativos (aria-hidden) y el foco por teclado dispara
+ * la misma animación que el hover (:focus-visible).
  */
-export function ArrowCta({ href, children, variant = "dark", size = "md", className }: ArrowCtaProps) {
+export function ArrowCta({ href, children, variant = "dark", className }: ArrowCtaProps) {
   return (
-    <Link href={href} className={cn("group inline-flex items-stretch gap-1", HEIGHT[size], className)}>
-      <span
-        style={SLANT}
-        className={cn(
-          "label-mono flex items-center pl-5 pr-7 rounded-l-md transition-colors duration-300",
-          SLAB[variant]
-        )}
-      >
+    <Link href={href} data-variant={variant} className={["ola-btn", className].filter(Boolean).join(" ")}>
+      <span className="ola-btn__label">
         {children}
+        {/* Esquina curva que "cose" el bloque con el chip */}
+        <span className="ola-btn__corner" aria-hidden>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="48" fill="none" viewBox="0 0 18 48" preserveAspectRatio="none">
+            <path d="M0 0h5.63c7.808 0 13.536 7.337 11.642 14.91l-6.09 24.359A11.527 11.527 0 0 1 0 48V0Z" />
+          </svg>
+        </span>
       </span>
-      <span
-        aria-hidden
-        className={cn(
-          "flex items-center justify-center rounded-md -ml-2 transition-transform duration-300 ease-out group-hover:translate-x-1",
-          CHIP[variant],
-          CHIP_SIZE[size]
-        )}
-      >
-        <svg className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+      {/* Chip trapecio; la flecha se pinta con ::before */}
+      <i className="ola-btn__icon" aria-hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" width="51" height="48" fill="none" viewBox="0 0 51 48" preserveAspectRatio="none">
+          <path d="M6.728 9.09A12 12 0 0 1 18.369 0H39c6.627 0 12 5.373 12 12v24c0 6.627-5.373 12-12 12H12.37C4.561 48-1.167 40.663.727 33.09l6-24Z" />
         </svg>
-      </span>
+      </i>
     </Link>
   )
 }
 
 /*
  * ─── 5. Memoria ─────────────────────────────────────────────────────────────
- * Por qué: el CTA de integratedbio.com (bloque oscuro con borde inclinado +
- * chip menta separado) se repite en hero, header y secciones; centralizarlo
- * evita divergencias visuales.
+ * Por qué: la primera versión era una aproximación (chip desplazándose con
+ * `ease`). La real usa formas SVG, una curva cubic-bezier(.25,1,.5,1) de 0.6s
+ * y un intercambio de flechas por background-position; aquí se replica 1:1 a
+ * partir del CSS publicado en integratedbio.com.
  * Edge cases:
- *  - El clip-path recorta 8px del borde derecho, por eso pr-7 > pl-5 para que
- *    el texto quede ópticamente centrado.
- *  - El chip usa -ml-2 para encajar en el hueco del corte inclinado.
- *  - Contraste: menta #cef79e sobre charcoal #222f30 ≈ 11:1 (AAA).
+ *  - El label usa margin-right 16px (12px en hover) para dejar sitio a la
+ *    esquina absoluta (right:-16px); no quitar o se solapa con el chip.
+ *  - preserveAspectRatio="none" evita que el SVG se centre si cambia la altura.
+ *  - Lección aprendida: copiar el CSS real del sitio de referencia en lugar de
+ *    aproximar el efecto "a ojo".
  */

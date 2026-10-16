@@ -155,10 +155,10 @@ export function HeroV3() {
           </p>
 
           <div className="flex flex-wrap items-center gap-4">
-            <ArrowCta href="/products" size="lg">
+            <ArrowCta href="/products">
               {t("Explore solutions", "Explorar soluciones")}
             </ArrowCta>
-            <ArrowCta href="/contact" size="lg" variant="light">
+            <ArrowCta href="/contact" variant="light">
               {t("Talk to an expert", "Hablar con un experto")}
             </ArrowCta>
           </div>

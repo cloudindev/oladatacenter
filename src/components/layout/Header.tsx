@@ -129,7 +129,7 @@ export function Header() {
   }
 
   return (
-    <header className="fixed top-[29px] inset-x-0 z-50 pointer-events-none px-4 md:px-[44px]">
+    <header className="fixed top-[29px] inset-x-0 z-50 pointer-events-none px-4 md:px-[44px] [&_.label-mono]:!text-[12px]">
       <div className="relative flex justify-end md:justify-center">
         {/* Logo — pinned left, outside the morphing container */}
         <Link

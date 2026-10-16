@@ -143,7 +143,7 @@ export function Header() {
             width={1082}
             height={378}
             priority
-            className="h-[24px] w-auto invert hue-rotate-180"
+            className="h-[24px] w-auto"
           />
         </Link>
 

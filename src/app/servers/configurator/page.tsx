@@ -24,40 +24,40 @@ export default function Page() {
       <div className="flex-1 bg-bg-light">
         <div className="container mx-auto px-4 py-16 max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 bg-white rounded-2xl border border-border-base p-8 shadow-sm">
-              <h3 className="text-2xl font-bold text-text-base mb-8">{t("1. Choose Base Model", "1. Elige el Modelo Base")}</h3>
+            <div className="lg:col-span-2 bg-white rounded-lg border border-border-base p-8 shadow-sm">
+              <h3 className="text-2xl font-medium text-text-base mb-8">{t("1. Choose Base Model", "1. Elige el Modelo Base")}</h3>
               <div className="grid grid-cols-2 gap-4 mb-12">
-                <div className="border-2 border-primary rounded-xl p-4 cursor-pointer relative">
+                <div className="border-2 border-accent-ink rounded-xl p-4 cursor-pointer relative">
                   <div className="absolute top-4 right-4 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
                     <div className="w-2 h-2 bg-white rounded-full"></div>
                   </div>
-                  <h4 className="font-bold text-lg">OLADC C1</h4>
+                  <h4 className="font-medium text-lg">OLADC C1</h4>
                   <p className="text-sm text-text-muted mt-1">1U Compute Node</p>
                 </div>
                 <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer hover:border-gray-300">
-                  <h4 className="font-bold text-lg">OLADC AI1</h4>
+                  <h4 className="font-medium text-lg">OLADC AI1</h4>
                   <p className="text-sm text-text-muted mt-1">4U GPU Node</p>
                 </div>
               </div>
 
-              <h3 className="text-2xl font-bold text-text-base mb-6">{t("2. Memory (RAM)", "2. Memoria (RAM)")}</h3>
+              <h3 className="text-2xl font-medium text-text-base mb-6">{t("2. Memory (RAM)", "2. Memoria (RAM)")}</h3>
               <div className="grid grid-cols-3 gap-4 mb-12">
-                <div className="border-2 border-primary rounded-xl p-4 cursor-pointer text-center font-bold">192 GB</div>
+                <div className="border-2 border-accent-ink rounded-xl p-4 cursor-pointer text-center font-medium">192 GB</div>
                 <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer text-center hover:border-gray-300">384 GB</div>
                 <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer text-center hover:border-gray-300">768 GB</div>
               </div>
 
-              <h3 className="text-2xl font-bold text-text-base mb-6">{t("3. Primary Storage", "3. Almacenamiento Primario")}</h3>
+              <h3 className="text-2xl font-medium text-text-base mb-6">{t("3. Primary Storage", "3. Almacenamiento Primario")}</h3>
               <div className="grid grid-cols-2 gap-4">
-                <div className="border-2 border-primary rounded-xl p-4 cursor-pointer font-bold">2× 4TB U.3</div>
+                <div className="border-2 border-accent-ink rounded-xl p-4 cursor-pointer font-medium">2× 4TB U.3</div>
                 <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer hover:border-gray-300">4× 4TB U.3</div>
                 <div className="border-2 border-border-base rounded-xl p-4 cursor-pointer hover:border-gray-300">8× 4TB U.3</div>
               </div>
             </div>
 
             <div className="lg:col-span-1">
-              <div className="bg-surface-dark rounded-2xl border border-border-dark p-8 text-white sticky top-24">
-                <h3 className="text-xl font-bold mb-6">{t("Order Summary", "Resumen del Pedido")}</h3>
+              <div className="bg-surface-dark rounded-lg border border-border-dark p-8 text-white sticky top-24">
+                <h3 className="text-xl font-medium mb-6">{t("Order Summary", "Resumen del Pedido")}</h3>
                 <ul className="space-y-4 mb-8 text-sm">
                   <li className="flex justify-between border-b border-white/10 pb-3">
                     <span className="text-white/60">Base</span>
@@ -77,7 +77,7 @@ export default function Page() {
                   </li>
                 </ul>
 
-                <button className="w-full bg-primary text-bg-dark font-bold py-3 rounded-xl hover:bg-primary/90 transition-colors">
+                <button className="w-full bg-primary text-bg-dark font-medium py-3 rounded-xl hover:bg-primary/90 transition-colors">
                   {t("Checkout", "Finalizar Compra")}
                 </button>
               </div>

@@ -1,18 +1,27 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — IntegratedBio-inspired palette
+ * Source palette (integratedbio.com): dark-charcoal #222f30, soft-mint #cef79e,
+ * fresh-lime #a7e26e, off-white #f7f7f5, beige #e7e8e1, sage-mist #c9cbbe,
+ * deep-sea-green #445e5f, medium-gray #e4e3e3.
+ * Token NAMES are kept so every existing component re-themes automatically.
+ */
 :root {
-  /* Antigravity Design System Tokens */
-  --ag-sys-color-primary: #00FFC7;
-  --ag-sys-color-primary-hover: #00e5b3;
-  --ag-sys-color-background-light: #f4f8fb;
-  --ag-sys-color-background-dark: #0a0f1c;
+  --ag-sys-color-primary: #cef79e;          /* soft mint (accent on dark) */
+  --ag-sys-color-primary-hover: #a7e26e;    /* fresh lime */
+  --ag-sys-color-accent-ink: #445e5f;       /* deep sea green (accent on light, AA contrast) */
+  --ag-sys-color-background-light: #f7f7f5; /* off-white */
+  --ag-sys-color-background-dark: #222f30;  /* dark charcoal */
   --ag-sys-color-surface-light: #ffffff;
-  --ag-sys-color-surface-dark: #121a2f;
-  --ag-sys-color-text-light: #0f172a;
-  --ag-sys-color-text-dark: #f8fafc;
-  --ag-sys-color-text-muted: #64748b;
-  --ag-sys-color-border-light: #e2e8f0;
-  --ag-sys-color-border-dark: #1e293b;
+  --ag-sys-color-surface-beige: #e7e8e1;
+  --ag-sys-color-surface-dark: #2b3a3b;
+  --ag-sys-color-text-light: #222f30;
+  --ag-sys-color-text-dark: #f7f7f5;
+  --ag-sys-color-text-muted: #6b7475;
+  --ag-sys-color-text-sage: #c9cbbe;
+  --ag-sys-color-border-light: #e4e3e3;
+  --ag-sys-color-border-dark: #3a4b4c;
 
   --background: var(--ag-sys-color-background-light);
   --foreground: var(--ag-sys-color-text-light);
@@ -21,19 +30,25 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
+
   --color-primary: var(--ag-sys-color-primary);
   --color-primary-hover: var(--ag-sys-color-primary-hover);
+  --color-accent-ink: var(--ag-sys-color-accent-ink);
   --color-bg-light: var(--ag-sys-color-background-light);
   --color-bg-dark: var(--ag-sys-color-background-dark);
   --color-surface-light: var(--ag-sys-color-surface-light);
+  --color-surface-beige: var(--ag-sys-color-surface-beige);
   --color-surface-dark: var(--ag-sys-color-surface-dark);
   --color-border-base: var(--ag-sys-color-border-light);
   --color-border-inverse: var(--ag-sys-color-border-dark);
+  --color-border-dark: var(--ag-sys-color-border-dark);
+  --color-text-base: var(--ag-sys-color-text-light);
+  --color-text-dark: var(--ag-sys-color-text-dark);
   --color-text-muted: var(--ag-sys-color-text-muted);
+  --color-text-sage: var(--ag-sys-color-text-sage);
 
-  --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-sans: var(--font-manrope), Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-roboto-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 body {
@@ -44,10 +59,24 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Headings: light weight + tight tracking, as on integratedbio.com */
+h1, h2, h3 {
+  letter-spacing: -0.03em;
+}
+
 /* Custom Utilities */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* Mono uppercase label used for nav items, CTAs and section eyebrows */
+  .label-mono {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+    line-height: 1;
   }
 }
 

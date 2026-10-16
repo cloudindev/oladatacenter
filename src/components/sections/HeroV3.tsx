@@ -1,9 +1,9 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from "react"
-import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
+import { ArrowCta } from "@/components/ui/ArrowCta"
 
 // Rotating words shown after "for" / "para"
 const WORDS = [
@@ -14,14 +14,9 @@ const WORDS = [
   { en: "MLOps", es: "MLOps" },
 ]
 
-// Headline gradient, same as raft.ai (golden sweep from bottom-left into near-black)
+// Headline colour: solid charcoal token, as on integratedbio.com (replaces the former gold gradient)
 const headlineGradient: React.CSSProperties = {
-  backgroundImage:
-    "radial-gradient(98% 164% at -5.4% 124.2%, rgb(255, 200, 102) 0%, rgb(141, 114, 67) 40%, rgb(62, 48, 24) 77%, rgb(19, 21, 23) 100%)",
-  WebkitBackgroundClip: "text",
-  backgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  color: "transparent",
+  color: "var(--ag-sys-color-text-light)",
   paddingBottom: "0.12em",
 }
 
@@ -124,7 +119,7 @@ export function HeroV3() {
   const word = lang === "es" ? WORDS[wordIndex].es : WORDS[wordIndex].en
 
   return (
-    <section ref={frameRef} className="bg-[#F2F2F2] p-[15px]">
+    <section ref={frameRef} className="bg-[#f7f7f5] p-[15px]">
       <div
         ref={sectionRef}
         className="relative h-[calc(100vh-30px)] min-h-[660px] rounded-[21px] overflow-hidden flex flex-col justify-between"
@@ -158,14 +153,14 @@ export function HeroV3() {
           className="absolute top-0 left-0 w-[660px] h-[660px] rounded-full pointer-events-none opacity-0 transition-opacity duration-700 mix-blend-screen"
           style={{
             background:
-              "radial-gradient(50% 50%, rgba(0,255,199,0.32) 0%, rgba(0,255,199,0.14) 38%, rgba(0,255,199,0.05) 62%, transparent 75%)",
+              "radial-gradient(50% 50%, rgba(206,247,158,0.32) 0%, rgba(206,247,158,0.14) 38%, rgba(206,247,158,0.05) 62%, transparent 75%)",
             filter: "blur(32px)",
           }}
         />
 
         {/* Headline block */}
         <div className="relative z-10 px-6 pt-28 md:px-14 md:pt-36">
-          <h1 className="text-[13vw] sm:text-7xl lg:text-[6.5rem] font-medium tracking-[-0.05em] leading-[0.98]">
+          <h1 className="text-[13vw] sm:text-7xl lg:text-[6.5rem] font-light tracking-[-0.05em] leading-[0.98]">
             <span style={headlineGradient} className="block">
               {t("AI Cloud", "AI Cloud")}
             </span>
@@ -194,7 +189,7 @@ export function HeroV3() {
           <span
             ref={rulerRef}
             aria-hidden="true"
-            className="absolute invisible whitespace-nowrap text-[13vw] sm:text-7xl lg:text-[6.5rem] font-medium tracking-[-0.05em]"
+            className="absolute invisible whitespace-nowrap text-[13vw] sm:text-7xl lg:text-[6.5rem] font-light tracking-[-0.05em]"
           >
             {word}
           </span>
@@ -202,7 +197,7 @@ export function HeroV3() {
 
         {/* Bottom block: subheadline + CTAs */}
         <div className="relative z-10 px-6 pb-10 md:px-14 md:pb-14">
-          <p className="text-lg md:text-xl text-[#191918] max-w-xl mb-8 leading-relaxed font-normal">
+          <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-normal">
             {t("Sovereign infrastructure. Extreme performance.", "Infraestructura soberana. Rendimiento extremo.")}{" "}
             <br className="hidden sm:block" />
             {t(
@@ -212,43 +207,12 @@ export function HeroV3() {
           </p>
 
           <div className="flex flex-wrap items-center gap-4">
-            {/* Primary: dark glass pill whose white chip expands to fill on hover */}
-            <Link
-              href="/products"
-              className="group relative flex items-center h-14 pl-7 pr-1 rounded-lg overflow-clip bg-[rgba(25,25,24,0.4)] backdrop-blur-[20px]"
-            >
-              <span
-                aria-hidden
-                className="absolute inset-y-1 right-1 left-[calc(100%-52px)] rounded-md bg-[#f9f9f6] transition-[left] duration-[420ms] ease-out group-hover:left-1"
-              />
-              <span className="relative text-sm font-normal text-[#f9f9f6] mr-10 transition-colors duration-300 group-hover:text-[#191918]">
-                {t("Explore solutions", "Explorar soluciones")}
-              </span>
-              <span className="relative w-12 h-12 flex items-center justify-center text-[#333333]">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </span>
-            </Link>
-
-            {/* Secondary: frosted glass pill with warm chip, same expanding hover */}
-            <Link
-              href="/contact"
-              className="group relative flex items-center h-14 pl-7 pr-1 rounded-lg overflow-clip bg-white/[0.03] backdrop-blur-[20px]"
-            >
-              <span
-                aria-hidden
-                className="absolute inset-y-1 right-1 left-[calc(100%-52px)] rounded-md bg-[#dcd9cb] transition-[left] duration-[420ms] ease-out group-hover:left-1"
-              />
-              <span className="relative text-sm font-normal text-[#191918] mr-10">
-                {t("Talk to an expert", "Hablar con un experto")}
-              </span>
-              <span className="relative w-12 h-12 flex items-center justify-center text-[#333333]">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </span>
-            </Link>
+            <ArrowCta href="/products" size="lg">
+              {t("Explore solutions", "Explorar soluciones")}
+            </ArrowCta>
+            <ArrowCta href="/contact" size="lg" variant="light">
+              {t("Talk to an expert", "Hablar con un experto")}
+            </ArrowCta>
           </div>
         </div>
       </div>

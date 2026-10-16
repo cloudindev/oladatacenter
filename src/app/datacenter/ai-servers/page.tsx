@@ -28,7 +28,7 @@ export default function Page() {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-sm font-medium mb-6">
                 {t("POWERED BY NVIDIA", "IMPULSADO POR NVIDIA")}
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight">
+              <h2 className="text-4xl md:text-5xl font-normal mb-6 tracking-tight">
                 {t("Train LLMs faster than ever before.", "Entrena LLMs más rápido que nunca.")}
               </h2>
               <p className="text-white/70 text-lg mb-8 leading-relaxed">
@@ -36,41 +36,41 @@ export default function Page() {
               </p>
               <div className="grid grid-cols-2 gap-6">
                 <div>
-                  <div className="text-3xl font-bold text-primary mb-1">3.2 Tbps</div>
+                  <div className="text-3xl font-medium text-primary mb-1">3.2 Tbps</div>
                   <div className="text-sm text-white/50">{t("Bisection Bandwidth", "Ancho de banda de bisección")}</div>
                 </div>
                 <div>
-                  <div className="text-3xl font-bold text-primary mb-1">32 petaFLOPS</div>
+                  <div className="text-3xl font-medium text-primary mb-1">32 petaFLOPS</div>
                   <div className="text-sm text-white/50">{t("FP8 Deep Learning", "Aprendizaje profundo FP8")}</div>
                 </div>
               </div>
             </div>
             
-            <div className="bg-[#111827] rounded-3xl border border-white/10 shadow-2xl overflow-hidden flex flex-col relative">
+            <div className="bg-[#2b3a3b] rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col relative">
               <div className="absolute top-4 right-4 z-10">
-                <span className="bg-primary text-[#111827] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">{t("Most Popular", "Más Popular")}</span>
+                <span className="bg-primary text-[#2b3a3b] text-xs font-medium px-3 py-1 rounded-full uppercase tracking-wider">{t("Most Popular", "Más Popular")}</span>
               </div>
               
-              <div className="w-full bg-[#f8f9fa] border-b border-white/10">
+              <div className="w-full bg-[#e7e8e1] border-b border-white/10">
                 <img src="/oladc-serverai.jpg" alt="OLADC AI1" className="w-full h-auto object-cover mix-blend-multiply" />
               </div>
 
               <div className="p-8 flex flex-col flex-grow">
-                <h3 className="text-2xl font-bold mb-2">OLADC AI1</h3>
+                <h3 className="text-2xl font-medium mb-2">OLADC AI1</h3>
                 <p className="text-white/50 text-sm mb-8">{t("Optimized for distributed training", "Optimizado para entrenamiento distribuido")}</p>
                 
                 <ul className="space-y-4 flex-grow">
                   <li className="flex justify-between border-b border-white/10 pb-2">
                     <span className="text-white/70">CPU</span>
-                    <span className="font-semibold text-right">EPYC 4585PX</span>
+                    <span className="font-medium text-right">EPYC 4585PX</span>
                   </li>
                   <li className="flex justify-between border-b border-white/10 pb-2">
                     <span className="text-white/70">RAM</span>
-                    <span className="font-semibold text-right">192GB</span>
+                    <span className="font-medium text-right">192GB</span>
                   </li>
                   <li className="flex justify-between border-b border-white/10 pb-2">
                     <span className="text-white/70">{t("Storage", "Almacenamiento")}</span>
-                    <span className="font-semibold text-right">2x4TB + 4 GPU</span>
+                    <span className="font-medium text-right">2x4TB + 4 GPU</span>
                   </li>
                 </ul>
               </div>

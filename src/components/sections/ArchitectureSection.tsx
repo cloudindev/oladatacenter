@@ -214,11 +214,11 @@ export function ArchitectureSection() {
             
             {/* LEFT COLUMN */}
             <div className="w-full lg:w-1/3 flex flex-col items-start z-10">
-              <div className="flex items-center gap-3 text-xs font-bold tracking-widest text-bg-dark/40 mb-8">
+              <div className="flex items-center gap-3 text-xs font-medium tracking-widest text-bg-dark/40 mb-8">
                 <span className="w-1.5 h-1.5 rounded-full bg-bg-dark/40"></span>
                 01 / 02 / 03
               </div>
-              <h2 className="text-4xl lg:text-5xl font-bold tracking-tight text-bg-dark leading-[1.1] mb-6">
+              <h2 className="text-4xl lg:text-5xl font-normal tracking-tight text-bg-dark leading-[1.1] mb-6">
                 {t("A platform.", "Una plataforma.")}<br />
                 {t("Every layer", "Cada capa")}<br />
                 {t("purpose-built.", "diseñada a medida.")}
@@ -227,7 +227,7 @@ export function ArchitectureSection() {
                 {t("From sovereign infrastructure to intelligent applications, every layer is engineered to deliver performance, security and control at scale.", "Desde infraestructura soberana hasta aplicaciones inteligentes, cada capa está diseñada para ofrecer rendimiento, seguridad y control a escala.")}
               </p>
               <Link href="/products">
-                <Button variant="outline" className="border-border-base/20 text-bg-dark hover:bg-bg-dark/5 rounded-full px-8 py-6 text-sm font-semibold transition-all">
+                <Button variant="outline" className="border-border-base/20 text-bg-dark hover:bg-bg-dark/5 rounded-full px-8 py-6 text-sm font-medium transition-all">
                   {t("See how it works →", "Ver cómo funciona →")}
                 </Button>
               </Link>
@@ -303,7 +303,7 @@ export function ArchitectureSection() {
                       <Icon size={20} strokeWidth={1.5} />
                     </div>
                     <div>
-                      <h3 className={`font-semibold text-base transition-colors duration-300 ${isActive ? layer.color : 'text-bg-dark'}`}>
+                      <h3 className={`font-medium text-base transition-colors duration-300 ${isActive ? layer.color : 'text-bg-dark'}`}>
                         {t(layer.titleEn, layer.titleEs)}
                       </h3>
                       <p className="text-bg-dark/60 text-sm mt-1 leading-relaxed">

@@ -33,12 +33,12 @@ export function HeroV2() {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 mb-6">
-            <span className="text-primary text-xs font-bold tracking-widest uppercase">
+            <span className="text-primary label-mono">
               {t("✦ Built for cloud. Design for AI", "✦ Creado para la nube. Diseñado para IA")}
             </span>
           </div>
           
-          <h1 className="text-5xl sm:text-6xl lg:text-[5rem] font-bold tracking-tight text-bg-dark leading-[1.05] mb-8">
+          <h1 className="text-5xl sm:text-6xl lg:text-[5rem] font-normal tracking-tight text-bg-dark leading-[1.05] mb-8">
             {t("The AI cloud", "La nube de IA")} <br />
             {t("infrastructure", "e infraestructura")} <br />
             {t("for next-gen.", "de nueva generación.")}
@@ -51,12 +51,12 @@ export function HeroV2() {
           
           <div className="flex flex-wrap items-center gap-4">
             <Link href="/products">
-              <Button className="bg-[#0a0f1c] text-white hover:bg-[#0a0f1c]/90 rounded-[4px] px-8 py-6 text-sm font-semibold shadow-sm transition-all hover:scale-105">
+              <Button className="bg-[#222f30] text-white hover:bg-[#222f30]/90 rounded-[4px] px-8 py-6 text-sm font-medium shadow-sm transition-all hover:scale-105">
                 {t("Explore solutions →", "Explorar soluciones →")}
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="outline" className="bg-transparent border-[#0a0f1c]/20 text-[#0a0f1c] hover:bg-[#0a0f1c]/5 rounded-[4px] px-8 py-6 text-sm font-semibold transition-all">
+              <Button variant="outline" className="bg-transparent border-[#222f30]/20 text-[#222f30] hover:bg-[#222f30]/5 rounded-[4px] px-8 py-6 text-sm font-medium transition-all">
                 {t("Talk to an expert", "Hablar con un experto")}
               </Button>
             </Link>

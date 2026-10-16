@@ -2,7 +2,9 @@
 
 import React from "react"
 import { useLanguage } from "@/context/LanguageContext"
+import { SectionLabel } from "@/components/ui/SectionLabel"
 
+// ─── Interfaces ─────────────────────────────────────────────────────────────
 interface PageHeroProps {
   categoryEn: string
   categoryEs: string
@@ -12,36 +14,33 @@ interface PageHeroProps {
   subtitleEs: string
 }
 
-export function PageHero({
-  categoryEn,
-  categoryEs,
-  titleEn,
-  titleEs,
-  subtitleEn,
-  subtitleEs,
-}: PageHeroProps) {
+// ─── Component ──────────────────────────────────────────────────────────────
+/**
+ * Interior page header in the integratedbio.com style: off-white canvas,
+ * mono eyebrow with lime square, large light-weight charcoal headline and a
+ * muted lead paragraph. Shared by every interior route.
+ */
+export function PageHero({ categoryEn, categoryEs, titleEn, titleEs, subtitleEn, subtitleEs }: PageHeroProps) {
   const { t } = useLanguage()
 
   return (
-    <section className="bg-bg-dark pt-32 pb-24 border-b border-border-dark relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-bg-dark to-bg-dark pointer-events-none" />
-      </div>
-      
-      <div className="container mx-auto px-4 relative z-10 max-w-4xl">
-        <div className="text-primary text-xs font-bold tracking-widest uppercase mb-6">
-          {t(categoryEn, categoryEs)}
-        </div>
-        
-        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white leading-[1.1] mb-6">
+    <section className="bg-bg-light pt-44 pb-20 border-b border-border-base">
+      <div className="container mx-auto px-4 max-w-5xl">
+        <SectionLabel>{t(categoryEn, categoryEs)}</SectionLabel>
+
+        <h1 className="text-5xl md:text-7xl font-light tracking-[-0.04em] text-text-base leading-[1.02] mb-8">
           {t(titleEn, titleEs)}
         </h1>
-        
-        <p className="text-lg md:text-xl text-white/60 leading-relaxed max-w-2xl">
-          {t(subtitleEn, subtitleEs)}
-        </p>
+
+        <p className="text-lg md:text-xl text-text-muted leading-relaxed max-w-2xl">{t(subtitleEn, subtitleEs)}</p>
       </div>
     </section>
   )
 }
+
+/*
+ * ─── Memoria ────────────────────────────────────────────────────────────────
+ * Por qué: IntegratedBio presenta sus páginas sobre fondo claro con titulares
+ * finos; antes era un bloque azul oscuro con gradiente neón.
+ * Edge cases: pt-44 deja hueco para el header fijo (top 29px + 52px de alto).
+ */

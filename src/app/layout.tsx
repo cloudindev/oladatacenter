@@ -1,20 +1,27 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope, Roboto_Mono } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+/**
+ * Fonts mirror integratedbio.com: a geometric grotesk for text (their primary is
+ * Aspekta, not on Google Fonts — Manrope is the fallback they declare) and
+ * Roboto Mono for uppercase labels, nav items and CTAs.
+ */
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
-  title: "OLA DC — AI Cloud for what's sovereign",
+  title: "Edge Datacenter",
   description: "Datacenter, dedicated servers and sovereign AI cloud infrastructure engineered in Spain.",
 };
 
@@ -26,7 +33,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${manrope.variable} ${robotoMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bg-light text-text-base">
         <LanguageProvider>

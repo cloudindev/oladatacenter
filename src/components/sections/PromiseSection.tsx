@@ -16,7 +16,7 @@ export function PromiseSection() {
       <div className="container mx-auto px-4 relative z-10 max-w-5xl">
         <SectionLabel className="text-primary/80 mb-8">{t("THE OLA DC PROMISE", "LA PROMESA OLA DC")}</SectionLabel>
 
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-medium tracking-tight text-white mb-8 leading-tight">
+        <h2 className="text-3xl md:text-5xl lg:text-6xl font-normal tracking-tight text-white mb-8 leading-tight">
           {t("From enterprise AI to data sovereignty — ", "De la IA empresarial a la soberanía del dato — ")}
           <span className="text-primary italic">{t("your clouds, data and AI workloads", "tus clouds, datos y cargas de IA")}</span>
           {t(" work as one. Privately.", " funcionan como uno. En privado.")}

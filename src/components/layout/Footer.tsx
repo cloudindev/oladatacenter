@@ -25,7 +25,7 @@ export function Footer() {
   )
 
   return (
-    <footer className="bg-[#0d0d0d]">
+    <footer className="bg-[#1b2627]">
       {/* Pre-footer CTA */}
       <div className="container mx-auto px-6 pt-28 pb-24 flex flex-col items-center text-center">
         <p className="text-lg md:text-xl text-[#f9f9f6] max-w-2xl mb-10 leading-relaxed">
@@ -36,13 +36,13 @@ export function Footer() {
         </p>
         <Link
           href="/contact"
-          className="group relative flex items-center h-14 pl-7 pr-1 rounded-lg overflow-clip bg-[#191918] border border-white/10"
+          className="group relative flex items-center h-14 pl-7 pr-1 rounded-lg overflow-clip bg-[#222f30] border border-white/10"
         >
           <span
             aria-hidden
             className="absolute inset-y-1 right-1 left-[calc(100%-52px)] rounded-md bg-[#f9f9f6] transition-[left] duration-[420ms] ease-out group-hover:left-1"
           />
-          <span className="relative text-sm font-normal text-[#f9f9f6] mr-10 transition-colors duration-300 group-hover:text-[#191918]">
+          <span className="relative text-sm font-normal text-[#f9f9f6] mr-10 transition-colors duration-300 group-hover:text-[#222f30]">
             {t("Talk to an expert", "Contacta con un experto")}
           </span>
           <span className="relative w-12 h-12 flex items-center justify-center text-[#333333]">
@@ -71,7 +71,7 @@ export function Footer() {
 
           <div className="w-full max-w-xs border-t border-white/10 pt-6 flex flex-col gap-6">
             <div>
-              <div className="text-[11px] text-teal-400 mb-2 font-medium">{t("Build and deploy", "Construye y despliega")}</div>
+              <div className="text-[11px] text-primary mb-2 font-medium">{t("Build and deploy", "Construye y despliega")}</div>
               <Image src="/olacloud-logo.png" alt="OLA CLOUD" width={140} height={30} className="h-5 w-auto object-contain object-left" />
             </div>
             <div>
@@ -126,7 +126,7 @@ export function Footer() {
                   lang === "es" ? "translate-x-[32px]" : "translate-x-0"
                 )}
               />
-              <div className="relative z-10 flex text-[10px] font-bold uppercase tracking-wide">
+              <div className="relative z-10 flex text-[10px] font-medium uppercase tracking-wide">
                 <span className={cn("w-[32px] text-center py-1 transition-colors duration-300", lang === "en" ? "text-neutral-900" : "text-white/50")}>
                   EN
                 </span>

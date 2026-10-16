@@ -33,7 +33,7 @@ export function SolutionsSection() {
       title: t("RAG & Vector DB", "RAG & Vector DB"),
       description: t("Build knowledge applications with managed tools.", "Construye aplicaciones de conocimiento con herramientas gestionadas."),
       icon: (
-        <svg className="w-8 h-8 text-teal-500 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
+        <svg className="w-8 h-8 text-accent-ink mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="1.5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
         </svg>
       )
@@ -56,16 +56,16 @@ export function SolutionsSection() {
           
           {/* Left Text Column */}
           <div className="w-full lg:w-1/3 flex flex-col items-start pr-0 lg:pr-8">
-            <div className="text-primary text-xs font-bold tracking-widest uppercase mb-4">
+            <div className="text-accent-ink label-mono mb-4">
               {t("✦ OUR SOLUTIONS", "✦ NUESTRAS SOLUCIONES")}
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-bg-dark leading-[1.1] mb-6">
+            <h2 className="text-4xl md:text-5xl font-normal tracking-tight text-bg-dark leading-[1.1] mb-6">
               {t("AI Cloud", "Cloud IA")}<br />{t("for every scenario.", "para cada escenario.")}
             </h2>
             <p className="text-bg-dark/70 mb-8 leading-relaxed">
               {t("Managed services and tools to build, train and run AI with full control and performance.", "Servicios gestionados y herramientas para construir, entrenar y ejecutar IA con total control y rendimiento.")}
             </p>
-            <Link href="/cloud/ai" className="text-primary font-medium hover:text-primary-hover inline-flex items-center gap-1 transition-colors">
+            <Link href="/cloud/ai" className="text-accent-ink font-medium hover:text-bg-dark inline-flex items-center gap-1 transition-colors">
               {t("Explore AI Cloud", "Explorar Cloud IA")} <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </Link>
           </div>
@@ -75,7 +75,7 @@ export function SolutionsSection() {
             {solutions.map((item, index) => (
               <div key={index} className="flex flex-col">
                 {item.icon}
-                <h3 className="text-lg font-bold text-bg-dark mb-3">{item.title}</h3>
+                <h3 className="text-lg font-medium text-bg-dark mb-3">{item.title}</h3>
                 <p className="text-sm text-bg-dark/60 leading-relaxed">
                   {item.description}
                 </p>

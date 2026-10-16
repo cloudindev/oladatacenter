@@ -16,7 +16,7 @@ export function CloudSection() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
           <div className="max-w-2xl">
             <SectionLabel>03 · CLOUD</SectionLabel>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-text-base mb-4">
+            <h2 className="text-4xl md:text-5xl font-normal tracking-tight text-text-base mb-4">
               {t("From code to production in one git push.", "Del código a producción con un solo git push.")}
             </h2>
             <p className="text-lg text-text-muted">
@@ -26,7 +26,7 @@ export function CloudSection() {
               )}
             </p>
           </div>
-          <a href="#" className="text-teal-600 font-medium flex items-center hover:underline">
+          <a href="#" className="text-accent-ink font-medium flex items-center hover:underline">
              olacloud.es <ArrowRight className="w-4 h-4 ml-1" />
            </a>
         </div>
@@ -35,10 +35,10 @@ export function CloudSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
           
           {/* Main Tile (AI Cloud) */}
-          <div className="md:col-span-2 lg:col-span-2 bg-bg-dark border border-border-dark rounded-2xl p-8 flex flex-col justify-between hover:shadow-xl transition-shadow group">
+          <div className="md:col-span-2 lg:col-span-2 bg-bg-dark border border-border-dark rounded-lg p-8 flex flex-col justify-between hover:shadow-xl transition-shadow group">
             <div>
               <SectionLabel className="text-primary mb-2">PLATFORM</SectionLabel>
-              <h3 className="text-3xl font-bold text-white mb-4">AI Cloud</h3>
+              <h3 className="text-3xl font-medium text-white mb-4">AI Cloud</h3>
               <p className="text-text-muted mb-6 text-lg max-w-md">
                 {t(
                   "On-demand GPU, Train, fine-tune and serve LLMs and RAG — no infra plumbing required.",
@@ -59,47 +59,47 @@ export function CloudSection() {
           </div>
 
           {/* Small Tiles */}
-          <div className="bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
+          <div className="bg-white border border-border-base rounded-lg p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
             <div>
-               <Server className="w-6 h-6 text-teal-600 mb-4" />
-               <h4 className="font-bold text-text-base mb-2">{t("Compute", "Cómputo")}</h4>
+               <Server className="w-6 h-6 text-accent-ink mb-4" />
+               <h4 className="font-medium text-text-base mb-2">{t("Compute", "Cómputo")}</h4>
                <p className="text-sm text-text-muted">{t("Cloud servers with autoscaling + CI/CD.", "Servidores cloud con autoescalado + CI/CD.")}</p>
             </div>
           </div>
           
-          <div className="bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
+          <div className="bg-white border border-border-base rounded-lg p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
             <div>
-               <Database className="w-6 h-6 text-teal-600 mb-4" />
-               <h4 className="font-bold text-text-base mb-2">{t("Database", "Bases de datos")}</h4>
+               <Database className="w-6 h-6 text-accent-ink mb-4" />
+               <h4 className="font-medium text-text-base mb-2">{t("Database", "Bases de datos")}</h4>
                <p className="text-sm text-text-muted">{t("Managed PostgreSQL, Redis & Mongo.", "PostgreSQL, Redis y Mongo gestionados.")}</p>
             </div>
           </div>
 
-          <div className="bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
+          <div className="bg-white border border-border-base rounded-lg p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
             <div>
-               <Box className="w-6 h-6 text-teal-600 mb-4" />
-               <h4 className="font-bold text-text-base mb-2">{t("Storage", "Almacenamiento")}</h4>
+               <Box className="w-6 h-6 text-accent-ink mb-4" />
+               <h4 className="font-medium text-text-base mb-2">{t("Storage", "Almacenamiento")}</h4>
                <p className="text-sm text-text-muted">{t("S3 compatible object storage, archive and backup.", "Almacenamiento de objetos compatible con S3, archivo y backup.")}</p>
             </div>
           </div>
 
 
 
-          <div className="md:col-span-2 bg-white border border-border-base rounded-2xl p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
+          <div className="md:col-span-2 bg-white border border-border-base rounded-lg p-6 hover:shadow-md transition-shadow group flex flex-col justify-between">
             <div>
-               <Shield className="w-6 h-6 text-teal-600 mb-4" />
-               <div className="text-xs font-semibold text-teal-600 mb-1 uppercase">{t("PRIVATE CLOUD", "CLOUD PRIVADO")}</div>
-               <h4 className="font-bold text-text-base mb-2 text-lg">{t("Private Cloud", "Cloud Privado")}</h4>
+               <Shield className="w-6 h-6 text-accent-ink mb-4" />
+               <div className="text-xs font-medium text-accent-ink mb-1 uppercase">{t("PRIVATE CLOUD", "CLOUD PRIVADO")}</div>
+               <h4 className="font-medium text-text-base mb-2 text-lg">{t("Private Cloud", "Cloud Privado")}</h4>
                <p className="text-sm text-text-muted">{t("Dedicated tenancy. Your data stays in Spain — encrypted, isolated, audited.", "Tenencia dedicada. Tus datos permanecen en España — cifrados, aislados y auditados.")}</p>
             </div>
           </div>
 
-          <div className="bg-bg-dark border border-border-dark rounded-2xl p-6 hover:shadow-xl transition-shadow group flex flex-col justify-between relative overflow-hidden">
+          <div className="bg-bg-dark border border-border-dark rounded-lg p-6 hover:shadow-xl transition-shadow group flex flex-col justify-between relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-transparent pointer-events-none" />
             <div className="relative z-10">
                <GitBranch className="w-6 h-6 text-primary mb-4" />
-               <div className="text-xs font-semibold text-primary mb-1 uppercase">git push → live</div>
-               <h4 className="font-bold text-white mb-2 text-lg">{t("Serverless Deploy", "Despliegue Serverless")}</h4>
+               <div className="text-xs font-medium text-primary mb-1 uppercase">git push → live</div>
+               <h4 className="font-medium text-white mb-2 text-lg">{t("Serverless Deploy", "Despliegue Serverless")}</h4>
                <p className="text-sm text-text-muted">{t("Push from your repo. We build, scale and serve — globally in minutes.", "Haz push desde tu repo. Nosotros construimos, escalamos y servimos — global en minutos.")}</p>
             </div>
           </div>

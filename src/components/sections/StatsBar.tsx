@@ -5,7 +5,7 @@ export function StatsBar() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 divide-x divide-border-base/40 text-center md:text-left">
           
           <div className="pl-0 md:pl-8 first:pl-0">
-            <div className="text-4xl md:text-5xl font-bold tracking-tight text-text-base mb-2">
+            <div className="text-4xl md:text-5xl font-medium tracking-tight text-text-base mb-2">
               99.99<span className="text-2xl text-text-muted">%</span>
             </div>
             <div className="text-sm font-medium text-text-muted uppercase tracking-wider">
@@ -14,7 +14,7 @@ export function StatsBar() {
           </div>
 
           <div className="pl-4 md:pl-8">
-            <div className="text-4xl md:text-5xl font-bold tracking-tight text-text-base mb-2">
+            <div className="text-4xl md:text-5xl font-medium tracking-tight text-text-base mb-2">
               12<span className="text-2xl text-text-muted">ms</span>
             </div>
             <div className="text-sm font-medium text-text-muted uppercase tracking-wider">
@@ -23,7 +23,7 @@ export function StatsBar() {
           </div>
 
           <div className="pl-4 md:pl-8">
-            <div className="text-4xl md:text-5xl font-bold tracking-tight text-text-base mb-2">
+            <div className="text-4xl md:text-5xl font-medium tracking-tight text-text-base mb-2">
               132<span className="text-2xl text-text-muted">kW</span>
             </div>
             <div className="text-sm font-medium text-text-muted uppercase tracking-wider">
@@ -32,7 +32,7 @@ export function StatsBar() {
           </div>
 
           <div className="pl-4 md:pl-8 border-r-0">
-            <div className="text-4xl md:text-5xl font-bold tracking-tight text-text-base mb-2">
+            <div className="text-4xl md:text-5xl font-medium tracking-tight text-text-base mb-2">
               24<span className="text-2xl text-text-muted">/7</span>
             </div>
             <div className="text-sm font-medium text-text-muted uppercase tracking-wider">

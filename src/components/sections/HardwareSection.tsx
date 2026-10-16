@@ -65,8 +65,8 @@ export function HardwareSection() {
         
         {/* Header */}
         <div className="mb-16">
-          <SectionLabel className="text-teal-600">02 · HARDWARE</SectionLabel>
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-text-base mb-4">
+          <SectionLabel className="text-accent-ink">02 · HARDWARE</SectionLabel>
+          <h2 className="text-4xl md:text-5xl font-normal tracking-tight text-text-base mb-4">
             {t("The OLA server line.", "La línea de servidores OLA.")}
           </h2>
           <p className="text-lg text-text-muted">
@@ -80,7 +80,7 @@ export function HardwareSection() {
             <div 
               key={server.id} 
               className={cn(
-                "bg-bg-dark border rounded-2xl p-8 flex flex-col hover:shadow-xl transition-shadow",
+                "bg-bg-dark border rounded-lg p-8 flex flex-col hover:shadow-xl transition-shadow",
                 server.highlight ? "border-primary shadow-primary/10 shadow-lg" : "border-border-dark"
               )}
             >
@@ -91,7 +91,7 @@ export function HardwareSection() {
                 {server.new && <Badge variant="new">{t("NEW", "NUEVO")}</Badge>}
               </div>
 
-              <h3 className="text-2xl font-bold text-white mb-6">{server.title}</h3>
+              <h3 className="text-2xl font-medium text-white mb-6">{server.title}</h3>
 
               {/* Server Illustration */}
               <div className="mb-8 w-full h-16 bg-surface-dark border border-border-dark rounded flex items-center justify-center p-2 relative overflow-hidden">
@@ -104,7 +104,7 @@ export function HardwareSection() {
                   </div>
                   <div className="flex gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#1e293b]" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#3a4b4c]" />
                   </div>
                 </div>
               </div>

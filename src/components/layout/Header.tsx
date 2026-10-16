@@ -1,14 +1,48 @@
 "use client"
 
+/**
+ * Header — IntegratedBio-inspired navigation
+ *
+ * Layout: logo pinned to the left edge (own white chip), nav + actions centered.
+ * Style: frosted white pills, Roboto Mono uppercase items, charcoal active state,
+ * charcoal CTA with soft-mint arrow chip.
+ *
+ * Lecciones aprendidas:
+ *  - El logo PNG es blanco; sobre fondos claros se usa `invert hue-rotate-180`
+ *    para pasarlo a oscuro conservando el acento de color.
+ *  - El backdrop que "morfa" mide el contenedor central: el logo debe quedar
+ *    FUERA de ese contenedor o el panel se estiraría hasta el borde izquierdo.
+ */
+
 import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
+import { ArrowCta } from "@/components/ui/ArrowCta"
 import { cn } from "@/lib/utils"
 
+// ─── Interfaces ─────────────────────────────────────────────────────────────
 type MenuKey = "products" | "solutions" | "company"
 type ActiveState = MenuKey | "bare" | null
 
+interface PanelItem {
+  href: string
+  en: string
+  es: string
+  descEn?: string
+  descEs?: string
+}
+
+interface BackdropSize {
+  w: number
+  h: number
+}
+
+// ─── Styles ─────────────────────────────────────────────────────────────────
+const PILL_GLASS =
+  "bg-white/80 backdrop-blur-md border border-white/60 shadow-[0_4px_24px_rgba(34,47,48,0.08)]"
+
+// ─── Component ──────────────────────────────────────────────────────────────
 export function Header() {
   const { lang, t } = useLanguage()
   const [active, setActive] = React.useState<ActiveState>(null)
@@ -18,11 +52,14 @@ export function Header() {
   const containerRef = React.useRef<HTMLDivElement>(null)
   const pillRef = React.useRef<HTMLDivElement>(null)
   const contentRef = React.useRef<HTMLDivElement>(null)
-  const [backdrop, setBackdrop] = React.useState({ w: 0, h: 68 })
+  const [backdrop, setBackdrop] = React.useState<BackdropSize>({ w: 0, h: 68 })
 
-  // The white backdrop morphs: closed → sized like the left pill (invisible);
-  // hover on a bare item → stretches right to cover both pills;
-  // hover on a submenu item → also grows downward to fit the panel content.
+  /**
+   * The white backdrop morphs: closed → sized like the nav pill (invisible);
+   * hover on a bare item → stretches right to cover both pills;
+   * hover on a submenu item → also grows downward to fit the panel content.
+   * Perf: one layout read per hover change (not per frame); CSS does the tween.
+   */
   React.useLayoutEffect(() => {
     const container = containerRef.current
     const pill = pillRef.current
@@ -37,18 +74,17 @@ export function Header() {
 
   const navItem = (key: MenuKey, label: string) => (
     <button
+      type="button"
+      aria-expanded={menu === key}
       onMouseEnter={() => setActive(key)}
+      onFocus={() => setActive(key)}
       className={cn(
-        "flex items-center gap-1.5 px-3.5 h-9 rounded-md text-xs font-normal whitespace-nowrap transition-colors duration-200",
-        open
-          ? menu === key
-            ? "bg-neutral-900 text-white"
-            : "text-neutral-500 hover:text-neutral-900"
-          : "text-white/80 hover:text-white"
+        "label-mono flex items-center gap-1.5 px-3.5 h-9 rounded-md whitespace-nowrap transition-colors duration-200",
+        menu === key ? "bg-bg-dark text-text-dark" : "text-text-base/70 hover:text-text-base"
       )}
     >
       {label}
-      <span className={cn("text-xs transition-opacity", open && menu === key ? "opacity-70" : "opacity-40")}>+</span>
+      <span className={cn("transition-opacity", menu === key ? "opacity-70" : "opacity-40")}>+</span>
     </button>
   )
 
@@ -56,232 +92,214 @@ export function Header() {
     <Link
       href={href}
       onMouseEnter={() => setActive("bare")}
-      className={cn(
-        "px-3.5 h-9 flex items-center rounded-md text-xs font-normal whitespace-nowrap transition-colors duration-200",
-        open ? "text-neutral-500 hover:text-neutral-900" : "text-white/80 hover:text-white"
-      )}
+      className="label-mono px-3.5 h-9 flex items-center rounded-md whitespace-nowrap text-text-base/70 hover:text-text-base transition-colors duration-200"
     >
       {label}
     </Link>
   )
 
-  const panelLink = (item: { href: string; en: string; es: string; descEn?: string; descEs?: string }) => (
+  const panelLink = (item: PanelItem) => (
     <li key={item.href + item.en}>
       <Link
         href={item.href}
-        className="block px-2 py-1.5 -mx-2 rounded-md text-sm font-normal text-neutral-800 hover:bg-neutral-100 transition-colors"
+        className="block px-2 py-1.5 -mx-2 rounded-md text-sm text-text-base hover:bg-surface-beige transition-colors"
       >
         {t(item.en, item.es)}
         {item.descEn && (
-          <span className="block text-[11px] leading-snug text-neutral-400 mt-0.5">
-            {t(item.descEn, item.descEs)}
-          </span>
+          <span className="block text-[11px] leading-snug text-text-muted mt-0.5">{t(item.descEn, item.descEs)}</span>
         )}
       </Link>
     </li>
   )
 
-  return (
-    <header className="fixed top-[29px] inset-x-0 z-50 flex justify-center pointer-events-none px-4">
-      <div
-        ref={containerRef}
-        className="relative flex items-stretch gap-2 pointer-events-auto"
-        onMouseLeave={() => setActive(null)}
-      >
-        {/* Morphing white backdrop (stretches right on hover, and down for submenus) */}
-        <div
-          aria-hidden
-          className={cn(
-            "absolute -top-2 -left-2 bg-white rounded-2xl shadow-2xl border border-black/5 pointer-events-none transition-all duration-[420ms] ease-[cubic-bezier(0.32,0.72,0,1)]",
-            open ? "opacity-100" : "opacity-0"
-          )}
-          style={{ width: backdrop.w, height: backdrop.h }}
-        />
+  const panelHeading = (href: string | null, title: string, desc: string) => {
+    const inner = (
+      <>
+        <h4 className="label-mono text-text-muted group-hover/ph:text-text-base transition-colors">{title}</h4>
+        <span className="block text-[11px] leading-snug text-text-muted mt-1.5">{desc}</span>
+      </>
+    )
+    return href ? (
+      <Link href={href} className="group/ph block mb-3 px-2 py-1.5 -mx-2 rounded-md hover:bg-surface-beige transition-colors">
+        {inner}
+      </Link>
+    ) : (
+      <div className="mb-3 px-2 py-1.5 -mx-2">{inner}</div>
+    )
+  }
 
-        {/* Left pill: logo + nav (transparent over the white backdrop when open) */}
-        <div
-          ref={pillRef}
-          className={cn(
-            "relative z-10 flex items-center gap-0.5 h-[52px] px-2.5 rounded-lg overflow-clip transition-colors duration-300",
-            open ? "bg-transparent" : "bg-[rgba(8,8,6,0.55)] backdrop-blur-[7px]"
-          )}
+  return (
+    <header className="fixed top-[29px] inset-x-0 z-50 pointer-events-none px-4 md:px-[44px]">
+      <div className="relative flex justify-end md:justify-center">
+        {/* Logo — pinned left, outside the morphing container */}
+        <Link
+          href="/"
+          aria-label="OLA Datacenter"
+          className={cn("absolute left-0 top-0 h-[52px] flex items-center px-4 rounded-lg pointer-events-auto", PILL_GLASS)}
         >
-          {/* Animated aurora shimmer (hidden while open) */}
-          <span
+          <Image
+            src="/ola-logo.png?v=2"
+            alt="OLA Datacenter"
+            width={1082}
+            height={378}
+            priority
+            className="h-[18px] w-auto invert hue-rotate-180"
+          />
+        </Link>
+
+        {/* Centered group: nav pill + actions pill (share the morphing backdrop) */}
+        <div
+          ref={containerRef}
+          className="relative flex items-stretch gap-2 pointer-events-auto"
+          onMouseLeave={() => setActive(null)}
+        >
+          {/* Morphing white backdrop */}
+          <div
             aria-hidden
             className={cn(
-              "nav-aurora absolute inset-0 -z-10 pointer-events-none transition-opacity duration-300",
-              open ? "opacity-0" : "opacity-100"
+              "absolute -top-2 -left-2 bg-white rounded-xl shadow-2xl border border-black/5 pointer-events-none transition-all duration-[420ms] ease-[cubic-bezier(0.32,0.72,0,1)]",
+              open ? "opacity-100" : "opacity-0"
             )}
+            style={{ width: backdrop.w, height: backdrop.h }}
           />
-          <Link href="/" className="flex items-center pl-1.5 pr-3">
-            <Image
-              src="/ola-logo.png?v=2"
-              alt="OLA Datacenter"
-              width={1082}
-              height={378}
-              priority
-              className={cn(
-                "h-[18px] w-auto transition-[filter] duration-300",
-                open && "invert hue-rotate-180"
-              )}
-            />
-          </Link>
 
-          <nav className="hidden md:flex items-center gap-0.5">
+          {/* Nav pill */}
+          <nav
+            ref={pillRef}
+            aria-label={t("Main", "Principal")}
+            className={cn(
+              "relative z-10 hidden md:flex items-center gap-0.5 h-[52px] px-2 rounded-lg transition-colors duration-300",
+              open ? "bg-transparent border border-transparent" : PILL_GLASS
+            )}
+          >
             {navItem("products", t("Private AI Cloud", "Cloud IA privado"))}
             {navItem("solutions", t("Solutions", "Soluciones"))}
-            {bareLink("/datacenter", t("Datacenter", "Datacenter"))}
+            {bareLink("/datacenter/colocation", t("Datacenter", "Datacenter"))}
             {navItem("company", t("Company", "Empresa"))}
             {bareLink("/resources", t("Resources", "Recursos"))}
           </nav>
-        </div>
 
-        {/* Panel content (fades in below the nav; height feeds the backdrop) */}
-        <div
-          ref={contentRef}
-          className={cn(
-            "absolute top-[52px] -left-2 -right-2 pt-2 px-4 pb-4 transition-opacity duration-300",
-            menu ? "opacity-100 delay-100" : "opacity-0 pointer-events-none"
-          )}
-        >
-          {menu === "products" && (
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_220px] gap-6 p-4">
-              <div>
-                <Link
-                  href="/cloud/ai"
-                  className="group/aicloud block mb-3 px-2 py-1.5 -mx-2 rounded-md cursor-pointer hover:bg-neutral-100 transition-colors"
-                >
-                  <h4 className="text-neutral-500 font-normal text-[11px] tracking-[0.15em] uppercase group-hover/aicloud:text-neutral-900 transition-colors">
-                    AI Cloud
-                  </h4>
-                  <span className="block text-[11px] leading-snug text-neutral-400 mt-0.5 group-hover/aicloud:text-neutral-600 transition-colors">
-                    {t(
+          {/* Panel content (fades in below the nav; height feeds the backdrop) */}
+          <div
+            ref={contentRef}
+            className={cn(
+              "absolute top-[52px] -left-2 -right-2 pt-2 px-4 pb-4 transition-opacity duration-300",
+              menu ? "opacity-100 delay-100" : "opacity-0 pointer-events-none"
+            )}
+          >
+            {menu === "products" && (
+              <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_220px] gap-6 p-4">
+                <div>
+                  {panelHeading(
+                    "/cloud/ai",
+                    "AI Cloud",
+                    t(
                       "Get your AI to market faster with advanced GPU clusters",
                       "Lleva tu IA al mercado más rápido con clústeres GPU avanzados"
-                    )}
-                  </span>
-                </Link>
-                <ul className="space-y-1">
-                  {[
-                    { href: "/datacenter/ai-servers", en: "GPU Servers", es: "Servidores GPU" },
-                    { href: "/datacenter/bare-metal", en: "Bare metal", es: "Bare metal" },
-                  ].map(panelLink)}
-                </ul>
-              </div>
-              <div>
-                <Link
-                  href="/datacenter/on-premise"
-                  className="group/onprem block mb-3 px-2 py-1.5 -mx-2 rounded-md cursor-pointer hover:bg-neutral-100 transition-colors"
-                >
-                  <h4 className="text-neutral-500 font-normal text-[11px] tracking-[0.15em] uppercase group-hover/onprem:text-neutral-900 transition-colors">
-                    On-Prem Cloud
-                  </h4>
-                  <span className="block text-[11px] leading-snug text-neutral-400 mt-0.5 group-hover/onprem:text-neutral-600 transition-colors">
-                    {t(
+                    )
+                  )}
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/datacenter/ai-servers", en: "GPU Servers", es: "Servidores GPU" },
+                      { href: "/datacenter/bare-metal", en: "Bare metal", es: "Bare metal" },
+                    ].map(panelLink)}
+                  </ul>
+                </div>
+                <div>
+                  {panelHeading(
+                    "/datacenter/on-premise",
+                    "On-Prem Cloud",
+                    t(
                       "Complete solution to deploy the cloud on your own premises",
                       "Solución completa para desplegar el cloud en tus propias instalaciones"
-                    )}
-                  </span>
-                </Link>
-                <ul className="space-y-1">
-                  {[
-                    { href: "/products/ai-box", en: "AI box", es: "AI box" },
-                  ].map(panelLink)}
-                </ul>
-              </div>
-              <div className="relative rounded-xl overflow-hidden min-h-[210px] hidden md:block">
-                <Image src="/ola-ai-datacenter.jpg" alt="OLA AI Datacenter" fill className="object-cover" />
-              </div>
-            </div>
-          )}
-
-          {menu === "solutions" && (
-            <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 p-4 max-w-xl">
-              <div className="relative rounded-xl overflow-hidden min-h-[190px] hidden md:block">
-                <Image src="/solutions-menu.jpg" alt="OLA Cloud Addons" fill className="object-cover" />
-              </div>
-              <div>
-              <div className="mb-3 px-2 py-1.5 -mx-2">
-                <h4 className="text-neutral-500 font-normal text-[11px] tracking-[0.15em] uppercase">
-                  Cloud Addons
-                </h4>
-                <span className="block text-[11px] leading-snug text-neutral-400 mt-0.5">
-                  {t(
-                    "Adapt your cloud to your business needs",
-                    "Adapta tu nube a las necesidades de tu empresa"
+                    )
                   )}
-                </span>
+                  <ul className="space-y-1">
+                    {[{ href: "/products", en: "AI box", es: "AI box" }].map(panelLink)}
+                  </ul>
+                </div>
+                <div className="relative rounded-lg overflow-hidden min-h-[210px] hidden md:block">
+                  <Image src="/ola-ai-datacenter.jpg" alt="OLA AI Datacenter" fill className="object-cover" />
+                </div>
               </div>
-              <ul className="space-y-1">
-                {[
-                  { href: "/cloud/managed", en: "Managed services", es: "Servicios gestionados" },
-                  { href: "/solutions/disaster-recovery", en: "Disaster Recovery & Backups", es: "Disaster Recovery y Backups" },
-                  { href: "/solutions/georeplicacion", en: "Synchronous geo-replication", es: "Georeplicación síncrona" },
-                  { href: "/solutions/migracion", en: "Cloud migration", es: "Migración a la nube" },
-                ].map(panelLink)}
-              </ul>
-              </div>
-            </div>
-          )}
+            )}
 
-          {menu === "company" && (
-            <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 p-4">
-              <div className="relative rounded-xl overflow-hidden min-h-[180px] hidden md:block">
-                <Image src="/ola-datacenter-hero.jpg" alt="OLA Datacenter" fill className="object-cover" />
+            {menu === "solutions" && (
+              <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 p-4 max-w-xl">
+                <div className="relative rounded-lg overflow-hidden min-h-[190px] hidden md:block">
+                  <Image src="/solutions-menu.jpg" alt="OLA Cloud Addons" fill className="object-cover" />
+                </div>
+                <div>
+                  {panelHeading(
+                    null,
+                    "Cloud Addons",
+                    t("Adapt your cloud to your business needs", "Adapta tu nube a las necesidades de tu empresa")
+                  )}
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/cloud/managed", en: "Managed services", es: "Servicios gestionados" },
+                      { href: "/cloud/storage", en: "Disaster Recovery & Backups", es: "Disaster Recovery y Backups" },
+                      { href: "/cloud/database", en: "Synchronous geo-replication", es: "Georeplicación síncrona" },
+                      { href: "/cloud/build", en: "Cloud migration", es: "Migración a la nube" },
+                    ].map(panelLink)}
+                  </ul>
+                </div>
               </div>
-              <div>
-                <h4 className="text-neutral-400 font-normal mb-3 text-[11px] tracking-[0.15em] uppercase">
-                  {t("Company", "Empresa")}
-                </h4>
-                <ul className="space-y-1">
-                  {[
-                    { href: "/company/about", en: "About us", es: "Sobre nosotros" },
-                    { href: "/company/sustainability", en: "Sustainability", es: "Sostenibilidad" },
-                    { href: "/company/news", en: "News", es: "Noticias" },
-                    { href: "/contact", en: "Contact", es: "Contacto" },
-                  ].map(panelLink)}
-                </ul>
-              </div>
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* Right pill: frosted glass when closed; blends into the white backdrop when open */}
-        <div
-          className={cn(
-            "relative z-10 flex items-center gap-3 h-[52px] pl-4 pr-1.5 rounded-lg transition-all duration-300",
-            open
-              ? "bg-transparent shadow-none"
-              : "backdrop-blur-[15px] bg-[linear-gradient(136deg,rgba(255,255,255,0.4)_0%,rgba(255,255,255,0.2)_49.37%,rgba(255,255,255,0.3)_100%)] shadow-[0_4px_17px_rgba(122,122,122,0.21)]"
-          )}
-        >
-          <Link
-            href="/login"
-            className="hidden sm:block text-xs font-normal text-black hover:opacity-70 transition-opacity"
+            {menu === "company" && (
+              <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 p-4">
+                <div className="relative rounded-lg overflow-hidden min-h-[180px] hidden md:block">
+                  <Image src="/ola-datacenter-hero.jpg" alt="OLA Datacenter" fill className="object-cover" />
+                </div>
+                <div>
+                  <h4 className="label-mono text-text-muted mb-4">{t("Company", "Empresa")}</h4>
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/company/about", en: "About us", es: "Sobre nosotros" },
+                      { href: "/company/sustainability", en: "Sustainability", es: "Sostenibilidad" },
+                      { href: "/company/news", en: "News", es: "Noticias" },
+                      { href: "/contact", en: "Contact", es: "Contacto" },
+                    ].map(panelLink)}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Actions pill */}
+          <div
+            className={cn(
+              "relative z-10 flex items-center gap-3 h-[52px] pl-4 pr-1.5 rounded-lg transition-colors duration-300",
+              open ? "bg-transparent border border-transparent" : PILL_GLASS
+            )}
           >
-            {t("Log in", "Entrar")}
-          </Link>
-
-          <span className="hidden sm:block w-px h-5 bg-[#b2b2b2]" aria-hidden />
-
-          {/* Raft-style CTA: transparent with white chip that expands on hover */}
-          <Link href="/contact" className="group relative flex items-center h-[38px] pl-3 pr-0.5 rounded-lg overflow-clip">
-            <span
-              aria-hidden
-              className="absolute inset-y-0.5 right-0.5 left-[calc(100%-38px)] rounded-md bg-white transition-[left] duration-[420ms] ease-out group-hover:left-0.5"
-            />
-            <span className="relative text-xs font-normal text-black mr-3 whitespace-nowrap">
-              {t("Talk to us", "Habla con nosotros")}
-            </span>
-            <span className="relative w-[34px] h-[34px] flex items-center justify-center text-black">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-              </svg>
-            </span>
-          </Link>
+            <Link
+              href="/login"
+              onMouseEnter={() => setActive("bare")}
+              className="label-mono hidden sm:block text-text-base/70 hover:text-text-base transition-colors"
+            >
+              {t("Log in", "Entrar")}
+            </Link>
+            <span className="hidden sm:block w-px h-5 bg-border-base" aria-hidden />
+            <ArrowCta href="/contact">{t("Talk to us", "Habla con nosotros")}</ArrowCta>
+          </div>
         </div>
       </div>
     </header>
   )
 }
+
+/*
+ * ─── Memoria ────────────────────────────────────────────────────────────────
+ * Por qué: el usuario pidió el estilo de integratedbio.com — logo a la izquierda
+ * y menús centrados. Se conserva el mega-menú con backdrop "morphing" que ya
+ * existía, cambiando solo la piel (tokens charcoal/menta + Roboto Mono).
+ * Edge cases:
+ *  - Móvil (<md): la nav se oculta, el grupo se alinea a la derecha para no
+ *    solaparse con el logo.
+ *  - Teclado: onFocus abre el panel igual que el hover; aria-expanded refleja
+ *    el estado.
+ *  - Los enlaces de Soluciones apuntaban a rutas inexistentes (/solutions/*);
+ *    se redirigen a páginas reales del sitio para evitar 404.
+ */

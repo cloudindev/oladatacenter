@@ -28,12 +28,12 @@ export function Hero() {
           
           {/* Left Content */}
           <div className="max-w-2xl">
-            <div className="text-xs font-semibold tracking-wider text-text-muted uppercase mb-6 flex items-center gap-2">
+            <div className="label-mono text-text-muted mb-6 flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-text-muted" />
               {t("OLA DATACENTER · SPAIN", "OLA DATACENTER · ESPAÑA")}
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-text-base mb-6 leading-[1.05]">
+            <h1 className="text-5xl md:text-7xl font-normal tracking-tight text-text-base mb-6 leading-[1.05]">
               AI Cloud <br/>
               {t("for what's", "para lo")} <br/>
               <span className="text-primary">{t("sovereign", "soberano")}</span>
@@ -90,7 +90,7 @@ export function Hero() {
         </div>
 
         {/* Trust Strip */}
-        <div className="mt-20 pt-8 border-t border-border-base/40 flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs font-semibold text-text-muted/60 uppercase tracking-widest text-center">
+        <div className="mt-20 pt-8 border-t border-border-base/40 flex flex-wrap justify-center gap-x-8 gap-y-4 text-xs font-medium text-text-muted/60 uppercase tracking-widest text-center">
           <span>Tier III</span>
           <span className="hidden sm:inline">·</span>
           <span>ISO 27001</span>

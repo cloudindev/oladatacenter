@@ -12,7 +12,7 @@ export function DatacenterBanner() {
   return (
     <section className="bg-bg-light pb-24">
       <div className="max-w-[1600px] mx-auto px-10">
-        <div className="relative rounded-2xl overflow-hidden bg-bg-dark text-white min-h-[320px] shadow-2xl">
+        <div className="relative rounded-lg overflow-hidden bg-bg-dark text-white min-h-[320px] shadow-2xl">
           
           {/* Background Image */}
           <div className="absolute inset-0 z-0">
@@ -24,15 +24,15 @@ export function DatacenterBanner() {
               quality={100}
             />
             {/* Overlay gradient extended to completely hide the hard edge of the image on the left */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c] via-[40%] to-transparent w-full pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#222f30] via-[#222f30] via-[40%] to-transparent w-full pointer-events-none" />
           </div>
 
           <div className="relative z-10 p-8 md:p-12 lg:p-14 max-w-2xl h-full flex flex-col justify-center">
-            <div className="text-[#00FFC7] text-xs font-bold tracking-widest uppercase mb-3">
+            <div className="text-[#cef79e] label-mono mb-3">
               {t("SOVEREIGN BY DESIGN", "SOBERANÍA POR DISEÑO")}
             </div>
             
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white leading-tight mb-5">
+            <h2 className="text-3xl md:text-5xl font-normal tracking-tight text-white leading-tight mb-5">
               {t("Your data. Your rules.", "Tus datos. Tus reglas.")}<br />
               {t("Our infrastructure.", "Nuestra infraestructura.")}
             </h2>

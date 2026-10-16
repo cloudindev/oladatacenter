@@ -18,7 +18,7 @@ import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
-import { ArrowCta } from "@/components/ui/ArrowCta"
+import { RollButton } from "@/components/ui/RollButton"
 import { cn } from "@/lib/utils"
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
@@ -281,8 +281,7 @@ export function Header() {
             >
               {t("Log in", "Entrar")}
             </Link>
-            <span className="hidden sm:block w-px h-5 bg-border-base" aria-hidden />
-            <ArrowCta href="/contact">{t("Talk to us", "Habla con nosotros")}</ArrowCta>
+            <RollButton href="/contact" label={t("Talk to us", "Habla con nosotros")} className="!h-10" />
           </div>
         </div>
       </div>

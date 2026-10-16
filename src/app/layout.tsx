@@ -21,7 +21,7 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Edge Datacenter",
+  title: "OLA DC - Edge Green Datacenter",
   description: "Datacenter, dedicated servers and sovereign AI cloud infrastructure engineered in Spain.",
 };
 

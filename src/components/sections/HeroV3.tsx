@@ -1,36 +1,22 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef } from "react"
 import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
 import { ArrowCta } from "@/components/ui/ArrowCta"
 
-// Rotating words shown after "for" / "para"
-const WORDS = [
-  { en: "agents", es: "agentes" },
-  { en: "inference", es: "inferencia" },
-  { en: "training", es: "training" },
-  { en: "RAG", es: "RAG" },
-  { en: "MLOps", es: "MLOps" },
-]
-
-// Headline colour: solid charcoal token, as on integratedbio.com (replaces the former gold gradient)
-const headlineGradient: React.CSSProperties = {
+// Headline colour: solid charcoal token, as on integratedbio.com
+const headlineColor: React.CSSProperties = {
   color: "var(--ag-sys-color-text-light)",
   paddingBottom: "0.12em",
 }
 
 export function HeroV3() {
-  const { lang, t } = useLanguage()
+  const { t } = useLanguage()
 
   const frameRef = useRef<HTMLElement>(null)
   const sectionRef = useRef<HTMLDivElement>(null)
   const glowRef = useRef<HTMLDivElement>(null)
-  const rulerRef = useRef<HTMLSpanElement>(null)
-
-  const [wordIndex, setWordIndex] = useState(0)
-  const [wordVisible, setWordVisible] = useState(true)
-  const [wordWidth, setWordWidth] = useState<number | null>(null)
 
   // Cursor-following glow, spring-smoothed with rAF
   useEffect(() => {
@@ -99,24 +85,6 @@ export function HeroV3() {
     }
   }, [])
 
-  // Word rotation: fade/blur out, swap, fade/blur in
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setWordVisible(false)
-      setTimeout(() => {
-        setWordIndex((i) => (i + 1) % WORDS.length)
-        setWordVisible(true)
-      }, 450)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Measure the active word so the container width animates between words
-  useEffect(() => {
-    if (rulerRef.current) setWordWidth(rulerRef.current.offsetWidth)
-  }, [wordIndex, lang])
-
-  const word = lang === "es" ? WORDS[wordIndex].es : WORDS[wordIndex].en
 
   return (
     <section ref={frameRef} className="bg-[#f7f7f5] p-[15px]">
@@ -161,38 +129,13 @@ export function HeroV3() {
         {/* Headline block */}
         <div className="relative z-10 px-6 pt-28 md:px-14 md:pt-36">
           <h1 className="text-[13vw] sm:text-7xl lg:text-[6.5rem] font-light tracking-[-0.05em] leading-[0.98]">
-            <span style={headlineGradient} className="block">
-              {t("AI Cloud", "AI Cloud")}
+            <span style={headlineColor} className="block">
+              Edge Green
             </span>
-            <span style={headlineGradient} className="block -mt-[0.16em]">
-              {t("for", "para")}{" "}
-              <span
-                className="inline-flex overflow-hidden align-bottom transition-[width] duration-500 ease-out"
-                style={{ width: wordWidth ? `${wordWidth}px` : "auto" }}
-              >
-                <span
-                  style={headlineGradient}
-                  className={
-                    "inline-block whitespace-nowrap transition-all duration-500 " +
-                    (wordVisible
-                      ? "opacity-100 translate-y-0 blur-0"
-                      : "opacity-0 translate-y-4 blur-sm")
-                  }
-                >
-                  {word}
-                </span>
-              </span>
+            <span style={headlineColor} className="block -mt-[0.16em]">
+              Datacenter
             </span>
           </h1>
-
-          {/* Invisible ruler to measure the active word width */}
-          <span
-            ref={rulerRef}
-            aria-hidden="true"
-            className="absolute invisible whitespace-nowrap text-[13vw] sm:text-7xl lg:text-[6.5rem] font-light tracking-[-0.05em]"
-          >
-            {word}
-          </span>
         </div>
 
         {/* Bottom block: subheadline + CTAs */}

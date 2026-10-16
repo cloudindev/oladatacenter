@@ -58,10 +58,10 @@ export function Footer() {
         <div className="flex flex-col items-start">
           <Link href="/" className="mb-6 block">
             <Image
-              src="/logo-oladc-g.png?v=2"
+              src="/logo-oladc-g.png?v=3"
               alt="OLA Datacenter"
-              width={1024}
-              height={320}
+              width={1082}
+              height={378}
               className="h-6 w-auto"
             />
           </Link>

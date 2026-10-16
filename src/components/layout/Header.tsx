@@ -18,7 +18,7 @@ import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
-import { ArrowCta } from "@/components/ui/ArrowCta"
+import { ChipCta } from "@/components/ui/ChipCta"
 import { cn } from "@/lib/utils"
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
@@ -353,7 +353,7 @@ export function Header() {
             >
               {t("Log in", "Entrar")}
             </Link>
-            <ArrowCta href="/contact">{t("Talk to us", "Habla con nosotros")}</ArrowCta>
+            <ChipCta href="/contact">{t("Talk to us", "Habla con nosotros")}</ChipCta>
           </div>
         </div>
       </div>

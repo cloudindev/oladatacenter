@@ -22,7 +22,7 @@ import { RollButton } from "@/components/ui/RollButton"
 import { cn } from "@/lib/utils"
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
-type MenuKey = "products" | "solutions" | "company"
+type MenuKey = "datacenter" | "products" | "solutions" | "company"
 type ActiveState = MenuKey | "bare" | null
 
 interface PanelItem {
@@ -172,10 +172,10 @@ export function Header() {
               open ? "bg-transparent border border-transparent" : PILL_GLASS
             )}
           >
-            {navItem("products", t("Private AI Cloud", "Cloud IA privado"))}
-            {navItem("solutions", t("Solutions", "Soluciones"))}
-            {bareLink("/datacenter/colocation", t("Datacenter", "Datacenter"))}
-            {navItem("company", t("Company", "Empresa"))}
+            {navItem("datacenter", t("Datacenter", "Datacenter"))}
+            {navItem("products", t("AI", "IA"))}
+            {navItem("solutions", t("Cloud", "Cloud"))}
+            {navItem("company", t("OLA", "OLA"))}
             {bareLink("/resources", t("Resources", "Recursos"))}
           </nav>
 
@@ -187,6 +187,64 @@ export function Header() {
               menu ? "opacity-100 delay-100" : "opacity-0 pointer-events-none"
             )}
           >
+            {menu === "datacenter" && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4">
+                <div>
+                  {panelHeading(
+                    "/datacenter/colocation",
+                    "Colocation",
+                    t(
+                      "Choose the space you need: from a single U to a full suite",
+                      "Escoge el espacio que necesitas: desde una U hasta una suite completa"
+                    )
+                  )}
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/datacenter/colocation", en: "Colocation per U", es: "Colocation por U" },
+                      { href: "/datacenter/colocation", en: "Half rack / full rack", es: "Medio rack / rack completo" },
+                      { href: "/datacenter/colocation", en: "Cages", es: "Jaulas" },
+                      { href: "/datacenter/colocation", en: "Suites", es: "Suites" },
+                      { href: "/datacenter/colocation", en: "Housing / wholesale", es: "Housing / wholesale" },
+                    ].map(panelLink)}
+                  </ul>
+                </div>
+                <div>
+                  {panelHeading(
+                    null,
+                    t("Connectivity", "Conectividad"),
+                    t(
+                      "Connect your infrastructure to carriers, clouds and partners",
+                      "Conecta tu infraestructura con operadores, clouds y partners"
+                    )
+                  )}
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/datacenter/colocation", en: "Cross-connects", es: "Cross-connects" },
+                      { href: "/datacenter/colocation", en: "Meet-me room", es: "Meet-me room" },
+                      { href: "/datacenter/colocation", en: "IP transit", es: "Tránsito IP" },
+                    ].map(panelLink)}
+                  </ul>
+                </div>
+                <div>
+                  {panelHeading(
+                    "/datacenter/hosting",
+                    t("Operations services", "Servicios de operación"),
+                    t(
+                      "We operate your hardware so you don't have to travel",
+                      "Operamos tu hardware para que no tengas que desplazarte"
+                    )
+                  )}
+                  <ul className="space-y-1">
+                    {[
+                      { href: "/datacenter/hosting", en: "Remote smart hands", es: "Remote smart hands" },
+                      { href: "/datacenter/hosting", en: "Installation & racking", es: "Instalación y racking" },
+                      { href: "/datacenter/hosting", en: "Logistics", es: "Logística" },
+                    ].map(panelLink)}
+                  </ul>
+                </div>
+              </div>
+            )}
+
             {menu === "products" && (
               <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_220px] gap-6 p-4">
                 <div>

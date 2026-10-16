@@ -350,7 +350,7 @@ export function Header() {
             <span
               aria-hidden
               className={cn(
-                "absolute left-0 top-1/2 -translate-y-1/2 h-7 w-px bg-bg-dark/20 transition-opacity duration-300",
+                "absolute left-0 top-1/2 -translate-y-1/2 h-4 w-px bg-bg-dark/10 transition-opacity duration-300",
                 open ? "opacity-100" : "opacity-0"
               )}
             />

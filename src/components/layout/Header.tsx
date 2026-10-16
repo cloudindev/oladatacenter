@@ -342,10 +342,18 @@ export function Header() {
           {/* Actions pill */}
           <div
             className={cn(
-              "relative z-10 flex items-center gap-3 h-[52px] pl-4 pr-1.5 rounded-lg transition-colors duration-300",
+              "relative z-10 flex items-center gap-7 h-[52px] pl-9 pr-1.5 rounded-lg transition-colors duration-300",
               open ? "bg-transparent border border-transparent" : PILL_GLASS
             )}
           >
+            {/* Thin vertical divider between the nav zone (left) and actions zone (right); only while open */}
+            <span
+              aria-hidden
+              className={cn(
+                "absolute left-0 top-1/2 -translate-y-1/2 h-7 w-px bg-bg-dark/20 transition-opacity duration-300",
+                open ? "opacity-100" : "opacity-0"
+              )}
+            />
             <Link
               href="/login"
               onMouseEnter={() => setActive("bare")}

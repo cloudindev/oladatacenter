@@ -79,7 +79,7 @@ export function Header() {
       onMouseEnter={() => setActive(key)}
       onFocus={() => setActive(key)}
       className={cn(
-        "label-mono flex items-center gap-1.5 px-3.5 h-9 rounded-md whitespace-nowrap transition-colors duration-200",
+        "label-mono flex items-center gap-1.5 px-[22px] h-9 rounded-md whitespace-nowrap transition-colors duration-200",
         menu === key ? "bg-bg-dark text-text-dark" : "text-text-base/70 hover:text-text-base"
       )}
     >
@@ -92,7 +92,7 @@ export function Header() {
     <Link
       href={href}
       onMouseEnter={() => setActive("bare")}
-      className="label-mono px-3.5 h-9 flex items-center rounded-md whitespace-nowrap text-text-base/70 hover:text-text-base transition-colors duration-200"
+      className="label-mono px-[22px] h-9 flex items-center rounded-md whitespace-nowrap text-text-base/70 hover:text-text-base transition-colors duration-200"
     >
       {label}
     </Link>
@@ -168,7 +168,7 @@ export function Header() {
             ref={pillRef}
             aria-label={t("Main", "Principal")}
             className={cn(
-              "relative z-10 hidden md:flex items-center gap-0.5 h-[52px] px-2 rounded-lg transition-colors duration-300",
+              "relative z-10 hidden md:flex items-center gap-1 h-[52px] px-3 rounded-lg transition-colors duration-300",
               open ? "bg-transparent border border-transparent" : PILL_GLASS
             )}
           >

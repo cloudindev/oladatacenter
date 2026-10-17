@@ -24,11 +24,11 @@ export function DatacenterBanner() {
               quality={100}
             />
             {/* Overlay gradient extended to completely hide the hard edge of the image on the left */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#222f30] via-[#222f30] via-[40%] to-transparent w-full pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0f1c] via-[#0a0f1c] via-[40%] to-transparent w-full pointer-events-none" />
           </div>
 
           <div className="relative z-10 p-8 md:p-12 lg:p-14 max-w-2xl h-full flex flex-col justify-center">
-            <div className="text-[#cef79e] label-mono mb-3">
+            <div className="text-[#00DFF5] label-mono mb-3">
               {t("SOVEREIGN BY DESIGN", "SOBERANÍA POR DISEÑO")}
             </div>
             

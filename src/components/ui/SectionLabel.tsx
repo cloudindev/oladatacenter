@@ -26,6 +26,6 @@ export function SectionLabel({ children, className, ...props }: SectionLabelProp
  * ─── Memoria ────────────────────────────────────────────────────────────────
  * Por qué: el punto pulsante anterior era estilo "neón"; IntegratedBio usa un
  * cuadrado sólido lima, estático y más sobrio.
- * Edge cases: el cuadrado usa siempre lima (#a7e26e) — es visible tanto sobre
+ * Edge cases: el cuadrado usa siempre lima (#00B8D4) — es visible tanto sobre
  * off-white como sobre charcoal, así no depende del color del texto.
  */

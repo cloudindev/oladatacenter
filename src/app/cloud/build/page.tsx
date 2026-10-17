@@ -36,10 +36,10 @@ export default function Page() {
                 <h3 className="text-xl font-medium text-white mb-2">{t("OLA App Platform", "Plataforma de Apps OLA")}</h3>
                 <p className="text-white/60 mb-6">{t("Connect your GitHub repository and we will automatically build, deploy, and scale your web applications globally.", "Conecta tu repositorio de GitHub y nosotros construiremos, desplegaremos y escalaremos automáticamente tus aplicaciones web a nivel global.")}</p>
                 <div className="flex gap-4">
-                  <div className="w-10 h-10 bg-[#3a4b4c] rounded flex items-center justify-center border border-white/10 text-white font-medium text-xs">React</div>
-                  <div className="w-10 h-10 bg-[#3a4b4c] rounded flex items-center justify-center border border-white/10 text-white font-medium text-xs">Node</div>
-                  <div className="w-10 h-10 bg-[#3a4b4c] rounded flex items-center justify-center border border-white/10 text-white font-medium text-xs">Go</div>
-                  <div className="w-10 h-10 bg-[#3a4b4c] rounded flex items-center justify-center border border-white/10 text-white font-medium text-xs">Python</div>
+                  <div className="w-10 h-10 bg-[#1e293b] rounded flex items-center justify-center border border-white/10 text-white font-medium text-xs">React</div>
+                  <div className="w-10 h-10 bg-[#1e293b] rounded flex items-center justify-center border border-white/10 text-white font-medium text-xs">Node</div>
+                  <div className="w-10 h-10 bg-[#1e293b] rounded flex items-center justify-center border border-white/10 text-white font-medium text-xs">Go</div>
+                  <div className="w-10 h-10 bg-[#1e293b] rounded flex items-center justify-center border border-white/10 text-white font-medium text-xs">Python</div>
                 </div>
               </div>
               <div className="bg-black/50 border border-white/10 rounded-lg p-4 font-mono text-sm text-green-400 w-full md:w-auto min-w-[300px]">

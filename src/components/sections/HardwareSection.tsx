@@ -104,7 +104,7 @@ export function HardwareSection() {
                   </div>
                   <div className="flex gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#3a4b4c]" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#1e293b]" />
                   </div>
                 </div>
               </div>

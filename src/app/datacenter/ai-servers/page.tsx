@@ -46,9 +46,9 @@ export default function Page() {
               </div>
             </div>
             
-            <div className="bg-[#2b3a3b] rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col relative">
+            <div className="bg-[#121a2f] rounded-xl border border-white/10 shadow-2xl overflow-hidden flex flex-col relative">
               <div className="absolute top-4 right-4 z-10">
-                <span className="bg-primary text-[#2b3a3b] text-xs font-medium px-3 py-1 rounded-full uppercase tracking-wider">{t("Most Popular", "Más Popular")}</span>
+                <span className="bg-primary text-[#121a2f] text-xs font-medium px-3 py-1 rounded-full uppercase tracking-wider">{t("Most Popular", "Más Popular")}</span>
               </div>
               
               <div className="w-full bg-[#e7e8e1] border-b border-white/10">

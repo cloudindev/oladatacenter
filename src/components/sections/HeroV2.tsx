@@ -51,12 +51,12 @@ export function HeroV2() {
           
           <div className="flex flex-wrap items-center gap-4">
             <Link href="/products">
-              <Button className="bg-[#222f30] text-white hover:bg-[#222f30]/90 rounded-[4px] px-8 py-6 text-sm font-medium shadow-sm transition-all hover:scale-105">
+              <Button className="bg-[#0a0f1c] text-white hover:bg-[#0a0f1c]/90 rounded-[4px] px-8 py-6 text-sm font-medium shadow-sm transition-all hover:scale-105">
                 {t("Explore solutions →", "Explorar soluciones →")}
               </Button>
             </Link>
             <Link href="/contact">
-              <Button variant="outline" className="bg-transparent border-[#222f30]/20 text-[#222f30] hover:bg-[#222f30]/5 rounded-[4px] px-8 py-6 text-sm font-medium transition-all">
+              <Button variant="outline" className="bg-transparent border-[#0a0f1c]/20 text-[#0a0f1c] hover:bg-[#0a0f1c]/5 rounded-[4px] px-8 py-6 text-sm font-medium transition-all">
                 {t("Talk to an expert", "Hablar con un experto")}
               </Button>
             </Link>

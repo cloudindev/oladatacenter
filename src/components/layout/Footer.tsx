@@ -36,13 +36,13 @@ export function Footer() {
         </p>
         <Link
           href="/contact"
-          className="group relative flex items-center h-14 pl-7 pr-1 rounded-lg overflow-clip bg-[#222f30] border border-white/10"
+          className="group relative flex items-center h-14 pl-7 pr-1 rounded-lg overflow-clip bg-[#0a0f1c] border border-white/10"
         >
           <span
             aria-hidden
             className="absolute inset-y-1 right-1 left-[calc(100%-52px)] rounded-md bg-[#f9f9f6] transition-[left] duration-[420ms] ease-out group-hover:left-1"
           />
-          <span className="relative text-sm font-normal text-[#f9f9f6] mr-10 transition-colors duration-300 group-hover:text-[#222f30]">
+          <span className="relative text-sm font-normal text-[#f9f9f6] mr-10 transition-colors duration-300 group-hover:text-[#0a0f1c]">
             {t("Talk to an expert", "Contacta con un experto")}
           </span>
           <span className="relative w-12 h-12 flex items-center justify-center text-[#333333]">

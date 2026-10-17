@@ -48,7 +48,7 @@ export default function Page() {
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent pointer-events-none" />
               <div className="grid grid-cols-3 gap-4 w-full opacity-80">
                 {[...Array(9)].map((_, i) => (
-                  <div key={i} className="h-16 bg-[#3a4b4c] rounded-lg border border-white/5 flex items-center justify-between px-3">
+                  <div key={i} className="h-16 bg-[#1e293b] rounded-lg border border-white/5 flex items-center justify-between px-3">
                     <div className="flex gap-1.5"><div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" /><div className="w-2 h-2 rounded-full bg-blue-500" /></div>
                     <div className="w-8 h-1 bg-white/10 rounded" />
                   </div>

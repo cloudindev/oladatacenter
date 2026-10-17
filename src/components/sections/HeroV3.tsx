@@ -124,26 +124,26 @@ export function HeroV3() {
           className="absolute top-0 left-0 w-[660px] h-[660px] rounded-full pointer-events-none opacity-0 transition-opacity duration-700 mix-blend-screen"
           style={{
             background:
-              "radial-gradient(50% 50%, rgba(206,247,158,0.32) 0%, rgba(206,247,158,0.14) 38%, rgba(206,247,158,0.05) 62%, transparent 75%)",
+              "radial-gradient(50% 50%, rgba(0,223,245,0.32) 0%, rgba(0,223,245,0.14) 38%, rgba(0,223,245,0.05) 62%, transparent 75%)",
             filter: "blur(32px)",
           }}
         />
 
-        {/* Headline block */}
-        <div className="relative z-10 px-6 pt-44 md:px-14 md:pt-64">
-          <h1 className="text-[13vw] sm:text-7xl lg:text-[6.5rem] font-semibold tracking-[-0.05em] leading-[0.98]">
+        {/* Top spacer so bottom block anchors cleanly at the bottom */}
+        <div aria-hidden />
+
+        {/* Bottom block: headline + subheadline + CTAs aligned left */}
+        <div className="relative z-10 px-6 pb-10 md:px-14 md:pb-14">
+          <h1 className="text-[12vw] sm:text-7xl lg:text-[6.25rem] font-bold tracking-[-0.045em] leading-[0.96] mb-5 text-left">
             <span style={headlineColor} className="block">
               Edge Green
             </span>
-            <span style={headlineColor} className="block -mt-[0.16em]">
+            <span style={headlineColor} className="block -mt-[0.14em]">
               Datacenter
             </span>
           </h1>
-        </div>
 
-        {/* Bottom block: subheadline + CTAs */}
-        <div className="relative z-10 px-6 pb-10 md:px-14 md:pb-14">
-          <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-medium">
+          <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-medium text-left">
             {t("Sovereign infrastructure. Extreme performance.", "Infraestructura soberana. Rendimiento extremo.")}{" "}
             <br className="hidden sm:block" />
             {t(

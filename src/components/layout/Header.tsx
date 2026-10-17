@@ -159,10 +159,10 @@ export function Header() {
           className={cn("absolute left-0 top-0 h-[52px] flex items-center pointer-events-auto")}
         >
           <Image
-            src="/logo-ola-cyan.png"
+            src="/logo-oladc.png"
             alt="OLA Datacenter"
-            width={1024}
-            height={343}
+            width={1082}
+            height={378}
             priority
             unoptimized
             className="h-[26px] w-auto"

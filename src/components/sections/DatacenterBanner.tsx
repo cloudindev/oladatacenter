@@ -28,7 +28,7 @@ export function DatacenterBanner() {
           </div>
 
           <div className="relative z-10 p-8 md:p-12 lg:p-14 max-w-2xl h-full flex flex-col justify-center">
-            <div className="text-[#00DFF5] label-mono mb-3">
+            <div className="text-[#67E8F9] label-mono mb-3">
               {t("SOVEREIGN BY DESIGN", "SOBERANÍA POR DISEÑO")}
             </div>
             

@@ -124,7 +124,7 @@ export function HeroV3() {
           className="absolute top-0 left-0 w-[660px] h-[660px] rounded-full pointer-events-none opacity-0 transition-opacity duration-700 mix-blend-screen"
           style={{
             background:
-              "radial-gradient(50% 50%, rgba(0,223,245,0.32) 0%, rgba(0,223,245,0.14) 38%, rgba(0,223,245,0.05) 62%, transparent 75%)",
+              "radial-gradient(50% 50%, rgba(103,232,249,0.32) 0%, rgba(103,232,249,0.14) 38%, rgba(103,232,249,0.05) 62%, transparent 75%)",
             filter: "blur(32px)",
           }}
         />

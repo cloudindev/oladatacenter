@@ -2,14 +2,14 @@
 
 /*
  * Design tokens — IntegratedBio-inspired palette
- * Source palette (integratedbio.com): dark-charcoal #0a0f1c, soft-mint #00DFF5,
- * fresh-lime #00B8D4, off-white #f7f7f5, beige #e7e8e1, sage-mist #c9cbbe,
+ * Source palette (integratedbio.com): dark-charcoal #0a0f1c, soft-mint #67E8F9,
+ * fresh-lime #38BDF8, off-white #f7f7f5, beige #e7e8e1, sage-mist #bae6fd,
  * deep-sea-green #0284c7, medium-gray #e4e3e3.
  * Token NAMES are kept so every existing component re-themes automatically.
  */
 :root {
-  --ag-sys-color-primary: #00DFF5;          /* soft mint (accent on dark) */
-  --ag-sys-color-primary-hover: #00B8D4;    /* fresh lime */
+  --ag-sys-color-primary: #67E8F9;          /* soft mint (accent on dark) */
+  --ag-sys-color-primary-hover: #38BDF8;    /* fresh lime */
   --ag-sys-color-accent-ink: #0284c7;       /* deep sea green (accent on light, AA contrast) */
   --ag-sys-color-background-light: #f7f7f5; /* off-white */
   --ag-sys-color-background-dark: #0a0f1c;  /* dark charcoal */
@@ -19,7 +19,7 @@
   --ag-sys-color-text-light: #0a0f1c;
   --ag-sys-color-text-dark: #f7f7f5;
   --ag-sys-color-text-muted: #64748b;
-  --ag-sys-color-text-sage: #c9cbbe;
+  --ag-sys-color-text-sage: #bae6fd;
   --ag-sys-color-border-light: #e4e3e3;
   --ag-sys-color-border-dark: #1e293b;
 
@@ -99,7 +99,7 @@ h1, h2, h3 {
     rgba(60, 100, 200, 0.12) 0%,
     rgba(150, 50, 180, 0.09) 25%,
     rgba(10, 10, 8, 0) 50%,
-    rgba(0, 223, 245, 0.11) 75%,
+    rgba(103, 232, 249, 0.11) 75%,
     rgba(60, 100, 200, 0.12) 100%
   );
   background-size: 250% 250%;
@@ -148,10 +148,10 @@ h1, h2, h3 {
  */
 .ola-btn {
   --bt-bg: #0a0f1c;
-  --bt-bg-h: #00DFF5;
+  --bt-bg-h: #67E8F9;
   --bt-fg: #ffffff;
   --bt-fg-h: #0a0f1c;
-  --blob: #00DFF5;
+  --blob: #67E8F9;
   --blob-h: #0a0f1c;
   --arrow-n: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%230a0f1c' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
   --arrow-h: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%23fff' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
@@ -175,7 +175,7 @@ h1, h2, h3 {
   --bt-fg: #0a0f1c;
   --bt-fg-h: #0a0f1c;
   --blob: #0a0f1c;
-  --blob-h: #00DFF5; /* el chip de la flecha mantiene el verde menta en hover */
+  --blob-h: #67E8F9; /* el chip de la flecha mantiene el verde menta en hover */
   --arrow-n: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%23fff' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
   --arrow-h: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='none' viewBox='0 0 10 10'%3E%3Cpath fill='%230a0f1c' d='M7.703 5.8H.398V4.6h7.305l-3.36-3.36.855-.84 4.8 4.8-4.8 4.8-.855-.84 3.36-3.36Z'/%3E%3C/svg%3E");
 }

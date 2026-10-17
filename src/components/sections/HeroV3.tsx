@@ -1,83 +1,23 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef } from "react"
 import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
 import { ArrowCta } from "@/components/ui/ArrowCta"
 
-type PresetId = "A" | "B" | "C" | "D" | "E"
-
-interface HeadlinePreset {
-  id: PresetId
-  label: string
-  h1Class: string
-  line1Class: string
-  line2Class: string
-  line1Style?: React.CSSProperties
-  line2Style?: React.CSSProperties
+// Headline gradient (original look): golden sweep from bottom-left into near-black
+const headlineColor: React.CSSProperties = {
+  backgroundImage:
+    "radial-gradient(98% 164% at -5.4% 124.2%, rgb(255, 200, 102) 0%, rgb(141, 114, 67) 40%, rgb(62, 48, 24) 77%, rgb(19, 21, 23) 100%)",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  color: "transparent",
+  paddingBottom: "0.12em",
 }
-
-const PRESETS: HeadlinePreset[] = [
-  {
-    id: "A",
-    label: "A · Charcoal + Gris pizarra (Bicolor)",
-    h1Class:
-      "uppercase text-[8.5vw] sm:text-5xl lg:text-[4.25rem] font-semibold tracking-[-0.03em] leading-[0.94]",
-    line1Class: "block text-[#222f30]",
-    line2Class: "block text-[#445e5f]",
-  },
-  {
-    id: "B",
-    label: "B · Charcoal sólido compacto",
-    h1Class:
-      "uppercase text-[8.5vw] sm:text-5xl lg:text-[4.25rem] font-semibold tracking-[-0.035em] leading-[0.93]",
-    line1Class: "block text-[#222f30]",
-    line2Class: "block text-[#222f30]",
-  },
-  {
-    id: "C",
-    label: "C · Degradado metálico Charcoal → Gris",
-    h1Class:
-      "uppercase text-[8.5vw] sm:text-5xl lg:text-[4.25rem] font-semibold tracking-[-0.03em] leading-[0.94]",
-    line1Class: "block",
-    line2Class: "block",
-    line1Style: {
-      backgroundImage:
-        "linear-gradient(180deg, #1b2627 0%, #222f30 55%, #566f70 100%)",
-      WebkitBackgroundClip: "text",
-      backgroundClip: "text",
-      WebkitTextFillColor: "transparent",
-    },
-    line2Style: {
-      backgroundImage:
-        "linear-gradient(180deg, #222f30 0%, #445e5f 60%, #6e8586 100%)",
-      WebkitBackgroundClip: "text",
-      backgroundClip: "text",
-      WebkitTextFillColor: "transparent",
-    },
-  },
-  {
-    id: "D",
-    label: "D · Blanco + Gris salvia (con relieve sutil)",
-    h1Class:
-      "uppercase text-[8.5vw] sm:text-5xl lg:text-[4.25rem] font-semibold tracking-[-0.03em] leading-[0.94] drop-shadow-[0_2px_18px_rgba(34,47,48,0.28)]",
-    line1Class: "block text-white",
-    line2Class: "block text-[#e7e8e1]",
-  },
-  {
-    id: "E",
-    label: "E · Técnico Mono + Sans (Estilo editorial)",
-    h1Class:
-      "uppercase text-[8vw] sm:text-5xl lg:text-[3.9rem] font-semibold tracking-[0.02em] leading-[0.96]",
-    line1Class: "block text-[#445e5f] font-mono font-medium text-[0.58em] tracking-[0.14em] mb-2",
-    line2Class: "block text-[#222f30]",
-  },
-]
 
 export function HeroV3() {
   const { t } = useLanguage()
-  const [presetId, setPresetId] = useState<PresetId>("A")
-  const preset = PRESETS.find((p) => p.id === presetId) ?? PRESETS[0]
 
   const frameRef = useRef<HTMLElement>(null)
   const sectionRef = useRef<HTMLDivElement>(null)
@@ -190,40 +130,20 @@ export function HeroV3() {
         />
 
         {/* Headline block */}
-        <div className="relative z-10 px-6 pt-36 md:px-14 md:pt-52">
-          <h1 className={preset.h1Class}>
-            <span style={preset.line1Style} className={preset.line1Class}>
+        <div className="relative z-10 px-6 pt-44 md:px-14 md:pt-64">
+          <h1 className="text-[13vw] sm:text-7xl lg:text-[6.5rem] font-semibold tracking-[-0.05em] leading-[0.98]">
+            <span style={headlineColor} className="block">
               Edge Green
             </span>
-            <span style={preset.line2Style} className={preset.line2Class}>
+            <span style={headlineColor} className="block -mt-[0.16em]">
               Datacenter
             </span>
           </h1>
         </div>
 
-        {/* Selector temporal de pruebas */}
-        <div className="fixed bottom-5 right-5 z-50 flex flex-wrap items-center gap-1.5 rounded-lg bg-[#222f30]/90 backdrop-blur-md p-1.5 shadow-lg border border-white/10">
-          <span className="label-mono text-white/60 px-2">Pruebas H1:</span>
-          {PRESETS.map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setPresetId(p.id)}
-              title={p.label}
-              className={`px-2.5 py-1 rounded text-xs font-mono uppercase transition-colors ${
-                presetId === p.id
-                  ? "bg-[#cef79e] text-[#222f30] font-medium"
-                  : "text-white/80 hover:bg-white/10"
-              }`}
-            >
-              {p.id}
-            </button>
-          ))}
-        </div>
-
         {/* Bottom block: subheadline + CTAs */}
         <div className="relative z-10 px-6 pb-10 md:px-14 md:pb-14">
-          <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-normal">
+          <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-medium">
             {t("Sovereign infrastructure. Extreme performance.", "Infraestructura soberana. Rendimiento extremo.")}{" "}
             <br className="hidden sm:block" />
             {t(

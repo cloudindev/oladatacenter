@@ -82,7 +82,7 @@ export function Header() {
         onFocus={() => setActive(key)}
         className={cn(
           "group/nav label-mono flex items-center gap-1.5 px-[22px] h-9 rounded-md whitespace-nowrap transition-colors duration-200",
-          isActive ? "bg-bg-dark text-text-dark" : "text-text-base/70 hover:text-text-base"
+          isActive ? "bg-bg-dark text-text-dark" : "text-[rgba(30,29,29,0.93)] hover:text-text-base"
         )}
       >
         {label}
@@ -113,7 +113,7 @@ export function Header() {
     <Link
       href={href}
       onMouseEnter={() => setActive("bare")}
-      className="label-mono px-[22px] h-9 flex items-center rounded-md whitespace-nowrap text-text-base/70 hover:text-text-base transition-colors duration-200"
+      className="label-mono px-[22px] h-9 flex items-center rounded-md whitespace-nowrap text-[rgba(30,29,29,0.93)] hover:text-text-base transition-colors duration-200"
     >
       {label}
     </Link>
@@ -150,7 +150,7 @@ export function Header() {
   }
 
   return (
-    <header className="fixed top-[29px] inset-x-0 z-50 pointer-events-none px-4 md:px-[44px] [&_.label-mono]:!text-[12px]">
+    <header className="fixed top-[29px] inset-x-0 z-50 pointer-events-none px-4 md:px-[44px] [&_.label-mono]:!text-[12.5px]">
       <div className="relative flex justify-end md:justify-center">
         {/* Logo — pinned left, outside the morphing container */}
         <Link
@@ -378,7 +378,7 @@ export function Header() {
             <Link
               href="/login"
               onMouseEnter={() => setActive("bare")}
-              className="label-mono hidden sm:block text-text-base/70 hover:text-text-base transition-colors"
+              className="label-mono hidden sm:block text-[rgba(30,29,29,0.93)] hover:text-text-base transition-colors"
             >
               {t("Log in", "Entrar")}
             </Link>

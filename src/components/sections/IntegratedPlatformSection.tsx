@@ -258,7 +258,7 @@ export function IntegratedPlatformSection() {
                 <span
                   className={cn(
                     "relative inline-block overflow-hidden align-bottom",
-                    w.muted ? "text-[#94a3b8]" : "text-text-base"
+                    w.muted ? "text-[#c9cbbe]" : "text-text-base"
                   )}
                   style={{ clipPath: "inset(-0.1em)" }}
                 >

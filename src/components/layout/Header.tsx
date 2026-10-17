@@ -72,21 +72,42 @@ export function Header() {
     }
   }, [active, open, menu, lang])
 
-  const navItem = (key: MenuKey, label: string) => (
-    <button
-      type="button"
-      aria-expanded={menu === key}
-      onMouseEnter={() => setActive(key)}
-      onFocus={() => setActive(key)}
-      className={cn(
-        "label-mono flex items-center gap-1.5 px-[22px] h-9 rounded-md whitespace-nowrap transition-colors duration-200",
-        menu === key ? "bg-bg-dark text-text-dark" : "text-text-base/70 hover:text-text-base"
-      )}
-    >
-      {label}
-      <span className={cn("transition-opacity", menu === key ? "opacity-70" : "opacity-40")}>+</span>
-    </button>
-  )
+  const navItem = (key: MenuKey, label: string) => {
+    const isActive = menu === key
+    return (
+      <button
+        type="button"
+        aria-expanded={isActive}
+        onMouseEnter={() => setActive(key)}
+        onFocus={() => setActive(key)}
+        className={cn(
+          "group/nav label-mono flex items-center gap-1.5 px-[22px] h-9 rounded-md whitespace-nowrap transition-colors duration-200",
+          isActive ? "bg-bg-dark text-text-dark" : "text-text-base/70 hover:text-text-base"
+        )}
+      >
+        {label}
+        <svg
+          aria-hidden
+          viewBox="0 0 10 10"
+          fill="none"
+          className={cn(
+            "w-2.5 h-2.5 shrink-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+            isActive
+              ? "rotate-180 opacity-90 translate-y-[0.5px] text-primary"
+              : "rotate-0 opacity-45 group-hover/nav:opacity-80 group-hover/nav:translate-y-[1px]"
+          )}
+        >
+          <path
+            d="M2 3.5L5 6.5L8 3.5"
+            stroke="currentColor"
+            strokeWidth="1.35"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </button>
+    )
+  }
 
   const bareLink = (href: string, label: string) => (
     <Link
@@ -138,12 +159,13 @@ export function Header() {
           className={cn("absolute left-0 top-0 h-[52px] flex items-center pointer-events-auto")}
         >
           <Image
-            src="/logo-oladc-g.png?v=3"
+            src="/logo-oladc-g.png"
             alt="OLA Datacenter"
             width={1082}
             height={378}
             priority
-            className="h-[24px] w-auto"
+            unoptimized
+            className="h-[26px] w-auto"
           />
         </Link>
 

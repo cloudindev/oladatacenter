@@ -38,7 +38,7 @@ export function DatacenterBanner() {
             </h2>
             
             <p className="text-white/70 mb-8 max-w-md leading-relaxed">
-              {t("All our data centers are located in Spain, powered by 100% renewable energy and built to the highest standards of security and compliance.", "Todos nuestros datacenters están ubicados en España, alimentados por energía 100% renovable y construidos con los más altos estándares de seguridad y cumplimiento normativo.")}
+              {t("Our data center is located in Spain, powered by renewable energy and built to the highest standards of security and compliance.", "Nuestro datacenter están ubicado en España, alimentados por energía renovable y construidos con los más altos estándares de seguridad y cumplimiento normativo.")}
             </p>
             
             <div>

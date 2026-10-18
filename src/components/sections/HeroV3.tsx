@@ -127,7 +127,7 @@ export function HeroV3() {
             Edge Green Datacenter
           </h1>
 
-          <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-medium text-left">
+          <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-normal text-left">
             {t(
               "The ecosystem for enterprise AI. Extreme performance.",
               "El ecosistema para la IA empresarial. Rendimiento extremo."

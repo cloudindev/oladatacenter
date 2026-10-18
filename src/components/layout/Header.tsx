@@ -173,7 +173,7 @@ export function Header() {
             ref={pillRef}
             aria-label={t("Main", "Principal")}
             className={cn(
-              "relative z-10 flex items-center gap-1 h-[52px] pl-5 pr-3 rounded-lg transition-colors duration-300",
+              "relative z-10 flex items-center gap-1 h-[52px] pl-1.5 pr-3 rounded-lg transition-colors duration-300",
               open ? "bg-transparent border border-transparent" : PILL_GLASS
             )}
           >
@@ -181,16 +181,16 @@ export function Header() {
               href="/"
               aria-label="OLA Datacenter"
               onMouseEnter={() => setActive(null)}
-              className="flex items-center pr-4 mr-2 shrink-0"
+              className="flex items-center justify-center h-10 px-4 mr-2 rounded-lg bg-bg-dark border border-white/10 shrink-0"
             >
               <Image
-                src="/ola-menu-logo.png"
+                src="/ola-menu-logo-green.png"
                 alt="OLA Datacenter"
                 width={300}
-                height={93}
+                height={108}
                 priority
                 unoptimized
-                className="h-[22px] w-auto"
+                className="h-[19px] w-auto"
               />
             </Link>
             <div className="hidden md:flex items-center gap-1">

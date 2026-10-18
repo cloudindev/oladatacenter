@@ -184,10 +184,10 @@ export function Header() {
               className="flex items-center pr-4 mr-2 shrink-0"
             >
               <Image
-                src="/ola-menu-logo.png"
+                src="/oladc.svg"
                 alt="OLA Datacenter"
-                width={886}
-                height={211}
+                width={1936}
+                height={460}
                 priority
                 unoptimized
                 className="h-[22px] w-auto"

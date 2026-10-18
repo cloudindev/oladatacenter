@@ -30,8 +30,8 @@ export function Footer() {
       <div className="container mx-auto px-6 pt-28 pb-24 flex flex-col items-center text-center">
         <p className="text-lg md:text-xl text-[#f9f9f6] max-w-2xl mb-10 leading-relaxed">
           {t(
-            "Contact our team, we will be happy to help you configure your cloud.",
-            "Contacta con nuestro equipo, estaremos encantados de ayudarte a configurar tu nube."
+            "Contact our team and we'll help you configure your cloud.",
+            "Contacta con nuestro equipo y te ayudamos a configurar tu nube"
           )}
         </p>
         <Link
@@ -66,20 +66,9 @@ export function Footer() {
               className="h-6 w-auto"
             />
           </Link>
-          <p className="text-sm text-[#f9f9f6]/90 mb-10">
+          <p className="text-sm text-[#f9f9f6]/90">
             {t("AI Cloud for what's sovereign", "AI Cloud para lo soberano")}
           </p>
-
-          <div className="w-full max-w-xs border-t border-white/10 pt-6 flex flex-col gap-6">
-            <div>
-              <div className="text-[11px] text-primary mb-2 font-medium">{t("Build and deploy", "Construye y despliega")}</div>
-              <Image src="/olacloud-logo.png" alt="OLA CLOUD" width={140} height={30} className="h-5 w-auto object-contain object-left" />
-            </div>
-            <div>
-              <div className="text-[11px] text-cyan-400 mb-2 font-medium">Hosting</div>
-              <Image src="/cloudin-logo.png" alt="cloudin" width={140} height={30} className="h-5 w-auto object-contain object-left" />
-            </div>
-          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-10">

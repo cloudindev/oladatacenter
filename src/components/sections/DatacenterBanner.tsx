@@ -21,11 +21,11 @@ export function DatacenterBanner() {
               alt="OLA AI Datacenter" 
               fill 
               unoptimized
-              className="object-cover object-[center_42%] [mask-image:linear-gradient(to_right,transparent_0%,black_28%)]" 
+              className="object-cover object-[center_42%] [mask-image:linear-gradient(to_right,transparent_0%,transparent_8%,black_48%)]" 
               quality={100}
             />
-            {/* Smooth left gradient blend into #222f30 */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#222f30] via-[#222f30]/40 via-[25%] to-transparent pointer-events-none" />
+            {/* Smooth left gradient blend extended further to the right */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#222f30] via-[#222f30]/70 via-[36%] to-transparent pointer-events-none" />
           </div>
 
           <div className="relative z-10 p-8 md:p-12 lg:p-14 max-w-2xl h-full flex flex-col justify-center">

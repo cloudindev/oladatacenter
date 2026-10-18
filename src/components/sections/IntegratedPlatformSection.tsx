@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils"
 interface WordDef {
   text: string
   muted?: boolean
+  breakAfter?: boolean
 }
 
 interface UspCardDef {
@@ -167,12 +168,10 @@ export function IntegratedPlatformSection() {
           { text: "seguridad" },
           { text: "de" },
           { text: "tus" },
-          { text: "datos" },
-          { text: "en" },
-          { text: "una" },
-          { text: "infraestructura" },
-          { text: "de", muted: true },
-          { text: "centro", muted: true },
+          { text: "datos", breakAfter: true },
+          { text: "en", muted: true },
+          { text: "una", muted: true },
+          { text: "infraestructura", muted: true },
           { text: "de", muted: true },
           { text: "datos", muted: true },
           { text: "privada", muted: true },
@@ -181,11 +180,11 @@ export function IntegratedPlatformSection() {
           { text: "Data" },
           { text: "sovereignty" },
           { text: "and" },
-          { text: "security" },
-          { text: "in" },
-          { text: "a" },
+          { text: "security", breakAfter: true },
+          { text: "in", muted: true },
+          { text: "a", muted: true },
           { text: "private", muted: true },
-          { text: "datacenter", muted: true },
+          { text: "data", muted: true },
           { text: "infrastructure", muted: true },
         ]
 
@@ -274,6 +273,7 @@ export function IntegratedPlatformSection() {
                     }}
                   />
                 </span>{" "}
+                {w.breakAfter && <br className="hidden md:inline" />}
               </React.Fragment>
             ))}
           </h2>

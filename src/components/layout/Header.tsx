@@ -133,19 +133,24 @@ export function Header() {
     </li>
   )
 
-  const panelHeading = (href: string | null, title: string, desc: string) => {
+  const panelHeading = (href: string | null, title: string, desc: string, pastelBgClass: string) => {
+    const baseClasses = cn(
+      "group/ph block mb-3 px-3 py-2.5 -mx-2 rounded-lg transition-colors duration-200",
+      pastelBgClass,
+      "hover:bg-transparent"
+    )
     const inner = (
       <>
-        <h4 className="label-mono text-text-muted group-hover/ph:text-text-base transition-colors">{title}</h4>
-        <span className="block text-[11px] leading-snug text-text-muted mt-1.5">{desc}</span>
+        <h4 className="label-mono text-bg-dark/90 group-hover/ph:text-bg-dark transition-colors">{title}</h4>
+        <span className="block text-[11px] leading-snug text-bg-dark/65 mt-1.5">{desc}</span>
       </>
     )
     return href ? (
-      <Link href={href} className="group/ph block mb-3 px-2 py-1.5 -mx-2 rounded-md hover:bg-surface-beige transition-colors">
+      <Link href={href} className={baseClasses}>
         {inner}
       </Link>
     ) : (
-      <div className="mb-3 px-2 py-1.5 -mx-2">{inner}</div>
+      <div className={baseClasses}>{inner}</div>
     )
   }
 
@@ -219,7 +224,8 @@ export function Header() {
                     t(
                       "Choose the space you need: from a single U to a full suite",
                       "Escoge el espacio que necesitas: desde una U hasta una suite completa"
-                    )
+                    ),
+                    "bg-[#cef79e]/45"
                   )}
                   <ul className="space-y-1">
                     {[
@@ -238,7 +244,8 @@ export function Header() {
                     t(
                       "Connect your infrastructure to carriers, clouds and partners",
                       "Conecta tu infraestructura con operadores, clouds y partners"
-                    )
+                    ),
+                    "bg-[#cef79e]/25"
                   )}
                   <ul className="space-y-1">
                     {[
@@ -255,7 +262,8 @@ export function Header() {
                     t(
                       "We operate your hardware so you don't have to travel",
                       "Operamos tu hardware para que no tengas que desplazarte"
-                    )
+                    ),
+                    "bg-[#cef79e]/12"
                   )}
                   <ul className="space-y-1">
                     {[
@@ -277,7 +285,8 @@ export function Header() {
                     t(
                       "Get your AI to market faster with advanced GPU clusters",
                       "Lleva tu IA al mercado más rápido con clústeres GPU avanzados"
-                    )
+                    ),
+                    "bg-[#99f6e4]/45"
                   )}
                   <ul className="space-y-1">
                     {[
@@ -292,7 +301,8 @@ export function Header() {
                     t(
                       "Complete solution to deploy the cloud on your own premises",
                       "Solución completa para desplegar el cloud en tus propias instalaciones"
-                    )
+                    ),
+                    "bg-[#99f6e4]/20"
                   )}
                   <ul className="space-y-1">
                     {[{ href: "/products", en: "AI box", es: "AI box" }].map(panelLink)}
@@ -313,7 +323,8 @@ export function Header() {
                     t(
                       "Cloud servers ready in minutes, for any workload",
                       "Servidores cloud listos en minutos, para cualquier carga de trabajo"
-                    )
+                    ),
+                    "bg-[#bae6fd]/50"
                   )}
                   <ul className="space-y-1">
                     {[
@@ -327,7 +338,8 @@ export function Header() {
                   {panelHeading(
                     null,
                     "Cloud Addons",
-                    t("Adapt your cloud to your business needs", "Adapta tu nube a las necesidades de tu empresa")
+                    t("Adapt your cloud to your business needs", "Adapta tu nube a las necesidades de tu empresa"),
+                    "bg-[#bae6fd]/22"
                   )}
                   <ul className="space-y-1">
                     {[

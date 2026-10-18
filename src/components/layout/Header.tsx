@@ -283,7 +283,7 @@ export function Header() {
                 <div>
                   {panelHeading(
                     "/cloud/ai",
-                    "AI Cloud",
+                    t("AI Cloud", "IA Cloud"),
                     t(
                       "Get your AI to market faster with advanced GPU clusters",
                       "Lleva tu IA al mercado más rápido con clústeres GPU avanzados"
@@ -292,6 +292,7 @@ export function Header() {
                   )}
                   <ul className="space-y-1">
                     {[
+                      { href: "/cloud/ai", en: "AI Infrastructure", es: "Infraestructura IA" },
                       { href: "/datacenter/ai-servers", en: "GPU Servers", es: "Servidores GPU" },
                     ].map(panelLink)}
                   </ul>
@@ -332,7 +333,7 @@ export function Header() {
                     {[
                       { href: "/cloud/compute", en: "Cloud VPS servers", es: "Servidores VPS Cloud" },
                       { href: "/cloud/compute", en: "Windows VPS servers", es: "Servidores VPS Windows" },
-                      { href: "/cloud/compute", en: "Dedicated VPS servers", es: "Servidores VPS Dedicados" },
+                      { href: "/cloud/compute", en: "Dedicated servers", es: "Servidores Dedicados" },
                     ].map(panelLink)}
                   </ul>
                 </div>

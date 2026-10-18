@@ -123,9 +123,8 @@ export function HeroV3() {
 
         {/* Bottom block: headline + subheadline + CTAs aligned left */}
         <div className="relative z-10 px-6 pb-10 md:px-14 md:pb-14">
-          <h1 className="font-[family-name:var(--font-montserrat)] font-black uppercase text-bg-dark text-[8.5vw] sm:text-5xl lg:text-[4.25rem] tracking-[-0.03em] leading-[0.95] mb-5 text-left">
-            <span className="block">Edge Green</span>
-            <span className="block">Datacenter</span>
+          <h1 className="font-[family-name:var(--font-montserrat)] font-black uppercase text-bg-dark text-[clamp(1.4rem,6vw,2.45rem)] sm:text-[2.45rem] tracking-[-0.03em] leading-tight mb-5 text-left whitespace-nowrap">
+            Edge Green Datacenter
           </h1>
 
           <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-medium text-left">

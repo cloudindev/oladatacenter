@@ -170,10 +170,9 @@ export function IntegratedPlatformSection() {
           { text: "tus" },
           { text: "datos", breakAfter: true },
           { text: "en", muted: true },
-          { text: "una", muted: true },
+          { text: "la", muted: true },
+          { text: "mejor", muted: true },
           { text: "infraestructura", muted: true },
-          { text: "de", muted: true },
-          { text: "datos", muted: true },
           { text: "privada", muted: true },
         ]
       : [
@@ -182,9 +181,9 @@ export function IntegratedPlatformSection() {
           { text: "and" },
           { text: "security", breakAfter: true },
           { text: "in", muted: true },
-          { text: "a", muted: true },
+          { text: "the", muted: true },
+          { text: "best", muted: true },
           { text: "private", muted: true },
-          { text: "data", muted: true },
           { text: "infrastructure", muted: true },
         ]
 

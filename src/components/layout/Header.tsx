@@ -205,7 +205,6 @@ export function Header() {
               {navItem("products", t("AI", "IA"))}
               {navItem("solutions", t("Cloud", "Cloud"))}
               {bareLink("/company/about", t("OLA", "OLA"))}
-              {bareLink("/resources", t("Resources", "Recursos"))}
             </div>
           </nav>
 

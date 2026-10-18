@@ -17,15 +17,15 @@ export function PromiseSection() {
         <SectionLabel className="text-primary/80 mb-8">{t("THE OLA DC PROMISE", "LA PROMESA OLA DC")}</SectionLabel>
 
         <h2 className="text-3xl md:text-5xl lg:text-6xl font-normal tracking-tight text-white mb-8 leading-tight">
-          {t("From enterprise AI to data sovereignty — ", "De la IA empresarial a la soberanía del dato — ")}
-          <span className="text-primary italic">{t("your clouds, data and AI workloads", "tus clouds, datos y cargas de IA")}</span>
-          {t(" work as one. Privately.", " funcionan como uno. En privado.")}
+          {t("The enterprise AI you need — ", "La IA empresarial que necesitas — ")}
+          <span className="text-primary italic">{t("AI, cloud and data", "IA, cloud y datos")}</span>
+          {t(" — work as one. Protected and private.", " — funcionan como uno. Protegidos y privados.")}
         </h2>
 
         <p className="text-lg md:text-xl text-text-muted italic max-w-3xl">
           {t(
-            "De la IA empresarial a la soberanía del dato: tu cloud, tus datos y tus cargas de IA, una sola arquitectura — privada.",
-            "From enterprise AI to data sovereignty: your cloud, your data and your AI workloads, one architecture — private."
+            "The enterprise AI you need: your AI, cloud and data, one architecture — protected and private.",
+            "La IA empresarial que necesitas: tu IA, cloud y datos, una sola arquitectura — protegida y privada."
           )}
         </p>
       </div>

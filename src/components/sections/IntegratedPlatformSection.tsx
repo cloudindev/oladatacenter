@@ -296,8 +296,8 @@ export function IntegratedPlatformSection() {
             )}
           >
             {t(
-              "We are building a next-generation sovereign infrastructure platform: renewable edge datacenters provide resilient physical foundations, ultra-low-latency fiber interconnects every workload, and high-density GPU clusters turn raw compute into production AI.",
-              "Estamos construyendo una plataforma de infraestructura soberana de nueva generación: centros de datos edge con energía renovable aportan la base física resiliente, conectividad de fibra de ultrabaja latencia enlaza cada carga crítica y clústeres GPU de alta densidad transforman el cómputo en IA en producción."
+              "Data center that satisfies your local needs, with renewable energy, ultra-low-latency fiber connectivity, and high-density GPU clusters that transform your company's compute and storage. Our data center includes redundancy mechanisms, high availability, and the maximum reliability of infrastructure and services.",
+              "Centro de datos que satisface sus necesidades locales, con energía renovable, conectividad de fibra de ultrabaja latencia y clústeres GPU de alta densidad que transforman el cómputo y almacenamiento de tu empresa. Nuestro centro de datos incluye mecanismos de redundancia, alta disponibilidad y la máxima fiabilidad de infraestructuras y servicios."
             )}
           </p>
 

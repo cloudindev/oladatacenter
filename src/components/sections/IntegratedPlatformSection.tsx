@@ -77,8 +77,8 @@ const CARDS: UspCardDef[] = [
     index: "02.",
     bgClass: "bg-bg-dark",
     textClass: "text-text-dark",
-    headingEn: "Sovereign Cloud & Bare Metal",
-    headingEs: "Cloud Soberano y Bare Metal",
+    headingEn: "Cloud & Bare Metal",
+    headingEs: "Cloud y Bare Metal",
     bodyEn:
       "Dedicated single-tenant hardware and virtualized cloud nodes deployed in minutes with full data residency.",
     bodyEs:

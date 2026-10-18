@@ -144,7 +144,7 @@ export function Header() {
         >
           {title}
         </h4>
-        <span className="block text-[11px] leading-snug text-text-muted mt-1.5">{desc}</span>
+        <span className="block text-[11px] leading-snug text-text-muted mt-1.5 whitespace-pre-line">{desc}</span>
       </>
     )
     return href ? (
@@ -224,8 +224,8 @@ export function Header() {
                     "/datacenter/colocation",
                     "Colocation",
                     t(
-                      "Choose the space you need: from a single U to a full suite",
-                      "Escoge el espacio que necesitas: desde una U hasta una suite completa"
+                      "Choose the space you need, from a single U\nto a full suite",
+                      "Escoge el espacio que necesitas, desde una U\nhasta una suite completa"
                     ),
                     "bg-[#cef79e]/45"
                   )}
@@ -244,8 +244,8 @@ export function Header() {
                     null,
                     t("Connectivity", "Conectividad"),
                     t(
-                      "Connect your infrastructure to carriers, clouds and partners",
-                      "Conecta tu infraestructura con operadores, clouds y partners"
+                      "Connect your infrastructure to carriers",
+                      "Conecta tu infraestructura con operadores"
                     ),
                     "bg-[#cef79e]/25"
                   )}

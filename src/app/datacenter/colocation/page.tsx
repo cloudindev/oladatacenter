@@ -7,11 +7,11 @@
  *    titular bicolor (`#222f30` + `#c9cbbe`), corchete inferior y botón `.scroll-btn`.
  *  - Imagen panorámica (`c-fs-media`) del pasillo de racks de alta densidad (`/ola-datacenter-racks.jpg`).
  *  - Bloque manifiesto (`c-hgroup`) con pastilla mono y titular revelado palabra por palabra.
- *  - Catálogo interactivo de los 5 productos de Colocation (`c-team-grid`) con tarjetas
- *    de muesca curva inferior derecha (`87×90` SVG) y botón paralelogramo `.u-btn--2`,
- *    dando acceso directo a cada modalidad (`/datacenter/colocation/[slug]`).
+ *  - Catálogo interactivo de los 5 productos de Colocation (`c-team-grid`) con ilustraciones
+ *    vectoriales técnicas de líneas a medida para cada modalidad (`1U`, `Racks`, `Jaulas`, `Suites`, `Wholesale`),
+ *    muesca curva inferior derecha (`87×90` SVG) y botón paralelogramo `.u-btn--2`.
  *  - 3 tarjetas arquitectónicas a sangre (`c-usp-cards`) en la paleta `#cef79e`, `#222f30`, `#e7e8e0`.
- *  - Bloque editorial multicolumna (`c-media-wi-multicol`) con Conectividad y Smart Hands 24×7.
+ *  - Bloque `Conectividad y Operación` (`c-hgroup` sin foto repetida) con acceso a visita.
  */
 
 import React, { useEffect, useRef, useState } from "react"
@@ -40,9 +40,6 @@ interface ColocationProductDef {
   slug: string
   index: string
   href: string
-  imageSrc: string
-  imageAltEn: string
-  imageAltEs: string
   titleEn: string
   titleEs: string
   tagEn: string
@@ -53,6 +50,7 @@ interface ColocationProductDef {
   specsEs: string[]
   ctaEn: string
   ctaEs: string
+  diagram: React.ReactNode
 }
 
 interface UspCardDef {
@@ -72,15 +70,573 @@ interface MetricDef {
   labelEs: string
 }
 
-// ─── 2. Constants & Product Catalog ─────────────────────────────────────────
+// ─── 2. Dibujos Vectoriales de Líneas (Blueprints Técnicos de Colocation) ───
+
+/**
+ * 01. Vector lineal para "Colocation por U":
+ * Bastidor técnico con unidades U numeradas y un chasis servidor 1U/2U destacado
+ * con doble acometida eléctrica A+B.
+ */
+function VectorColocationPerU() {
+  return (
+    <svg
+      viewBox="0 0 470 300"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-full"
+    >
+      {/* Cuadrícula técnica sutil */}
+      <g stroke="currentColor" strokeOpacity="0.06" strokeWidth="1">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <line key={`v-${i}`} x1={47 * (i + 1)} y1="0" x2={47 * (i + 1)} y2="300" />
+        ))}
+        {Array.from({ length: 6 }).map((_, i) => (
+          <line key={`h-${i}`} x1="0" y1={50 * (i + 1)} x2="470" y2={50 * (i + 1)} />
+        ))}
+      </g>
+
+      {/* Guías verticales del bastidor 19" */}
+      <line x1="115" y1="36" x2="115" y2="264" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.35" />
+      <line x1="127" y1="36" x2="127" y2="264" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.25" />
+      <line x1="343" y1="36" x2="343" y2="264" stroke="currentColor" strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.25" />
+      <line x1="355" y1="36" x2="355" y2="264" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.35" />
+
+      {/* Slots U en reposo */}
+      {[52, 82, 168, 198, 228].map((y, idx) => (
+        <g key={y} opacity="0.38">
+          <rect x="127" y={y} width="216" height="22" rx="2" stroke="currentColor" strokeWidth="1" />
+          <line x1="138" y1={y + 11} x2="178" y2={y + 11} stroke="currentColor" strokeWidth="1" />
+          <circle cx="322" cy={y + 11} r="2" fill="currentColor" />
+          <circle cx="330" cy={y + 11} r="2" fill="currentColor" />
+          <text x="92" y={y + 14} fill="currentColor" fontSize="9" fontFamily="monospace">
+            0{idx + 1}U
+          </text>
+        </g>
+      ))}
+
+      {/* Unidad 1U/2U Activa Destacada (Expandida con acento lima) */}
+      <g>
+        <rect
+          x="105"
+          y="112"
+          width="260"
+          height="46"
+          rx="4"
+          fill="#cef79e"
+          fillOpacity="0.55"
+          stroke="currentColor"
+          strokeWidth="1.5"
+        />
+        {/* Orejetas de anclaje rack */}
+        <rect x="111" y="118" width="8" height="34" rx="1" stroke="currentColor" strokeWidth="1.1" />
+        <rect x="351" y="118" width="8" height="34" rx="1" stroke="currentColor" strokeWidth="1.1" />
+        {/* Bahías NVMe frontales */}
+        {[0, 1, 2, 3, 4, 5].map((bay) => (
+          <g key={bay}>
+            <rect
+              x={128 + bay * 28}
+              y="121"
+              width="23"
+              height="28"
+              rx="1.5"
+              fill="#f7f7f5"
+              stroke="currentColor"
+              strokeWidth="1.1"
+            />
+            <line
+              x1={132 + bay * 28}
+              y1="127"
+              x2={147 + bay * 28}
+              y2="127"
+              stroke="currentColor"
+              strokeWidth="1"
+            />
+            <circle cx={146 + bay * 28} cy="143" r="1.5" fill="currentColor" />
+          </g>
+        ))}
+        {/* Panel de control y puertos 10GbE */}
+        <rect x="302" y="121" width="40" height="12" rx="1.5" fill="#f7f7f5" stroke="currentColor" strokeWidth="1.1" />
+        <rect x="302" y="137" width="18" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.1" />
+        <rect x="324" y="137" width="18" height="12" rx="1.5" stroke="currentColor" strokeWidth="1.1" />
+
+        {/* Cotas laterales A+B */}
+        <line x1="66" y1="135" x2="100" y2="135" stroke="currentColor" strokeWidth="1.2" />
+        <circle cx="66" cy="135" r="3" fill="currentColor" />
+        <text x="42" y="138" fill="currentColor" fontSize="10" fontFamily="monospace">
+          1U
+        </text>
+
+        <line x1="370" y1="127" x2="408" y2="127" stroke="currentColor" strokeWidth="1.1" />
+        <line x1="370" y1="143" x2="408" y2="143" stroke="currentColor" strokeWidth="1.1" />
+        <text x="413" y="130" fill="currentColor" fontSize="9" fontFamily="monospace">
+          PDU-A
+        </text>
+        <text x="413" y="146" fill="currentColor" fontSize="9" fontFamily="monospace">
+          PDU-B
+        </text>
+      </g>
+    </svg>
+  )
+}
+
+/**
+ * 02. Vector lineal para "Medio Rack / Rack Completo":
+ * Comparativa arquitectónica lado a lado de un armario 21U (dividido) y un armario 42U–48U completo.
+ */
+function VectorHalfAndFullRack() {
+  return (
+    <svg
+      viewBox="0 0 470 300"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-full"
+    >
+      {/* Cuadrícula técnica */}
+      <g stroke="currentColor" strokeOpacity="0.06" strokeWidth="1">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <line key={`v-${i}`} x1={47 * (i + 1)} y1="0" x2={47 * (i + 1)} y2="300" />
+        ))}
+        {Array.from({ length: 6 }).map((_, i) => (
+          <line key={`h-${i}`} x1="0" y1={50 * (i + 1)} x2="470" y2={50 * (i + 1)} />
+        ))}
+      </g>
+
+      {/* Bandeja superior de fibra (Overhead tray) */}
+      <line x1="65" y1="28" x2="405" y2="28" stroke="currentColor" strokeWidth="1.2" strokeDasharray="4 4" strokeOpacity="0.5" />
+      <line x1="65" y1="34" x2="405" y2="34" stroke="currentColor" strokeWidth="1.2" strokeOpacity="0.4" />
+
+      {/* ARMARIO IZQUIERDO: MEDIO RACK (21U) */}
+      <g>
+        <rect x="95" y="46" width="118" height="216" rx="3" stroke="currentColor" strokeWidth="1.4" />
+        {/* Mitad superior activa (21U) */}
+        <rect
+          x="101"
+          y="52"
+          width="106"
+          height="100"
+          rx="2"
+          fill="#cef79e"
+          fillOpacity="0.45"
+          stroke="currentColor"
+          strokeWidth="1.2"
+        />
+        {[0, 1, 2, 3, 4].map((row) => (
+          <line
+            key={row}
+            x1="109"
+            y1={66 + row * 18}
+            x2="199"
+            y2={66 + row * 18}
+            stroke="currentColor"
+            strokeWidth="1"
+            strokeOpacity="0.65"
+          />
+        ))}
+        {/*Cerradura independiente mitad superior */}
+        <circle cx="200" cy="102" r="2.5" fill="currentColor" />
+
+        {/* Divisor físico central */}
+        <line x1="95" y1="154" x2="213" y2="154" stroke="currentColor" strokeWidth="1.8" />
+
+        {/* Mitad inferior en gris punteado */}
+        <rect
+          x="101"
+          y="158"
+          width="106"
+          height="98"
+          rx="2"
+          stroke="currentColor"
+          strokeWidth="1"
+          strokeDasharray="3 3"
+          strokeOpacity="0.35"
+        />
+        <text x="136" y="278" fill="currentColor" fontSize="10" fontFamily="monospace">
+          21U HALF
+        </text>
+      </g>
+
+      {/* ARMARIO DERECHO: RACK COMPLETO (42U–48U) */}
+      <g>
+        <rect x="255" y="46" width="124" height="216" rx="3" stroke="currentColor" strokeWidth="1.5" />
+        <rect
+          x="261"
+          y="52"
+          width="112"
+          height="204"
+          rx="2"
+          fill="#cef79e"
+          fillOpacity="0.55"
+          stroke="currentColor"
+          strokeWidth="1.3"
+        />
+        {/* Servidores apilados en todo el armario */}
+        {Array.from({ length: 11 }).map((_, row) => (
+          <g key={row}>
+            <line
+              x1="270"
+              y1={64 + row * 17.5}
+              x2="356"
+              y2={64 + row * 17.5}
+              stroke="currentColor"
+              strokeWidth="1"
+              strokeOpacity="0.7"
+            />
+            <circle cx="352" cy={60 + row * 17.5} r="1.3" fill="currentColor" />
+          </g>
+        ))}
+        {/* Barra PDU vertical */}
+        <rect x="362" y="56" width="6" height="196" fill="#f7f7f5" stroke="currentColor" strokeWidth="1" />
+        <text x="285" y="278" fill="currentColor" fontSize="10" fontFamily="monospace">
+          42U–48U FULL
+        </text>
+      </g>
+
+      {/* Cota vertical de altura */}
+      <line x1="398" y1="46" x2="398" y2="262" stroke="currentColor" strokeWidth="1" strokeOpacity="0.5" />
+      <line x1="393" y1="46" x2="403" y2="46" stroke="currentColor" strokeWidth="1" strokeOpacity="0.5" />
+      <line x1="393" y1="262" x2="403" y2="262" stroke="currentColor" strokeWidth="1" strokeOpacity="0.5" />
+      <text x="407" y="158" fill="currentColor" fontSize="9" fontFamily="monospace">
+        40kW
+      </text>
+    </svg>
+  )
+}
+
+/**
+ * 03. Vector lineal para "Jaulas Privadas (Cages)":
+ * Cerramiento perimetral de malla técnica rodeando una batería de racks contiguos
+ * con puerta esclusa y lector biométrico.
+ */
+function VectorPrivateCage() {
+  return (
+    <svg
+      viewBox="0 0 470 300"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-full"
+    >
+      {/* Cuadrícula técnica */}
+      <g stroke="currentColor" strokeOpacity="0.06" strokeWidth="1">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <line key={`v-${i}`} x1={47 * (i + 1)} y1="0" x2={47 * (i + 1)} y2="300" />
+        ))}
+        {Array.from({ length: 6 }).map((_, i) => (
+          <line key={`h-${i}`} x1="0" y1={50 * (i + 1)} x2="470" y2={50 * (i + 1)} />
+        ))}
+      </g>
+
+      {/* Perímetro exterior de la Jaula (Malla de seguridad suelo a techo) */}
+      <rect
+        x="58"
+        y="36"
+        width="354"
+        height="224"
+        rx="4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+      />
+      <rect
+        x="64"
+        y="42"
+        width="342"
+        height="212"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="1"
+        strokeDasharray="4 4"
+        strokeOpacity="0.5"
+      />
+
+      {/* Postes estructurales del cerramiento */}
+      {[58, 176, 294, 412].map((x) => (
+        <g key={x}>
+          <rect x={x - 3} y="33" width="6" height="6" fill="currentColor" />
+          <rect x={x - 3} y="257" width="6" height="6" fill="currentColor" />
+        </g>
+      ))}
+
+      {/* Batería interna de 4 Racks dentro de la jaula */}
+      {[0, 1, 2, 3].map((idx) => {
+        const rx = 86 + idx * 64
+        return (
+          <g key={idx}>
+            <rect
+              x={rx}
+              y="66"
+              width="52"
+              height="148"
+              rx="2"
+              fill="#cef79e"
+              fillOpacity={0.5}
+              stroke="currentColor"
+              strokeWidth="1.3"
+            />
+            {[0, 1, 2, 3, 4, 5, 6].map((u) => (
+              <line
+                key={u}
+                x1={rx + 6}
+                y1={80 + u * 19}
+                x2={rx + 46}
+                y2={80 + u * 19}
+                stroke="currentColor"
+                strokeWidth="1"
+                strokeOpacity="0.65"
+              />
+            ))}
+            <text x={rx + 15} y="228" fill="currentColor" fontSize="9" fontFamily="monospace">
+              R0{idx + 1}
+            </text>
+          </g>
+        )
+      })}
+
+      {/* Trama de malla perimetral frontal superpuesta */}
+      <g stroke="currentColor" strokeOpacity="0.16" strokeWidth="0.9">
+        {Array.from({ length: 14 }).map((_, i) => (
+          <line key={`m-${i}`} x1={74 + i * 24} y1="42" x2={74 + i * 24} y2="254" />
+        ))}
+      </g>
+
+      {/* Módulo de control de acceso biométrico + cámara CCTV */}
+      <rect
+        x="348"
+        y="112"
+        width="44"
+        height="68"
+        rx="3"
+        fill="#f7f7f5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+      <circle cx="370" cy="136" r="10" fill="#cef79e" stroke="currentColor" strokeWidth="1.2" />
+      <circle cx="370" cy="136" r="3.5" fill="currentColor" />
+      <line x1="358" y1="158" x2="382" y2="158" stroke="currentColor" strokeWidth="1.1" />
+      <line x1="358" y1="166" x2="376" y2="166" stroke="currentColor" strokeWidth="1.1" />
+      <text x="348" y="196" fill="currentColor" fontSize="9" fontFamily="monospace">
+        BIO-LOCK
+      </text>
+    </svg>
+  )
+}
+
+/**
+ * 04. Vector lineal para "Suites Privadas":
+ * Plano arquitectónico de sala técnica exclusiva con doble fila de racks enfrentados,
+ * pasillo frío/caliente contenido, unidades CRAC N+1 y esclusa mantrap.
+ */
+function VectorPrivateSuite() {
+  return (
+    <svg
+      viewBox="0 0 470 300"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-full"
+    >
+      {/* Cuadrícula técnica */}
+      <g stroke="currentColor" strokeOpacity="0.06" strokeWidth="1">
+        {Array.from({ length: 10 }).map((_, i) => (
+          <line key={`v-${i}`} x1={47 * (i + 1)} y1="0" x2={47 * (i + 1)} y2="300" />
+        ))}
+        {Array.from({ length: 6 }).map((_, i) => (
+          <line key={`h-${i}`} x1="0" y1={50 * (i + 1)} x2="470" y2={50 * (i + 1)} />
+        ))}
+      </g>
+
+      {/* Muros de cerramiento de la Suite Privada */}
+      <rect
+        x="52"
+        y="32"
+        width="366"
+        height="236"
+        rx="6"
+        fill="#f7f7f5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+
+      {/* Unidades de Climatización Dedicadas CRAC (Izquierda) */}
+      {[56, 128, 200].map((y, idx) => (
+        <g key={y}>
+          <rect
+            x="68"
+            y={y}
+            width="42"
+            height="50"
+            rx="2"
+            fill="#cef79e"
+            fillOpacity="0.4"
+            stroke="currentColor"
+            strokeWidth="1.2"
+          />
+          <circle cx="89" cy={y + 25} r="12" stroke="currentColor" strokeWidth="1.1" />
+          <line x1="81" y1={y + 17} x2="97" y2={y + 33} stroke="currentColor" strokeWidth="1" />
+          <line x1="97" y1={y + 17} x2="81" y2={y + 33} stroke="currentColor" strokeWidth="1" />
+          <text x="72" y={y + 46} fill="currentColor" fontSize="7.5" fontFamily="monospace">
+            CRAC-{idx + 1}
+          </text>
+        </g>
+      ))}
+
+      {/* Fila Superior de Racks (6 Racks de Alta Densidad) */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <rect
+          key={`top-${i}`}
+          x={136 + i * 34}
+          y="58"
+          width="30"
+          height="48"
+          rx="1.5"
+          fill="#cef79e"
+          fillOpacity="0.65"
+          stroke="currentColor"
+          strokeWidth="1.2"
+        />
+      ))}
+
+      {/* Pasillo contenido central (Cold Aisle Containment) */}
+      <rect
+        x="136"
+        y="112"
+        width="200"
+        height="76"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="1.1"
+        strokeDasharray="4 4"
+      />
+      <text x="180" y="154" fill="currentColor" fontSize="10" fontFamily="monospace">
+        CONTAINED AISLE
+      </text>
+
+      {/* Fila Inferior de Racks (6 Racks de Alta Densidad) */}
+      {Array.from({ length: 6 }).map((_, i) => (
+        <rect
+          key={`bot-${i}`}
+          x={136 + i * 34}
+          y="194"
+          width="30"
+          height="48"
+          rx="1.5"
+          fill="#cef79e"
+          fillOpacity="0.65"
+          stroke="currentColor"
+          strokeWidth="1.2"
+        />
+      ))}
+
+      {/* Esclusa Mantrap y Cuadro Eléctrico PDU en lateral derecho */}
+      <rect x="356" y="58" width="46" height="86" rx="2" stroke="currentColor" strokeWidth="1.2" />
+      <text x="364" y="104" fill="currentColor" fontSize="9" fontFamily="monospace">
+        PDU 2N
+      </text>
+
+      <rect
+        x="356"
+        y="162"
+        width="46"
+        height="80"
+        rx="2"
+        fill="#cef79e"
+        fillOpacity="0.35"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+      <path d="M 356 188 A 24 24 0 0 1 380 212 L 356 212 Z" stroke="currentColor" strokeWidth="1" />
+      <text x="361" y="234" fill="currentColor" fontSize="8" fontFamily="monospace">
+        MANTRAP
+      </text>
+    </svg>
+  )
+}
+
+/**
+ * 05. Vector lineal para "Housing / Wholesale":
+ * Topología de campus mayorista multi-sala con subestación 2N, bloques de megavatios (MW)
+ * y anillos redundantes de fibra oscura.
+ */
+function VectorWholesaleCampus() {
+  return (
+    <svg
+      viewBox="0 0 560 300"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-full h-full"
+    >
+      {/* Cuadrícula técnica */}
+      <g stroke="currentColor" strokeOpacity="0.06" strokeWidth="1">
+        {Array.from({ length: 11 }).map((_, i) => (
+          <line key={`v-${i}`} x1={50 * (i + 1)} y1="0" x2={50 * (i + 1)} y2="300" />
+        ))}
+        {Array.from({ length: 6 }).map((_, i) => (
+          <line key={`h-${i}`} x1="0" y1={50 * (i + 1)} x2="560" y2={50 * (i + 1)} />
+        ))}
+      </g>
+
+      {/* Bus eléctrico superior A (2N Power Feed A) */}
+      <path d="M 48 56 H 512" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="48" cy="56" r="4" fill="#cef79e" stroke="currentColor" strokeWidth="1.3" />
+      <text x="60" y="46" fill="currentColor" fontSize="9.5" fontFamily="monospace">
+        2N POWER RING A · 100% RENEWABLEMW
+      </text>
+
+      {/* 3 Grandes Bloques Mayoristas (Data Halls A, B, C) */}
+      {[0, 1, 2].map((hall) => {
+        const hx = 56 + hall * 156
+        return (
+          <g key={hall}>
+            {/* Líneas de bajada de potencia */}
+            <line x1={hx + 68} y1="56" x2={hx + 68} y2="82" stroke="currentColor" strokeWidth="1.2" />
+            <line x1={hx + 68} y1="218" x2={hx + 68} y2="244" stroke="currentColor" strokeWidth="1.2" />
+
+            <rect
+              x={hx}
+              y="82"
+              width="136"
+              height="136"
+              rx="5"
+              fill="#cef79e"
+              fillOpacity={0.5 - hall * 0.08}
+              stroke="currentColor"
+              strokeWidth="1.5"
+            />
+            {/* Matriz de racks mayorista dentro de cada hall */}
+            {[0, 1, 2].map((r) =>
+              [0, 1, 2, 3].map((c) => (
+                <rect
+                  key={`${r}-${c}`}
+                  x={hx + 14 + c * 28}
+                  y={98 + r * 28}
+                  width="20"
+                  height="18"
+                  rx="1"
+                  fill="#f7f7f5"
+                  stroke="currentColor"
+                  strokeWidth="1"
+                />
+              ))
+            )}
+            <text x={hx + 14} y="204" fill="currentColor" fontSize="9.5" fontFamily="monospace">
+              HALL 0{hall + 1} · MW BLOCK
+            </text>
+          </g>
+        )
+      })}
+
+      {/* Anillo inferior de Fibra Oscura + MMR */}
+      <path d="M 48 244 H 512" stroke="currentColor" strokeWidth="1.5" strokeDasharray="5 3" />
+      <circle cx="512" cy="244" r="4" fill="#cef79e" stroke="currentColor" strokeWidth="1.3" />
+      <text x="60" y="264" fill="currentColor" fontSize="9.5" fontFamily="monospace">
+        DIVERSE DARK FIBER RING · CARRIER NEUTRAL MMR
+      </text>
+    </svg>
+  )
+}
+
 const COLOCATION_PRODUCTS: ColocationProductDef[] = [
   {
     slug: "por-u",
     index: "01",
     href: "/datacenter/colocation/por-u",
-    imageSrc: "/ola-datacenter-racks.jpg",
-    imageAltEn: "Single U server colocation in OLA Datacenter",
-    imageAltEs: "Colocation por U en OLA Datacenter",
     titleEn: "Colocation per U",
     titleEs: "Colocation por U",
     tagEn: "1U TO 10U · SHARED CABINET",
@@ -93,14 +649,12 @@ const COLOCATION_PRODUCTS: ColocationProductDef[] = [
     specsEs: ["Desde 1U hasta 10U", "Energía A+B", "Uplink 1 / 10 Gbps"],
     ctaEn: "Access Colocation per U",
     ctaEs: "Ver Colocation por U",
+    diagram: <VectorColocationPerU />,
   },
   {
     slug: "racks",
     index: "02",
     href: "/datacenter/colocation/racks",
-    imageSrc: "/ola-datacenter-racks.jpg",
-    imageAltEn: "Half rack and full rack colocation in OLA Datacenter",
-    imageAltEs: "Medio rack y rack completo en OLA Datacenter",
     titleEn: "Half Rack / Full Rack",
     titleEs: "Medio Rack / Rack Completo",
     tagEn: "21U OR 42U–48U · DEDICATED CABINET",
@@ -113,14 +667,12 @@ const COLOCATION_PRODUCTS: ColocationProductDef[] = [
     specsEs: ["Medio 21U / Completo 42U–48U", "Hasta 40 kW / Rack", "Cerradura propia"],
     ctaEn: "Access Dedicated Racks",
     ctaEs: "Ver Medio Rack y Rack Completo",
+    diagram: <VectorHalfAndFullRack />,
   },
   {
     slug: "jaulas",
     index: "03",
     href: "/datacenter/colocation/jaulas",
-    imageSrc: "/ola-datacenter-hall.jpg",
-    imageAltEn: "Private colocation cages in OLA Datacenter",
-    imageAltEs: "Jaulas privadas de colocation en OLA Datacenter",
     titleEn: "Private Cages",
     titleEs: "Jaulas Privadas",
     tagEn: "MULTI-RACK · PERIMETER SECURITY",
@@ -133,14 +685,12 @@ const COLOCATION_PRODUCTS: ColocationProductDef[] = [
     specsEs: ["De 3 a 20+ Racks", "Acceso biométrico", "ENS Alto / PCI-DSS"],
     ctaEn: "Access Private Cages",
     ctaEs: "Ver Jaulas Privadas",
+    diagram: <VectorPrivateCage />,
   },
   {
     slug: "suites",
     index: "04",
     href: "/datacenter/colocation/suites",
-    imageSrc: "/ola-datacenter-hall.jpg",
-    imageAltEn: "Private technical suites in OLA Datacenter",
-    imageAltEs: "Suites técnicas privadas en OLA Datacenter",
     titleEn: "Private Suites",
     titleEs: "Suites Privadas",
     tagEn: "DEDICATED HALL · HIGH DENSITY",
@@ -153,14 +703,12 @@ const COLOCATION_PRODUCTS: ColocationProductDef[] = [
     specsEs: ["Sala técnica exclusiva", "Climatización N+1", "Preparada para IA / GPU"],
     ctaEn: "Access Private Suites",
     ctaEs: "Ver Suites Privadas",
+    diagram: <VectorPrivateSuite />,
   },
   {
     slug: "wholesale",
     index: "05",
     href: "/datacenter/colocation/wholesale",
-    imageSrc: "/ola-building-exterior.jpg",
-    imageAltEn: "Housing and wholesale capacity at OLA Datacenter",
-    imageAltEs: "Capacidad Housing y Wholesale en OLA Datacenter",
     titleEn: "Housing / Wholesale",
     titleEs: "Housing / Wholesale",
     tagEn: "HYPERSCALE & CARRIER CAPACITY",
@@ -173,6 +721,7 @@ const COLOCATION_PRODUCTS: ColocationProductDef[] = [
     specsEs: ["250 kW a Multi-MW", "Anillos fibra oscura", "SLA y potencia a medida"],
     ctaEn: "Access Housing / Wholesale",
     ctaEs: "Ver Housing / Wholesale",
+    diagram: <VectorWholesaleCampus />,
   },
 ]
 
@@ -307,10 +856,6 @@ const COLOCATION_METRICS: MetricDef[] = [
   },
 ]
 
-/**
- * Renderiza palabras con cortina `.text-reveal-overlay` (`scaleY(1 -> 0)` en `800ms` con `expo.out`),
- * manteniendo paridad visual 1:1 con la Home y `/company/about`.
- */
 function WordRevealText({
   words,
   revealed,
@@ -354,7 +899,7 @@ export default function ColocationPage() {
   const catalogHeadingRef = useRef<HTMLElement>(null)
   const catalogGridRef = useRef<HTMLElement>(null)
   const uspRef = useRef<HTMLDivElement>(null)
-  const multicolRef = useRef<HTMLElement>(null)
+  const opsRef = useRef<HTMLElement>(null)
 
   const [heroRevealed, setHeroRevealed] = useState(false)
   const [mediaRevealed, setMediaRevealed] = useState(false)
@@ -362,7 +907,7 @@ export default function ColocationPage() {
   const [catalogHeadingRevealed, setCatalogHeadingRevealed] = useState(false)
   const [catalogGridRevealed, setCatalogGridRevealed] = useState(false)
   const [uspRevealed, setUspRevealed] = useState(false)
-  const [multicolRevealed, setMulticolRevealed] = useState(false)
+  const [opsRevealed, setOpsRevealed] = useState(false)
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
@@ -373,7 +918,7 @@ export default function ColocationPage() {
       setCatalogHeadingRevealed(true)
       setCatalogGridRevealed(true)
       setUspRevealed(true)
-      setMulticolRevealed(true)
+      setOpsRevealed(true)
       return
     }
 
@@ -389,7 +934,7 @@ export default function ColocationPage() {
           else if (target === catalogHeadingRef.current) setCatalogHeadingRevealed(true)
           else if (target === catalogGridRef.current) setCatalogGridRevealed(true)
           else if (target === uspRef.current) setUspRevealed(true)
-          else if (target === multicolRef.current) setMulticolRevealed(true)
+          else if (target === opsRef.current) setOpsRevealed(true)
           obs.unobserve(target)
         })
       },
@@ -402,7 +947,7 @@ export default function ColocationPage() {
       catalogHeadingRef.current,
       catalogGridRef.current,
       uspRef.current,
-      multicolRef.current,
+      opsRef.current,
     ]
     targets.forEach((el) => {
       if (el) obs.observe(el)
@@ -475,6 +1020,27 @@ export default function ColocationPage() {
       : [
           { text: "Colocation" },
           { text: "Products", muted: true },
+        ]
+
+  const opsWords: RevealWord[] =
+    lang === "es"
+      ? [
+          ..."Todo lo que tu despliegue de colocation necesita"
+            .split(" ")
+            .map((text) => ({ text })),
+          ...["bajo", "un", "mismo", "techo."].map((text) => ({
+            text,
+            muted: true,
+          })),
+        ]
+      : [
+          ..."Everything your colocation deployment needs"
+            .split(" ")
+            .map((text) => ({ text })),
+          ...["under", "one", "roof."].map((text) => ({
+            text,
+            muted: true,
+          })),
         ]
 
   // ─── 4. Render ────────────────────────────────────────────────────────────
@@ -591,7 +1157,7 @@ export default function ColocationPage() {
         <hr className="border-t border-bg-dark/10 m-0" />
       </div>
 
-      {/* ── SECCIÓN 4: Catálogo de Productos de Colocation (`c-hgroup` + `c-team-grid`) ── */}
+      {/* ── SECCIÓN 4: Catálogo de Productos de Colocation con Dibujos Vectoriales de Líneas ── */}
       <div id="productos" className="w-full">
         <section
           ref={catalogHeadingRef}
@@ -672,11 +1238,11 @@ export default function ColocationPage() {
             </div>
           </aside>
 
-          {/* Grid derecho con las 5 tarjetas de producto estilo `integratedbio.com` */}
+          {/* Grid derecho con las 5 tarjetas de producto + dibujos vectoriales de líneas */}
           <div className="relative w-full pt-12 grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-3 before:rounded-t-[8px] before:border-t before:border-l before:border-r before:border-bg-dark/10">
             {COLOCATION_PRODUCTS.map((product, idx) => {
               const specs = lang === "es" ? product.specsEs : product.specsEn
-              const isFeaturedWide = idx === 4 // El 5º producto (Wholesale) ocupa las 2 columnas en desktop para cerrar el grid con equilibrio
+              const isFeaturedWide = idx === 4
               return (
                 <Link
                   key={product.slug}
@@ -685,7 +1251,8 @@ export default function ColocationPage() {
                   className={cn(
                     "group relative flex flex-col min-h-[320px] p-3 rounded-t-[24px] rounded-bl-[24px] overflow-hidden text-text-base no-underline",
                     "transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)]",
-                    isFeaturedWide && "md:col-span-2 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] md:gap-6 md:items-center",
+                    isFeaturedWide &&
+                      "md:col-span-2 md:grid md:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] md:gap-6 md:items-center",
                     catalogGridRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
                   )}
                   style={{ transitionDelay: `${120 + idx * 110}ms` }}
@@ -700,31 +1267,24 @@ export default function ColocationPage() {
                     }}
                   />
 
-                  {/* Imagen del producto con badge numérico y zoom en hover */}
+                  {/* Lienzo vectorial técnico de líneas */}
                   <figure
                     className={cn(
-                      "relative z-10 w-full aspect-[470/310] rounded-[16px] overflow-hidden bg-bg-dark",
+                      "relative z-10 w-full aspect-[470/300] rounded-[16px] overflow-hidden bg-[#f1f2ec] border border-bg-dark/8 text-bg-dark transition-colors duration-500 group-hover:bg-[#eaece3]",
                       isFeaturedWide ? "mb-4 md:mb-0 md:h-full" : "mb-[18px]"
                     )}
                   >
-                    <img
-                      src={product.imageSrc}
-                      alt={t(product.imageAltEn, product.imageAltEs)}
-                      loading="lazy"
-                      decoding="async"
-                      width={940}
-                      height={620}
-                      className="w-full h-full object-cover object-center transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105"
-                    />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-dark/45 via-transparent to-transparent" />
+                    <div className="w-full h-full flex items-center justify-center p-2 transition-transform duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-[1.03]">
+                      {product.diagram}
+                    </div>
 
                     {/* Índice + Pastilla pastel corporativa en esquina superior */}
-                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                      <span className="inline-flex items-center gap-1.5 bg-surface-light/95 backdrop-blur-md text-text-base rounded-[6px] px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.02em]">
+                    <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
+                      <span className="inline-flex items-center gap-1.5 bg-surface-light/95 backdrop-blur-md text-text-base rounded-[6px] px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.02em] border border-bg-dark/8">
                         <span aria-hidden className="w-2 h-2 bg-primary-hover" />
                         {product.index}
                       </span>
-                      <span className="inline-flex items-center bg-[#cef79e]/90 text-bg-dark rounded-[6px] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.02em]">
+                      <span className="inline-flex items-center bg-[#cef79e]/65 text-bg-dark rounded-[6px] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.02em]">
                         {t(product.tagEn, product.tagEs)}
                       </span>
                     </div>
@@ -880,67 +1440,37 @@ export default function ColocationPage() {
         })}
       </div>
 
-      {/* ── SECCIÓN 6: c-media-wi-multicol (Conectividad + Servicios de Operación) ── */}
+      {/* ── SECCIÓN 6: c-hgroup (Conectividad y Operación — sin foto lateral) ── */}
       <section
-        ref={multicolRef}
-        className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[clamp(64px,calc(48px+4vw),120px)] pb-[clamp(80px,calc(60px+4vw),136px)] grid grid-cols-1 lg:grid-cols-2 gap-11 lg:gap-x-12 items-start"
+        ref={opsRef}
+        className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[clamp(64px,calc(48px+4vw),120px)] pb-[clamp(80px,calc(60px+4vw),136px)] grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] gap-y-11 lg:gap-x-10 items-start"
       >
-        <aside className="w-full">
-          <figure
-            className={cn(
-              "relative w-full max-w-[623px] aspect-[623/500] rounded-[12px] overflow-hidden bg-bg-dark",
-              "transition-all duration-[900ms] ease-[cubic-bezier(0.25,1,0.5,1)]",
-              multicolRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-            )}
-          >
-            <img
-              src="/ola-datacenter-hall.jpg"
-              alt={t(
-                "OLA Datacenter glass-walled technical suite and security systems",
-                "Sala técnica acristalada y sistemas de operación en OLA Datacenter"
-              )}
-              loading="lazy"
-              decoding="async"
-              width={1024}
-              height={682}
-              className="w-full h-full object-cover object-center"
-            />
-          </figure>
-        </aside>
-
-        <div className="w-full flex flex-col items-start gap-y-8">
+        <aside className="relative w-full pt-12 before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-3 before:rounded-t-[8px] before:border-t before:border-l before:border-r before:border-bg-dark/10">
           <div
             className={cn(
               "inline-flex items-center bg-surface-light text-text-base rounded-[8px] py-2 pl-2 pr-3 font-mono uppercase text-[12px] leading-none tracking-[0.02em] shadow-[0_1px_2px_rgba(10,15,28,0.04)]",
               "transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)]",
-              multicolRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+              opsRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
             )}
           >
             <span aria-hidden className="w-2.5 h-2.5 bg-primary-hover mr-3 shrink-0" />
             {t("CONNECTIVITY & OPERATIONS", "CONECTIVIDAD Y OPERACIÓN")}
           </div>
+        </aside>
 
-          <h3
-            className={cn(
-              "text-[clamp(1.5rem,calc(1.35rem+1.1vw),2.5rem)] font-normal tracking-[-0.02em] leading-[1.12] text-balance",
-              "transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[80ms]",
-              multicolRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-            )}
-          >
-            {t(
-              "Everything your colocation deployment needs under one roof.",
-              "Todo lo que tu despliegue de colocation necesita bajo un mismo techo."
-            )}
+        <div className="relative w-full lg:pt-12 flex flex-col items-start gap-y-9 lg:before:content-[''] lg:before:absolute lg:before:top-0 lg:before:left-0 lg:before:w-full lg:before:h-3 lg:before:rounded-t-[8px] lg:before:border-t lg:before:border-l lg:before:border-r lg:before:border-bg-dark/10">
+          <h3 className="text-[clamp(1.75rem,calc(1.5rem+2vw),3.5rem)] font-normal tracking-[-0.02em] leading-[1.1] text-balance">
+            <WordRevealText words={opsWords} revealed={opsRevealed} staggerMs={55} />
           </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-7 max-w-[752px] text-[clamp(1rem,calc(1rem+0.003*(100vw-27.5rem)),1.125rem)] text-text-base/80 tracking-[-0.02em] leading-[1.35]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-[780px] text-[clamp(1rem,calc(1rem+0.003*(100vw-27.5rem)),1.15rem)] text-text-base/80 tracking-[-0.02em] leading-[1.35]">
             <div
               className={cn(
-                "flex flex-col gap-2.5 transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[160ms]",
-                multicolRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+                "flex flex-col gap-2.5 transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[140ms]",
+                opsRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
               )}
             >
-              <span className="inline-block self-start px-2 py-1 rounded bg-[#cef79e]/35 font-mono text-[12px] uppercase tracking-[0.02em] text-bg-dark">
+              <span className="inline-block self-start px-2 py-1 rounded bg-[#cef79e]/45 font-mono text-[12px] uppercase tracking-[0.02em] text-bg-dark">
                 {t("Connectivity", "Conectividad")}
               </span>
               <p>
@@ -953,11 +1483,11 @@ export default function ColocationPage() {
 
             <div
               className={cn(
-                "flex flex-col gap-2.5 transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[240ms]",
-                multicolRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+                "flex flex-col gap-2.5 transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[220ms]",
+                opsRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
               )}
             >
-              <span className="inline-block self-start px-2 py-1 rounded bg-[#cef79e]/20 font-mono text-[12px] uppercase tracking-[0.02em] text-bg-dark">
+              <span className="inline-block self-start px-2 py-1 rounded bg-[#cef79e]/22 font-mono text-[12px] uppercase tracking-[0.02em] text-bg-dark">
                 {t("Operations Services", "Servicios de operación")}
               </span>
               <p>
@@ -971,8 +1501,8 @@ export default function ColocationPage() {
 
           <div
             className={cn(
-              "pt-2 transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[320ms]",
-              multicolRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
+              "pt-2 transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[300ms]",
+              opsRevealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
             )}
           >
             <ArrowCta href="/contact">
@@ -989,14 +1519,14 @@ export default function ColocationPage() {
 
 /*
  * ─── 5. Memoria ─────────────────────────────────────────────────────────────
- * Por qué: el usuario solicitó diseñar `/datacenter/colocation` en la misma línea
- * PRO que `/company/about` (`integratedbio.com/company/`), mostrando los productos
- * de Colocation para dar acceso directo a cada uno de ellos.
+ * Por qué: el usuario pidió eliminar la fotografía lateral de la sección
+ * `Conectividad y Operación` e implementar dibujos vectoriales de líneas en las
+ * 5 soluciones de Colocation (`Colocation por U`, `Medio Rack / Rack Completo`,
+ * `Jaulas Privadas`, `Suites Privadas`, `Housing / Wholesale`).
  * Decisiones técnicas:
- *  - Se estructuraron los 5 productos oficiales del menú (`Colocation por U`,
- *    `Medio rack / rack completo`, `Jaulas`, `Suites`, `Housing / wholesale`)
- *    como tarjetas `.c-team-grid` con muesca curva `87×90` y botón paralelogramo `.u-btn--2`
- *    que enlazan a `/datacenter/colocation/[slug]`.
- *  - Se mantuvo la misma secuencia de animaciones por scroll (`WordRevealText`,
- *    barrido `clip-path` en `USP_CARDS` y entrada escalonada).
+ *  - Se crearon 5 componentes SVG vectoriales a medida (`VectorColocationPerU`,
+ *    `VectorHalfAndFullRack`, `VectorPrivateCage`, `VectorPrivateSuite`, `VectorWholesaleCampus`)
+ *    con estética de plano técnico de líneas finas y acentos `#cef79e`.
+ *  - La sección `Conectividad y Operación` se transformó al formato limpio `c-hgroup`
+ *    (1fr / 2fr con corchetes superiores y titular con cortina por palabra) sin foto.
  */

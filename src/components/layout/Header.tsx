@@ -134,23 +134,25 @@ export function Header() {
   )
 
   const panelHeading = (href: string | null, title: string, desc: string, pastelBgClass: string) => {
-    const baseClasses = cn(
-      "group/ph block mb-3 px-3 py-2.5 -mx-2 rounded-lg transition-colors duration-200",
-      pastelBgClass,
-      "hover:bg-transparent"
-    )
     const inner = (
       <>
-        <h4 className="label-mono text-bg-dark/90 group-hover/ph:text-bg-dark transition-colors">{title}</h4>
-        <span className="block text-[11px] leading-snug text-bg-dark/65 mt-1.5">{desc}</span>
+        <h4
+          className={cn(
+            "label-mono inline-block px-2 py-1 -ml-1 rounded text-bg-dark/85 group-hover/ph:bg-transparent group-hover/ph:text-text-base transition-colors duration-200",
+            pastelBgClass
+          )}
+        >
+          {title}
+        </h4>
+        <span className="block text-[11px] leading-snug text-text-muted mt-1.5">{desc}</span>
       </>
     )
     return href ? (
-      <Link href={href} className={baseClasses}>
+      <Link href={href} className="group/ph block mb-3 px-2 py-1.5 -mx-2 rounded-md hover:bg-surface-beige transition-colors">
         {inner}
       </Link>
     ) : (
-      <div className={baseClasses}>{inner}</div>
+      <div className="group/ph mb-3 px-2 py-1.5 -mx-2 rounded-md hover:bg-surface-beige transition-colors">{inner}</div>
     )
   }
 

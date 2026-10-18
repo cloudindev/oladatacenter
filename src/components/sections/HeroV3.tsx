@@ -144,11 +144,14 @@ export function HeroV3() {
           </h1>
 
           <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-medium text-left">
-            {t("Sovereign infrastructure. Extreme performance.", "Infraestructura soberana. Rendimiento extremo.")}{" "}
+            {t(
+              "The ecosystem for enterprise AI. Extreme performance.",
+              "El ecosistema para la IA empresarial. Rendimiento extremo."
+            )}{" "}
             <br className="hidden sm:block" />
             {t(
-              "Designed to power AI and mission-critical workloads.",
-              "Diseñada para potenciar IA y cargas críticas."
+              "Scalable and secure solutions for data hosting",
+              "Soluciones escalables y seguras para el alojamiento de datos"
             )}
           </p>
 

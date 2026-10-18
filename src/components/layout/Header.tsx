@@ -151,25 +151,8 @@ export function Header() {
 
   return (
     <header className="fixed top-[29px] inset-x-0 z-50 pointer-events-none px-4 md:px-[44px] [&_.label-mono]:!text-[12.5px]">
-      <div className="relative flex justify-end md:justify-center">
-        {/* Logo — pinned left, outside the morphing container */}
-        <Link
-          href="/"
-          aria-label="OLA Datacenter"
-          className={cn("absolute left-0 top-0 h-[52px] flex items-center pointer-events-auto")}
-        >
-          <Image
-            src="/oladc.png"
-            alt="OLA Datacenter"
-            width={1082}
-            height={378}
-            priority
-            unoptimized
-            className="h-[26px] w-auto"
-          />
-        </Link>
-
-        {/* Centered group: nav pill + actions pill (share the morphing backdrop) */}
+      <div className="relative flex justify-center">
+        {/* Centered group: nav pill (with logo on left) + actions pill (share the morphing backdrop) */}
         <div
           ref={containerRef}
           className="relative flex items-stretch gap-2 pointer-events-auto"
@@ -190,15 +173,33 @@ export function Header() {
             ref={pillRef}
             aria-label={t("Main", "Principal")}
             className={cn(
-              "relative z-10 hidden md:flex items-center gap-1 h-[52px] px-3 rounded-lg transition-colors duration-300",
+              "relative z-10 flex items-center gap-1 h-[52px] pl-5 pr-3 rounded-lg transition-colors duration-300",
               open ? "bg-transparent border border-transparent" : PILL_GLASS
             )}
           >
-            {navItem("datacenter", t("Datacenter", "Datacenter"))}
-            {navItem("products", t("AI", "IA"))}
-            {navItem("solutions", t("Cloud", "Cloud"))}
-            {navItem("company", t("OLA", "OLA"))}
-            {bareLink("/resources", t("Resources", "Recursos"))}
+            <Link
+              href="/"
+              aria-label="OLA Datacenter"
+              onMouseEnter={() => setActive(null)}
+              className="flex items-center pr-4 mr-2 shrink-0"
+            >
+              <Image
+                src="/ola-menu-logo.png"
+                alt="OLA Datacenter"
+                width={300}
+                height={93}
+                priority
+                unoptimized
+                className="h-[22px] w-auto"
+              />
+            </Link>
+            <div className="hidden md:flex items-center gap-1">
+              {navItem("datacenter", t("Datacenter", "Datacenter"))}
+              {navItem("products", t("AI", "IA"))}
+              {navItem("solutions", t("Cloud", "Cloud"))}
+              {navItem("company", t("OLA", "OLA"))}
+              {bareLink("/resources", t("Resources", "Recursos"))}
+            </div>
           </nav>
 
           {/* Panel content (fades in below the nav; height feeds the backdrop) */}

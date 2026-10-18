@@ -22,7 +22,7 @@ import { ChipCta } from "@/components/ui/ChipCta"
 import { cn } from "@/lib/utils"
 
 // ─── Interfaces ─────────────────────────────────────────────────────────────
-type MenuKey = "datacenter" | "products" | "solutions" | "company"
+type MenuKey = "datacenter" | "products" | "solutions"
 type ActiveState = MenuKey | "bare" | null
 
 interface PanelItem {
@@ -197,7 +197,7 @@ export function Header() {
               {navItem("datacenter", t("Datacenter", "Datacenter"))}
               {navItem("products", t("AI", "IA"))}
               {navItem("solutions", t("Cloud", "Cloud"))}
-              {navItem("company", t("OLA", "OLA"))}
+              {bareLink("/company/about", t("OLA", "OLA"))}
               {bareLink("/resources", t("Resources", "Recursos"))}
             </div>
           </nav>
@@ -335,25 +335,6 @@ export function Header() {
                       { href: "/cloud/storage", en: "Disaster Recovery & Backups", es: "Disaster Recovery y Backups" },
                       { href: "/cloud/database", en: "Synchronous geo-replication", es: "Georeplicación síncrona" },
                       { href: "/cloud/build", en: "Cloud migration", es: "Migración a la nube" },
-                    ].map(panelLink)}
-                  </ul>
-                </div>
-              </div>
-            )}
-
-            {menu === "company" && (
-              <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6 p-4">
-                <div className="relative rounded-lg overflow-hidden min-h-[180px] hidden md:block">
-                  <Image src="/ola-datacenter-hero.jpg" alt="OLA Datacenter" fill className="object-cover" />
-                </div>
-                <div>
-                  <h4 className="label-mono text-text-muted mb-4">{t("Company", "Empresa")}</h4>
-                  <ul className="space-y-1">
-                    {[
-                      { href: "/company/about", en: "About us", es: "Sobre nosotros" },
-                      { href: "/company/sustainability", en: "Sustainability", es: "Sostenibilidad" },
-                      { href: "/company/news", en: "News", es: "Noticias" },
-                      { href: "/contact", en: "Contact", es: "Contacto" },
                     ].map(panelLink)}
                   </ul>
                 </div>

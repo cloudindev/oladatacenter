@@ -9,7 +9,6 @@ import { SolutionsSection } from "@/components/sections/SolutionsSection"
 import { DatacenterBanner } from "@/components/sections/DatacenterBanner"
 
 // V1 Sections (Dark Theme) - Restored
-import { Hero } from "@/components/sections/Hero"
 import { PromiseSection } from "@/components/sections/PromiseSection"
 import { CloudSection } from "@/components/sections/CloudSection"
 
@@ -25,7 +24,6 @@ export default function Home() {
         <SolutionsSection />
 
         {/* OLD V1 DESIGN SECTIONS (Restored) */}
-        <Hero />
         <PromiseSection />
         <CloudSection />
 

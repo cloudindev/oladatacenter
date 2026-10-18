@@ -15,16 +15,17 @@ export function DatacenterBanner() {
         <div className="relative rounded-lg overflow-hidden bg-bg-dark text-white min-h-[320px] shadow-2xl">
           
           {/* Background Image */}
-          <div className="absolute inset-0 z-0">
+          <div className="absolute inset-y-0 right-0 w-full md:w-[66%] z-0">
             <Image 
               src="/ola-ai-datacenter.jpg" 
               alt="OLA AI Datacenter" 
               fill 
-              className="object-cover md:object-contain object-right [mask-image:linear-gradient(to_right,transparent,black_15%)]" 
+              unoptimized
+              className="object-cover object-[center_42%] [mask-image:linear-gradient(to_right,transparent_0%,black_28%)]" 
               quality={100}
             />
-            {/* Overlay gradient extended to completely hide the hard edge of the image on the left */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#222f30] via-[#222f30] via-[40%] to-transparent w-full pointer-events-none" />
+            {/* Smooth left gradient blend into #222f30 */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#222f30] via-[#222f30]/40 via-[25%] to-transparent pointer-events-none" />
           </div>
 
           <div className="relative z-10 p-8 md:p-12 lg:p-14 max-w-2xl h-full flex flex-col justify-center">

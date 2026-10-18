@@ -200,7 +200,7 @@ const FACILITY_CARDS: FacilityCardDef[] = [
     href: "/datacenter/operations",
   },
   {
-    imageSrc: "/ola-building-exterior.jpg",
+    imageSrc: "/ola-ai-datacenter.jpg",
     imageAltEn: "OLA Datacenter facility surrounded by nature in Spain",
     imageAltEs: "Edificio de OLA Datacenter rodeado de naturaleza en España",
     titleEn: "Green Edge Campus in Spain",

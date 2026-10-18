@@ -231,11 +231,11 @@ export function Header() {
                   )}
                   <ul className="space-y-1">
                     {[
-                      { href: "/datacenter/colocation", en: "Colocation per U", es: "Colocation por U" },
-                      { href: "/datacenter/colocation", en: "Half rack / full rack", es: "Medio rack / rack completo" },
-                      { href: "/datacenter/colocation", en: "Cages", es: "Jaulas" },
-                      { href: "/datacenter/colocation", en: "Suites", es: "Suites" },
-                      { href: "/datacenter/colocation", en: "Housing / wholesale", es: "Housing / wholesale" },
+                      { href: "/datacenter/colocation/por-u", en: "Colocation per U", es: "Colocation por U" },
+                      { href: "/datacenter/colocation/racks", en: "Half rack / full rack", es: "Medio rack / rack completo" },
+                      { href: "/datacenter/colocation/jaulas", en: "Cages", es: "Jaulas" },
+                      { href: "/datacenter/colocation/suites", en: "Suites", es: "Suites" },
+                      { href: "/datacenter/colocation/wholesale", en: "Housing / wholesale", es: "Housing / wholesale" },
                     ].map(panelLink)}
                   </ul>
                 </div>

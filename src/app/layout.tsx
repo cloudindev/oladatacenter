@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
-import { Manrope, Roboto_Mono } from "next/font/google";
+import { Manrope, Montserrat, Roboto_Mono } from "next/font/google";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
 /**
  * Fonts mirror integratedbio.com: a geometric grotesk for text (their primary is
- * Aspekta, not on Google Fonts — Manrope is the fallback they declare) and
+ * Aspekta, not on Google Fonts — Manrope is the fallback they declare),
+ * Montserrat Black for heavy display headlines, and
  * Roboto Mono for uppercase labels, nav items and CTAs.
  */
 const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["800", "900"],
 });
 
 const robotoMono = Roboto_Mono({
@@ -33,7 +40,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${robotoMono.variable} h-full antialiased`}
+      className={`${manrope.variable} ${montserrat.variable} ${robotoMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bg-light text-text-base">
         <LanguageProvider>

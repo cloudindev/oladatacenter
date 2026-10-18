@@ -5,17 +5,6 @@ import Image from "next/image"
 import { useLanguage } from "@/context/LanguageContext"
 import { ArrowCta } from "@/components/ui/ArrowCta"
 
-// Headline gradient (original look): golden sweep from bottom-left into near-black
-const headlineColor: React.CSSProperties = {
-  backgroundImage:
-    "radial-gradient(98% 164% at -5.4% 124.2%, rgb(255, 200, 102) 0%, rgb(141, 114, 67) 40%, rgb(62, 48, 24) 77%, rgb(19, 21, 23) 100%)",
-  WebkitBackgroundClip: "text",
-  backgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  color: "transparent",
-  paddingBottom: "0.12em",
-}
-
 export function HeroV3() {
   const { t } = useLanguage()
 
@@ -134,13 +123,9 @@ export function HeroV3() {
 
         {/* Bottom block: headline + subheadline + CTAs aligned left */}
         <div className="relative z-10 px-6 pb-10 md:px-14 md:pb-14">
-          <h1 className="text-[12vw] sm:text-7xl lg:text-[6.25rem] font-bold tracking-[-0.045em] leading-[0.96] mb-5 text-left">
-            <span style={headlineColor} className="block">
-              Edge Green
-            </span>
-            <span style={headlineColor} className="block -mt-[0.14em]">
-              Datacenter
-            </span>
+          <h1 className="font-[family-name:var(--font-montserrat)] font-black text-bg-dark text-[11vw] sm:text-7xl lg:text-[6rem] tracking-[-0.04em] leading-[0.94] mb-5 text-left">
+            <span className="block">Edge Green</span>
+            <span className="block">Datacenter</span>
           </h1>
 
           <p className="text-lg md:text-xl text-text-base max-w-xl mb-8 leading-relaxed font-medium text-left">

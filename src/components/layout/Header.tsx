@@ -197,7 +197,7 @@ export function Header() {
                 height={460}
                 priority
                 unoptimized
-                className="h-[22px] w-auto"
+                className="h-[20px] w-auto"
               />
             </Link>
             <div className="hidden md:flex items-center gap-1">

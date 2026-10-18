@@ -11,11 +11,11 @@ export function Footer() {
 
   const col = (title: string, links: { href: string; label: string }[]) => (
     <div>
-      <h4 className="text-[#f9f9f6] text-base font-normal mb-6">{title}</h4>
-      <ul className="space-y-3.5">
+      <h4 className="text-[#f9f9f6] text-[15px] font-normal mb-3">{title}</h4>
+      <ul className="space-y-1.5">
         {links.map((l) => (
           <li key={l.href + l.label}>
-            <Link href={l.href} className="text-[15px] text-[#807d73] hover:text-white transition-colors">
+            <Link href={l.href} className="text-[14px] leading-snug text-[#807d73] hover:text-white transition-colors">
               {l.label}
             </Link>
           </li>
@@ -53,44 +53,48 @@ export function Footer() {
         </Link>
       </div>
 
-      {/* Main grid: brand column + link columns */}
-      <div className="container mx-auto px-6 pb-20 grid grid-cols-1 lg:grid-cols-2 gap-16">
+      {/* Main grid: brand column + product columns */}
+      <div className="container mx-auto px-6 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-start">
         <div className="flex flex-col items-start">
-          <Link href="/" className="mb-6 block">
+          <Link href="/" className="mb-2.5 block">
             <Image
-              src="/ola-logo.png"
+              src="/ola-footer-logo.png"
               alt="OLA Datacenter"
-              width={1082}
-              height={378}
+              width={1024}
+              height={243}
               unoptimized
-              className="h-6 w-auto"
+              className="h-[22px] w-auto"
             />
           </Link>
-          <p className="text-sm text-[#f9f9f6]/90">
-            {t("AI Cloud for what's sovereign", "AI Cloud para lo soberano")}
+          <p className="font-mono text-[12px] uppercase tracking-[0.06em] text-[#f9f9f6]/80">
+            Data Center
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-8">
           {col("Datacenter", [
-            { href: "/datacenter/colocation", label: t("Colocation", "Colocation") },
-            { href: "/datacenter/on-premise", label: t("On-premise Cloud", "Cloud On-premise") },
-            { href: "/datacenter/ai-servers", label: t("AI Servers", "Servidores IA") },
-            { href: "/datacenter/bare-metal", label: t("Bare metal", "Bare metal") },
-            { href: "/datacenter/hosting", label: "Hosting" },
+            { href: "/datacenter/colocation/por-u", label: t("Colocation per U", "Colocation por U") },
+            { href: "/datacenter/colocation/racks", label: t("Half rack / full rack", "Medio rack / rack completo") },
+            { href: "/datacenter/colocation/jaulas", label: t("Cages", "Jaulas") },
+            { href: "/datacenter/colocation/suites", label: t("Suites", "Suites") },
+            { href: "/datacenter/colocation/wholesale", label: t("Housing / wholesale", "Housing / wholesale") },
+            { href: "/datacenter/colocation", label: t("Connectivity", "Conectividad") },
+            { href: "/datacenter/hosting", label: t("Operations services", "Servicios de operación") },
+          ])}
+          {col(t("AI", "IA"), [
+            { href: "/cloud/ai", label: t("AI Infrastructure", "Infraestructura IA") },
+            { href: "/datacenter/ai-servers", label: t("GPU Servers", "Servidores GPU") },
+            { href: "/datacenter/on-premise", label: t("On-Prem Cloud", "On-Prem Cloud") },
+            { href: "/products", label: t("AI box", "AI box") },
           ])}
           {col("Cloud", [
-            { href: "/cloud/ai", label: t("AI Cloud", "Cloud IA") },
-            { href: "/cloud/compute", label: t("Compute", "Cómputo") },
-            { href: "/cloud/storage", label: t("Storage", "Almacenamiento") },
-            { href: "/cloud/database", label: t("Databases", "Bases de datos") },
-            { href: "/cloud/managed", label: t("Managed solutions", "Soluciones gestionadas") },
-          ])}
-          {col(t("Company", "Empresa"), [
-            { href: "/company/about", label: t("About OLA", "Sobre OLA") },
-            { href: "/company/sustainability", label: t("Sustainability", "Sostenibilidad") },
-            { href: "/company/news", label: t("News", "Noticias") },
-            { href: "/contact", label: t("Contact", "Contacto") },
+            { href: "/cloud/compute", label: t("Cloud VPS servers", "Servidores VPS Cloud") },
+            { href: "/cloud/compute", label: t("Windows VPS servers", "Servidores VPS Windows") },
+            { href: "/cloud/compute", label: t("Dedicated servers", "Servidores Dedicados") },
+            { href: "/cloud/managed", label: t("Managed services", "Servicios gestionados") },
+            { href: "/cloud/storage", label: t("Disaster Recovery & Backups", "Disaster Recovery y Backups") },
+            { href: "/cloud/database", label: t("Synchronous geo-replication", "Georeplicación síncrona") },
+            { href: "/cloud/build", label: t("Cloud migration", "Migración a la nube") },
           ])}
         </div>
       </div>

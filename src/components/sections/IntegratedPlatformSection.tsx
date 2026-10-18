@@ -171,16 +171,11 @@ export function IntegratedPlatformSection() {
           { text: "en" },
           { text: "una" },
           { text: "infraestructura" },
-          { text: "de" },
-          { text: "centro" },
-          { text: "de" },
-          { text: "datos" },
-          { text: "privada" },
-          { text: "que", muted: true },
-          { text: "satisface", muted: true },
-          { text: "sus", muted: true },
-          { text: "necesidades", muted: true },
-          { text: "locales.", muted: true },
+          { text: "de", muted: true },
+          { text: "centro", muted: true },
+          { text: "de", muted: true },
+          { text: "datos", muted: true },
+          { text: "privada", muted: true },
         ]
       : [
           { text: "Data" },
@@ -189,14 +184,9 @@ export function IntegratedPlatformSection() {
           { text: "security" },
           { text: "in" },
           { text: "a" },
-          { text: "private" },
-          { text: "datacenter" },
-          { text: "infrastructure" },
-          { text: "that", muted: true },
-          { text: "meets", muted: true },
-          { text: "your", muted: true },
-          { text: "local", muted: true },
-          { text: "needs.", muted: true },
+          { text: "private", muted: true },
+          { text: "datacenter", muted: true },
+          { text: "infrastructure", muted: true },
         ]
 
   /**
@@ -268,7 +258,7 @@ export function IntegratedPlatformSection() {
               <React.Fragment key={idx}>
                 <span
                   className={cn(
-                    "relative inline-block overflow-hidden align-bottom",
+                    "relative inline-block align-bottom",
                     w.muted ? "text-[#c9cbbe]" : "text-text-base"
                   )}
                   style={{ clipPath: "inset(-0.1em)" }}

@@ -186,8 +186,8 @@ export function Header() {
               <Image
                 src="/ola-menu-logo.png"
                 alt="OLA Datacenter"
-                width={1024}
-                height={292}
+                width={886}
+                height={211}
                 priority
                 unoptimized
                 className="h-[22px] w-auto"

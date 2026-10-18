@@ -297,7 +297,7 @@ export function IntegratedPlatformSection() {
             )}
           >
             <ArrowCta href="/company/about">
-              {t("DISCOVER OUR COMPANY", "DESCUBRE NUESTRA EMPRESA")}
+              {t("DISCOVER THE DATA CENTER", "DESCUBRE EL DATA CENTER")}
             </ArrowCta>
           </div>
         </div>

@@ -4,19 +4,15 @@
  * ArchitectureSection — Sección debajo de las 3 tarjetas de colores (`IntegratedPlatformSection`)
  * en la Home (`/`).
  *
- * Diseño solicitado por el usuario:
- *  - Estructura espejo de `IntegratedPlatformSection` (`c-hgroup` con corchetes superiores,
- *    pastilla mono con cuadrado lima, titular bicolor `#222f30` + `#c9cbbe` con cortina por palabra,
- *    párrafo editorial y `ArrowCta`), pero con el **texto a la izquierda**.
- *  - **A la derecha**: Animación vectorial técnica de líneas (en el mismo estilo de planos
- *    vectoriales de Colocation: trazos `#222f30`, cuadrícula técnica sutil, cotas `Roboto Mono`
- *    y acentos `#cef79e`) que representa las **5 capas de aplicación e infraestructura que ofrece el DC**,
- *    combinando un stack isométrico explosionado animado con el plano técnico vivo de cada capa.
+ * Ajustes aplicados según feedback del usuario:
+ *  - Sin la raya/corchete superior (`before:...` eliminado).
+ *  - Sin el botón inferior `Ver cómo funciona`.
+ *  - Animación vectorial de la derecha sin fondo ni recuadro contenedor (flota limpia sobre `bg-bg-light`).
+ *  - Animación vectorial desplazada ligeramente hacia abajo (`lg:pt-20`) para equilibrar con el titular.
  */
 
 import React, { useEffect, useRef, useState } from "react"
 import { useLanguage } from "@/context/LanguageContext"
-import { ArrowCta } from "@/components/ui/ArrowCta"
 import { cn } from "@/lib/utils"
 
 // ─── 1. Interfaces ──────────────────────────────────────────────────────────
@@ -85,7 +81,7 @@ const DC_LAYERS: DcLayerDef[] = [
     titleEn: "Connectivity & Low-Latency Edge",
     titleEs: "Conectividad Neutra y Edge",
     descEn: "Sub-2ms latency across Spain via redundant Meet-Me Rooms and dark fiber.",
-    descEs: " Cómputo y red de baja latencia (< 2 ms) mediante fibra oscura y Meet-Me Room.",
+    descEs: "Cómputo y red de baja latencia (< 2 ms) mediante fibra oscura y Meet-Me Room.",
     specTagEn: "< 2 MS · MMR · DARK FIBER",
     specTagEs: "< 2 MS · MMR · FIBRA OSCURA",
   },
@@ -108,7 +104,6 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
   if (activeId === "apps") {
     return (
       <g className="animate-[layerFade_450ms_ease-out]">
-        {/* Módulos de microservicios / APIs interconectados */}
         {[
           { x: 350, y: 86, w: 86, h: 48, label: "API-GW" },
           { x: 472, y: 86, w: 86, h: 48, label: "APP-NODE" },
@@ -122,8 +117,8 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
               width={box.w}
               height={box.h}
               rx="4"
-              fill={i === 0 || i === 3 ? "#cef79e" : "#f7f7f5"}
-              fillOpacity={i === 0 || i === 3 ? "0.6" : "0.95"}
+              fill={i === 0 || i === 3 ? "#cef79e" : "#ffffff"}
+              fillOpacity={i === 0 || i === 3 ? "0.7" : "0.9"}
               stroke="currentColor"
               strokeWidth="1.3"
             />
@@ -147,7 +142,6 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
             </text>
           </g>
         ))}
-        {/* Rutas de datos animadas entre contenedores */}
         <path
           d="M 436 110 H 472 M 393 134 V 164 M 515 134 V 164 M 436 188 H 472"
           stroke="currentColor"
@@ -162,7 +156,6 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
   if (activeId === "ai-cloud") {
     return (
       <g className="animate-[layerFade_450ms_ease-out]">
-        {/* Clúster Tensor GPU / Red Neuronal */}
         {[364, 412, 460].map((y, rIdx) => (
           <g key={`in-${y}`}>
             <line
@@ -190,7 +183,7 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
               cy={98 + rIdx * 46}
               r="11"
               fill="#cef79e"
-              fillOpacity="0.65"
+              fillOpacity="0.75"
               stroke="currentColor"
               strokeWidth="1.3"
             />
@@ -215,7 +208,7 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
               width="32"
               height="32"
               rx="4"
-              fill="#f7f7f5"
+              fill="#ffffff"
               stroke="currentColor"
               strokeWidth="1.3"
             />
@@ -244,7 +237,6 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
   if (activeId === "security") {
     return (
       <g className="animate-[layerFade_450ms_ease-out]">
-        {/* Anillos concéntricos de seguridad + escudo ENS Alto */}
         <circle
           cx="454"
           cy="148"
@@ -259,14 +251,13 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
           cy="148"
           r="46"
           fill="#cef79e"
-          fillOpacity="0.35"
+          fillOpacity="0.4"
           stroke="currentColor"
           strokeWidth="1.2"
         />
-        {/* Escudo geométrico central */}
         <path
           d="M 454 114 L 480 124 V 148 C 480 166 468 178 454 184 C 440 178 428 166 428 148 V 124 Z"
-          fill="#f7f7f5"
+          fill="#ffffff"
           stroke="currentColor"
           strokeWidth="1.5"
         />
@@ -287,7 +278,6 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
   if (activeId === "edge") {
     return (
       <g className="animate-[layerFade_450ms_ease-out]">
-        {/* Anillo de Fibra Oscura + Meet-Me Room */}
         <ellipse
           cx="454"
           cy="148"
@@ -304,7 +294,7 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
           rx="52"
           ry="26"
           fill="#cef79e"
-          fillOpacity="0.4"
+          fillOpacity="0.45"
           stroke="currentColor"
           strokeWidth="1.2"
         />
@@ -321,7 +311,7 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
               width="44"
               height="22"
               rx="3"
-              fill="#f7f7f5"
+              fill="#ffffff"
               stroke="currentColor"
               strokeWidth="1.2"
             />
@@ -337,10 +327,8 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
     )
   }
 
-  // Default: "dc-infra" (Infraestructura Física Datacenter)
   return (
     <g className="animate-[layerFade_450ms_ease-out]">
-      {/* Batería de Racks 2N + Bus Eléctrico Renovable */}
       <line x1="354" y1="84" x2="554" y2="84" stroke="currentColor" strokeWidth="1.4" />
       <text x="356" y="76" fill="currentColor" fontSize="8.5" fontFamily="monospace">
         2N POWER BUS · A+B
@@ -357,7 +345,7 @@ function ActiveLayerBlueprint({ activeId }: { activeId: DcLayerDef["id"] }) {
               height="102"
               rx="2"
               fill="#cef79e"
-              fillOpacity={0.55}
+              fillOpacity={0.6}
               stroke="currentColor"
               strokeWidth="1.3"
             />
@@ -413,9 +401,6 @@ export function ArchitectureSection() {
           { text: "purpose-built.", muted: true },
         ]
 
-  /**
-   * Observador de entrada al viewport idéntico a `IntegratedPlatformSection`.
-   */
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
     if (reduced) {
@@ -442,10 +427,6 @@ export function ArchitectureSection() {
     return () => obs.disconnect()
   }, [])
 
-  /**
-   * Ciclo automático suave entre las 5 capas cada 3.4s cuando el usuario no tiene el cursor encima,
-   * para que la animación vectorial de la derecha esté siempre viva.
-   */
   useEffect(() => {
     if (isPaused) return
     const timer = window.setInterval(() => {
@@ -476,10 +457,9 @@ export function ArchitectureSection() {
         }}
       />
 
-      <div className="max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[clamp(64px,calc(32px+6.5vw),148px)] pb-[clamp(64px,calc(36px+6vw),140px)] grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] gap-y-12 lg:gap-x-12 items-start">
-        {/* ── COLUMNA IZQUIERDA: Pastilla + Titular Cortina + Descripción + Selector de Capas + CTA ── */}
-        <div className="relative w-full pt-12 flex flex-col items-start gap-y-8 before:content-[''] before:absolute before:top-0 before:left-0 before:w-full before:h-3 before:rounded-t-[8px] before:border-t before:border-l before:border-r before:border-bg-dark/10">
-          {/* Pastilla `.u-ts--1` con cuadrado verde lima */}
+      <div className="max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[clamp(64px,calc(32px+6.5vw),140px)] pb-[clamp(64px,calc(36px+6vw),136px)] grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] gap-y-12 lg:gap-x-12 items-start">
+        {/* ── COLUMNA IZQUIERDA: Pastilla + Titular Cortina + Descripción + Selector de Capas ── */}
+        <div className="relative w-full flex flex-col items-start gap-y-8">
           <div
             className={cn(
               "inline-flex items-center bg-surface-light text-text-base rounded-[8px] py-2 pl-2 pr-3 font-mono uppercase text-[12px] leading-none tracking-[0.02em] shadow-[0_1px_2px_rgba(10,15,28,0.04)]",
@@ -491,7 +471,6 @@ export function ArchitectureSection() {
             {t("01 / 05 · DATACENTER STACK", "01 / 05 · CAPAS DEL DATACENTER")}
           </div>
 
-          {/* Titular bicolor con cortina por palabra idéntico a `IntegratedPlatformSection` */}
           <h2
             ref={headingRef}
             className="text-[clamp(1.85rem,calc(1.65rem+0.042*(100vw-27.5rem)),4.25rem)] font-normal tracking-[-0.02em] leading-[1.08] text-balance"
@@ -520,7 +499,6 @@ export function ArchitectureSection() {
             ))}
           </h2>
 
-          {/* Párrafo descriptivo */}
           <p
             className={cn(
               "text-[clamp(1rem,calc(1rem+0.003*(100vw-27.5rem)),1.1875rem)] text-text-base/80 tracking-[-0.02em] leading-[1.35] max-w-[620px]",
@@ -534,7 +512,7 @@ export function ArchitectureSection() {
             )}
           </p>
 
-          {/* Lista interactiva de las 5 capas (sincronizada con el dibujo vectorial derecho) */}
+          {/* Lista interactiva de las 5 capas */}
           <div
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
@@ -590,297 +568,231 @@ export function ArchitectureSection() {
               )
             })}
           </div>
-
-          {/* CTA inferior */}
-          <div
-            className={cn(
-              "pt-1 transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[300ms]",
-              inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-            )}
-          >
-            <ArrowCta href="/datacenter/colocation">
-              {t("EXPLORE INFRASTRUCTURE", "VER CÓMO FUNCIONA")}
-            </ArrowCta>
-          </div>
         </div>
 
-        {/* ── COLUMNA DERECHA: Animación Vectorial Técnica de las Capas del DC ── */}
+        {/* ── COLUMNA DERECHA: Animación Vectorial Limpia (sin fondo y más baja) ── */}
         <aside
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          className="relative w-full lg:pt-12 lg:sticky lg:top-28 lg:before:content-[''] lg:before:absolute lg:before:top-0 lg:before:left-0 lg:before:w-full lg:before:h-3 lg:before:rounded-t-[8px] lg:before:border-t lg:before:border-l lg:before:border-r lg:before:border-bg-dark/10"
+          className={cn(
+            "relative w-full lg:pt-20 text-bg-dark",
+            "transition-all duration-[900ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[180ms]",
+            inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          )}
         >
-          <div
-            className={cn(
-              "relative w-full rounded-[20px] bg-[#f1f2ec] border border-bg-dark/10 overflow-hidden p-4 md:p-6 text-bg-dark shadow-[0_1px_3px_rgba(10,15,28,0.03)]",
-              "transition-all duration-[900ms] ease-[cubic-bezier(0.25,1,0.5,1)] delay-[180ms]",
-              inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-            )}
-          >
-            {/* Cabecera del plano técnico */}
-            <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-2 border-b border-bg-dark/10">
-              <div className="inline-flex items-center gap-2 bg-surface-light rounded-[6px] px-2.5 py-1.5 font-mono text-[11px] uppercase tracking-[0.02em] border border-bg-dark/8">
-                <span aria-hidden className="w-2 h-2 bg-primary-hover animate-pulse" />
-                {activeLayer.index} {t(activeLayer.titleEn, activeLayer.titleEs)}
-              </div>
-              <span className="inline-flex items-center bg-[#cef79e]/75 text-bg-dark rounded-[6px] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.02em]">
-                {t(activeLayer.specTagEn, activeLayer.specTagEs)}
-              </span>
-            </div>
-
-            {/* Lienzo SVG Vectorial Animado (Stack Isométrico Izquierda + Detalle de Capa Derecha) */}
-            <div className="w-full aspect-[620/460]">
-              <svg
-                viewBox="0 0 620 460"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-full h-full"
+          {/* Lienzo SVG Vectorial Animado Flotante */}
+          <div className="w-full aspect-[620/440]">
+            <svg
+              viewBox="0 0 620 440"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-full"
+            >
+              {/* Ejes verticales de interconexión entre las 5 capas isométricas */}
+              <g
+                stroke="currentColor"
+                strokeOpacity="0.28"
+                strokeWidth="1.1"
+                strokeDasharray="4 4"
+                className="animate-[blueprintDash_2.5s_linear_infinite]"
               >
-                {/* Cuadrícula técnica de fondo */}
-                <g stroke="currentColor" strokeOpacity="0.06" strokeWidth="1">
-                  {Array.from({ length: 12 }).map((_, i) => (
-                    <line key={`vg-${i}`} x1={50 * (i + 1)} y1="0" x2={50 * (i + 1)} y2="460" />
-                  ))}
-                  {Array.from({ length: 9 }).map((_, i) => (
-                    <line key={`hg-${i}`} x1="0" y1={50 * (i + 1)} x2="620" y2={50 * (i + 1)} />
-                  ))}
-                </g>
+                <line x1="175" y1="58" x2="175" y2="386" />
+                <line x1="65" y1="110" x2="65" y2="354" />
+                <line x1="285" y1="110" x2="285" y2="354" />
+              </g>
 
-                {/* Ejes verticales de interconexión entre las 5 capas isométricas */}
-                <g
+              {/* 5 Planos Isométricos Superpuestos */}
+              {[4, 3, 2, 1, 0].map((layerIdx) => {
+                const layer = DC_LAYERS[layerIdx]
+                const isActive = layerIdx === activeIndex
+                const baseY = 78 + layerIdx * 64
+                const offsetY = isActive ? baseY - 10 : baseY
+                const thickness = 8
+
+                const topPts = `175,${offsetY - 46} 285,${offsetY} 175,${offsetY + 46} 65,${offsetY}`
+                const leftSidePts = `65,${offsetY} 175,${offsetY + 46} 175,${offsetY + 46 + thickness} 65,${offsetY + thickness}`
+                const rightSidePts = `285,${offsetY} 175,${offsetY + 46} 175,${offsetY + 46 + thickness} 285,${offsetY + thickness}`
+
+                return (
+                  <g
+                    key={layer.id}
+                    onClick={() => setActiveIndex(layerIdx)}
+                    onMouseEnter={() => setActiveIndex(layerIdx)}
+                    className="cursor-pointer transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  >
+                    <polygon
+                      points={leftSidePts}
+                      fill={isActive ? "#a7e26e" : "#e3e4dc"}
+                      stroke="currentColor"
+                      strokeWidth={isActive ? "1.3" : "1"}
+                      strokeOpacity={isActive ? "1" : "0.55"}
+                    />
+                    <polygon
+                      points={rightSidePts}
+                      fill={isActive ? "#95d15c" : "#d5d7cd"}
+                      stroke="currentColor"
+                      strokeWidth={isActive ? "1.3" : "1"}
+                      strokeOpacity={isActive ? "1" : "0.55"}
+                    />
+                    <polygon
+                      points={topPts}
+                      fill={isActive ? "#cef79e" : "#ffffff"}
+                      fillOpacity={isActive ? "0.95" : "0.9"}
+                      stroke="currentColor"
+                      strokeWidth={isActive ? "1.6" : "1.1"}
+                      strokeOpacity={isActive ? "1" : "0.65"}
+                    />
+
+                    <line
+                      x1="120"
+                      y1={offsetY - 23}
+                      x2="230"
+                      y2={offsetY + 23}
+                      stroke="currentColor"
+                      strokeWidth="0.8"
+                      strokeOpacity={isActive ? "0.45" : "0.18"}
+                    />
+                    <line
+                      x1="230"
+                      y1={offsetY - 23}
+                      x2="120"
+                      y2={offsetY + 23}
+                      stroke="currentColor"
+                      strokeWidth="0.8"
+                      strokeOpacity={isActive ? "0.45" : "0.18"}
+                    />
+
+                    {isActive && (
+                      <g>
+                        <path
+                          d={`M 135 ${offsetY} Q 175 ${offsetY - 18} 215 ${offsetY}`}
+                          stroke="currentColor"
+                          strokeWidth="1.3"
+                          strokeDasharray="3 3"
+                          className="animate-[blueprintDash_1.6s_linear_infinite]"
+                        />
+                        <circle cx="135" cy={offsetY} r="4" fill="#222f30" />
+                        <circle cx="175" cy={offsetY - 9} r="3.5" fill="#222f30" />
+                        <circle cx="215" cy={offsetY} r="4" fill="#222f30" />
+                      </g>
+                    )}
+
+                    <line
+                      x1="28"
+                      y1={offsetY}
+                      x2="58"
+                      y2={offsetY}
+                      stroke="currentColor"
+                      strokeWidth={isActive ? "1.3" : "0.9"}
+                      strokeOpacity={isActive ? "0.9" : "0.35"}
+                    />
+                    <text
+                      x="10"
+                      y={offsetY + 3}
+                      fill="currentColor"
+                      fillOpacity={isActive ? "1" : "0.45"}
+                      fontSize="9.5"
+                      fontFamily="monospace"
+                    >
+                      {layer.index}
+                    </text>
+                  </g>
+                )
+              })}
+
+              {/* Línea de llamada técnica desde la capa activa hacia el módulo de zoom */}
+              <path
+                d={`M 285 ${78 + activeIndex * 64 - 10} L 318 ${78 + activeIndex * 64 - 10} L 318 148 L 336 148`}
+                stroke="currentColor"
+                strokeWidth="1.3"
+                strokeDasharray="4 3"
+                className="animate-[blueprintDash_2s_linear_infinite]"
+              />
+              <circle
+                cx="285"
+                cy={78 + activeIndex * 64 - 10}
+                r="3.5"
+                fill="#cef79e"
+                stroke="currentColor"
+                strokeWidth="1.3"
+              />
+
+              {/* ── PANEL DE INSPECCIÓN ORTOGRÁFICO DERECHO (ZOOM DE LA CAPA ACTIVA) ── */}
+              <g>
+                <rect
+                  x="336"
+                  y="46"
+                  width="264"
+                  height="204"
+                  rx="8"
+                  fill="#ffffff"
+                  fillOpacity="0.7"
                   stroke="currentColor"
-                  strokeOpacity="0.28"
-                  strokeWidth="1.1"
-                  strokeDasharray="4 4"
-                  className="animate-[blueprintDash_2.5s_linear_infinite]"
-                >
-                  <line x1="175" y1="68" x2="175" y2="392" />
-                  <line x1="65" y1="120" x2="65" y2="360" />
-                  <line x1="285" y1="120" x2="285" y2="360" />
-                </g>
+                  strokeWidth="1.3"
+                />
+                <line x1="336" y1="68" x2="600" y2="68" stroke="currentColor" strokeWidth="1" strokeOpacity="0.18" />
+                <text x="348" y="60" fill="currentColor" fontSize="9" fontFamily="monospace">
+                  {activeLayer.code} · {activeLayer.elevationLabel}
+                </text>
+                <circle cx="584" cy="57" r="3" fill="#cef79e" stroke="currentColor" strokeWidth="1" />
 
-                {/* 5 Planos Isométricos Superpuestos (Pintados de abajo hacia arriba: índice 4 -> 0) */}
-                {[4, 3, 2, 1, 0].map((layerIdx) => {
-                  const layer = DC_LAYERS[layerIdx]
-                  const isActive = layerIdx === activeIndex
-                  const baseY = 86 + layerIdx * 64
-                  const offsetY = isActive ? baseY - 10 : baseY
-                  const thickness = 8
+                <ActiveLayerBlueprint activeId={activeLayer.id} />
+              </g>
 
-                  // Puntos del rombo isométrico (centro X=175, ancho=220, alto=96)
-                  const topPts = `175,${offsetY - 46} 285,${offsetY} 175,${offsetY + 46} 65,${offsetY}`
-                  const leftSidePts = `65,${offsetY} 175,${offsetY + 46} 175,${offsetY + 46 + thickness} 65,${offsetY + thickness}`
-                  const rightSidePts = `285,${offsetY} 175,${offsetY + 46} 175,${offsetY + 46 + thickness} 285,${offsetY + thickness}`
+              {/* ── TELEMETRÍA Y FLUJO VERTICAL DEL DATACENTER ── */}
+              <g>
+                <rect
+                  x="336"
+                  y="268"
+                  width="264"
+                  height="152"
+                  rx="8"
+                  fill="#ffffff"
+                  fillOpacity="0.7"
+                  stroke="currentColor"
+                  strokeWidth="1.2"
+                />
+                <text x="350" y="290" fill="currentColor" fontSize="9" fontFamily="monospace">
+                  STACK TELEMETRY · FULL-STACK SOVEREIGNTY
+                </text>
+                <line x1="336" y1="298" x2="600" y2="298" stroke="currentColor" strokeWidth="1" strokeOpacity="0.16" />
 
+                {DC_LAYERS.map((l, i) => {
+                  const isAct = i === activeIndex
+                  const by = 312 + i * 20
+                  const widths = [196, 180, 188, 172, 204]
                   return (
                     <g
-                      key={layer.id}
-                      onClick={() => setActiveIndex(layerIdx)}
-                      onMouseEnter={() => setActiveIndex(layerIdx)}
-                      className="cursor-pointer transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                      key={`tel-${l.id}`}
+                      onClick={() => setActiveIndex(i)}
+                      className="cursor-pointer"
                     >
-                      {/* Cara lateral izquierda (grosor técnico) */}
-                      <polygon
-                        points={leftSidePts}
-                        fill={isActive ? "#a7e26e" : "#e3e4dc"}
-                        stroke="currentColor"
-                        strokeWidth={isActive ? "1.3" : "1"}
-                        strokeOpacity={isActive ? "1" : "0.55"}
-                      />
-                      {/* Cara lateral derecha (grosor técnico) */}
-                      <polygon
-                        points={rightSidePts}
-                        fill={isActive ? "#95d15c" : "#d5d7cd"}
-                        stroke="currentColor"
-                        strokeWidth={isActive ? "1.3" : "1"}
-                        strokeOpacity={isActive ? "1" : "0.55"}
-                      />
-                      {/* Cara superior del plano isométrico */}
-                      <polygon
-                        points={topPts}
-                        fill={isActive ? "#cef79e" : "#f7f7f5"}
-                        fillOpacity={isActive ? "0.92" : "0.88"}
-                        stroke="currentColor"
-                        strokeWidth={isActive ? "1.6" : "1.1"}
-                        strokeOpacity={isActive ? "1" : "0.65"}
-                      />
-
-                      {/* Rejilla interna isométrica y circuitos dentro del plano */}
-                      <line
-                        x1="120"
-                        y1={offsetY - 23}
-                        x2="230"
-                        y2={offsetY + 23}
-                        stroke="currentColor"
-                        strokeWidth="0.8"
-                        strokeOpacity={isActive ? "0.45" : "0.18"}
-                      />
-                      <line
-                        x1="230"
-                        y1={offsetY - 23}
-                        x2="120"
-                        y2={offsetY + 23}
-                        stroke="currentColor"
-                        strokeWidth="0.8"
-                        strokeOpacity={isActive ? "0.45" : "0.18"}
-                      />
-
-                      {/* Nodos activos sobre la capa seleccionada */}
-                      {isActive && (
-                        <g>
-                          <path
-                            d={`M 135 ${offsetY} Q 175 ${offsetY - 18} 215 ${offsetY}`}
-                            stroke="currentColor"
-                            strokeWidth="1.3"
-                            strokeDasharray="3 3"
-                            className="animate-[blueprintDash_1.6s_linear_infinite]"
-                          />
-                          <circle cx="135" cy={offsetY} r="4" fill="#222f30" />
-                          <circle cx="175" cy={offsetY - 9} r="3.5" fill="#222f30" />
-                          <circle cx="215" cy={offsetY} r="4" fill="#222f30" />
-                        </g>
-                      )}
-
-                      {/* Cota izquierda con número de capa */}
-                      <line
-                        x1="28"
-                        y1={offsetY}
-                        x2="58"
-                        y2={offsetY}
-                        stroke="currentColor"
-                        strokeWidth={isActive ? "1.3" : "0.9"}
-                        strokeOpacity={isActive ? "0.9" : "0.35"}
-                      />
                       <text
-                        x="14"
-                        y={offsetY + 3}
+                        x="350"
+                        y={by + 9}
                         fill="currentColor"
-                        fillOpacity={isActive ? "1" : "0.45"}
-                        fontSize="9.5"
+                        fillOpacity={isAct ? "1" : "0.5"}
+                        fontSize="8.5"
                         fontFamily="monospace"
                       >
-                        {layer.index}
+                        {l.index}
                       </text>
+                      <rect
+                        x="374"
+                        y={by}
+                        width={widths[i]}
+                        height="11"
+                        rx="2"
+                        fill={isAct ? "#cef79e" : "#e7e8e0"}
+                        stroke="currentColor"
+                        strokeWidth={isAct ? "1.2" : "0.8"}
+                        strokeOpacity={isAct ? "1" : "0.45"}
+                      />
                     </g>
                   )
                 })}
-
-                {/* Línea de llamada técnica desde la capa activa del stack hacia el panel de inspección derecho */}
-                <path
-                  d={`M 285 ${86 + activeIndex * 64 - 10} L 318 ${86 + activeIndex * 64 - 10} L 318 148 L 336 148`}
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeDasharray="4 3"
-                  className="animate-[blueprintDash_2s_linear_infinite]"
-                />
-                <circle
-                  cx="285"
-                  cy={86 + activeIndex * 64 - 10}
-                  r="3.5"
-                  fill="#cef79e"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                />
-
-                {/* ── PANEL DE INSPECCIÓN ORTOGRÁFICO DERECHO (ZOOM DE LA CAPA ACTIVA) ── */}
-                <g>
-                  <rect
-                    x="336"
-                    y="46"
-                    width="260"
-                    height="204"
-                    rx="8"
-                    fill="#f7f7f5"
-                    fillOpacity="0.85"
-                    stroke="currentColor"
-                    strokeWidth="1.3"
-                  />
-                  {/* Cabecera técnica del módulo de zoom */}
-                  <line x1="336" y1="68" x2="596" y2="68" stroke="currentColor" strokeWidth="1" strokeOpacity="0.2" />
-                  <text x="348" y="60" fill="currentColor" fontSize="9" fontFamily="monospace">
-                    {activeLayer.code} · {activeLayer.elevationLabel}
-                  </text>
-                  <circle cx="580" cy="57" r="3" fill="#cef79e" stroke="currentColor" strokeWidth="1" />
-
-                  {/* Contenido vectorial específico de la capa activa */}
-                  <ActiveLayerBlueprint activeId={activeLayer.id} />
-                </g>
-
-                {/* ── TELEMETRÍA Y FLUJO VERTICAL DEL DATACENTER (PARTE INFERIOR DERECHA) ── */}
-                <g>
-                  <rect
-                    x="336"
-                    y="268"
-                    width="260"
-                    height="152"
-                    rx="8"
-                    fill="#f7f7f5"
-                    fillOpacity="0.85"
-                    stroke="currentColor"
-                    strokeWidth="1.2"
-                  />
-                  <text x="350" y="290" fill="currentColor" fontSize="9" fontFamily="monospace">
-                    STACK TELEMETRY · FULL-STACK SOVEREIGNTY
-                  </text>
-                  <line x1="336" y1="298" x2="596" y2="298" stroke="currentColor" strokeWidth="1" strokeOpacity="0.18" />
-
-                  {/* Barras técnicas de las 5 capas sincronizadas */}
-                  {DC_LAYERS.map((l, i) => {
-                    const isAct = i === activeIndex
-                    const by = 312 + i * 20
-                    const widths = [192, 176, 184, 168, 200]
-                    return (
-                      <g
-                        key={`tel-${l.id}`}
-                        onClick={() => setActiveIndex(i)}
-                        className="cursor-pointer"
-                      >
-                        <text
-                          x="350"
-                          y={by + 9}
-                          fill="currentColor"
-                          fillOpacity={isAct ? "1" : "0.5"}
-                          fontSize="8.5"
-                          fontFamily="monospace"
-                        >
-                          {l.index}
-                        </text>
-                        <rect
-                          x="374"
-                          y={by}
-                          width={widths[i]}
-                          height="11"
-                          rx="2"
-                          fill={isAct ? "#cef79e" : "#e7e8e0"}
-                          stroke="currentColor"
-                          strokeWidth={isAct ? "1.2" : "0.8"}
-                          strokeOpacity={isAct ? "1" : "0.4"}
-                        />
-                      </g>
-                    )
-                  })}
-                </g>
-              </svg>
-            </div>
-
-            {/* Pie del lienzo con indicadores rápidos */}
-            <div className="mt-3 pt-3 border-t border-bg-dark/10 flex items-center justify-between font-mono text-[11px] text-text-base/60 uppercase">
-              <span>{t("SPAIN · TIER III+ · 100% RENEWABLE", "ESPAÑA · TIER III+ · 100% RENOVABLE")}</span>
-              <div className="flex items-center gap-1.5">
-                {DC_LAYERS.map((l, idx) => (
-                  <button
-                    key={l.id}
-                    type="button"
-                    aria-label={l.titleEs}
-                    onClick={() => setActiveIndex(idx)}
-                    className={cn(
-                      "h-2 rounded-full transition-all duration-300 cursor-pointer",
-                      idx === activeIndex ? "w-6 bg-bg-dark" : "w-2 bg-bg-dark/20 hover:bg-bg-dark/40"
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
+              </g>
+            </svg>
           </div>
         </aside>
       </div>
@@ -890,16 +802,9 @@ export function ArchitectureSection() {
 
 /*
  * ─── 6. Memoria ─────────────────────────────────────────────────────────────
- * Por qué: el usuario solicitó que la sección debajo de los 3 cuadrados de colores
- * (`IntegratedPlatformSection`) tuviera el mismo lenguaje visual que la de arriba
- * pero con el texto a la izquierda, y a la derecha una animación vectorial con el
- * estilo de los dibujos técnicos de líneas de Colocation representando las capas
- * de aplicación e infraestructura del Data Center.
- * Decisiones técnicas:
- *  - Texto a la izquierda: corchete superior (`before:rounded-t-[8px]`), pastilla mono
- *    con cuadrado lima, titular bicolor `#222f30` + `#c9cbbe` con cortina por palabra,
- *    selector interactivo de las 5 capas y `ArrowCta`.
- *  - Animación vectorial a la derecha: SVG puro sin dependencias pesadas que combina
- *    los 5 planos isométricos del Data Center (con elevación dinámica y flujo de datos)
- *    junto con el plano técnico ortográfico en vivo (`ActiveLayerBlueprint`) de cada capa.
+ * Ajustes aplicados:
+ *  - Eliminado el fondo de tarjeta (`bg-[#f1f2ec]`) y la cuadrícula de la animación derecha.
+ *  - Eliminado el botón `Ver cómo funciona`.
+ *  - Eliminadas las rayas/corchetes superiores (`before:...`).
+ *  - Desplazada la animación hacia abajo (`lg:pt-20`) para quedar equilibrada con el texto.
  */

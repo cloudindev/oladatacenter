@@ -10,6 +10,7 @@
  */
 
 import React, { useEffect, useState } from "react"
+import Link from "next/link"
 import { Header } from "@/components/layout/Header"
 import { Footer } from "@/components/layout/Footer"
 import { ArrowCta } from "@/components/ui/ArrowCta"
@@ -357,18 +358,81 @@ export default function ContactPage() {
                   />
                 </div>
 
-                {/* Pie del formulario: Botón Paralelogramo + Nota de Privacidad */}
-                <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                  <ArrowCta type="submit">
-                    {t("Send Message", "Enviar consulta")}
-                  </ArrowCta>
+                {/* Check de aceptación legal + Botón Paralelogramo */}
+                <div className="space-y-8 pt-2">
+                  <label
+                    htmlFor="contact-privacy"
+                    className="inline-flex items-center gap-3 cursor-pointer select-none group"
+                  >
+                    <input
+                      id="contact-privacy"
+                      name="privacy"
+                      type="checkbox"
+                      required
+                      className="peer sr-only"
+                    />
+                    <span
+                      aria-hidden
+                      className="w-4 h-4 rounded-[3px] border border-bg-dark/35 bg-transparent flex items-center justify-center transition-colors peer-checked:bg-bg-dark peer-checked:border-bg-dark peer-focus-visible:ring-2 peer-focus-visible:ring-bg-dark/40 group-hover:border-bg-dark [&>svg]:opacity-0 peer-checked:[&>svg]:opacity-100"
+                    >
+                      <svg
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        className="w-2.5 h-2.5 text-primary transition-opacity duration-150"
+                      >
+                        <path
+                          d="M2.2 6.2 4.8 8.8 9.8 3.2"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                    <span className="text-[14px] text-text-base/75 leading-snug">
+                      {lang === "es" ? (
+                        <>
+                          Acepto el{" "}
+                          <Link
+                            href="/legal/terms"
+                            className="text-text-base underline decoration-bg-dark/30 underline-offset-4 hover:decoration-bg-dark transition-colors"
+                          >
+                            Aviso legal
+                          </Link>{" "}
+                          y la{" "}
+                          <Link
+                            href="/legal/privacy"
+                            className="text-text-base underline decoration-bg-dark/30 underline-offset-4 hover:decoration-bg-dark transition-colors"
+                          >
+                            Política de Privacidad
+                          </Link>
+                        </>
+                      ) : (
+                        <>
+                          I accept the{" "}
+                          <Link
+                            href="/legal/terms"
+                            className="text-text-base underline decoration-bg-dark/30 underline-offset-4 hover:decoration-bg-dark transition-colors"
+                          >
+                            Legal Notice
+                          </Link>{" "}
+                          and the{" "}
+                          <Link
+                            href="/legal/privacy"
+                            className="text-text-base underline decoration-bg-dark/30 underline-offset-4 hover:decoration-bg-dark transition-colors"
+                          >
+                            Privacy Policy
+                          </Link>
+                        </>
+                      )}
+                    </span>
+                  </label>
 
-                  <p className="font-mono text-[11px] uppercase tracking-[0.04em] text-text-base/45 max-w-[34ch] leading-relaxed">
-                    {t(
-                      "100% confidential · Processed in Spain under GDPR & ENS High.",
-                      "100% confidencial · Tratado en España bajo RGPD y ENS Alto."
-                    )}
-                  </p>
+                  <div>
+                    <ArrowCta type="submit">
+                      {t("Send Message", "Enviar consulta")}
+                    </ArrowCta>
+                  </div>
                 </div>
               </form>
             )}

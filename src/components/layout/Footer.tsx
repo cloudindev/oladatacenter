@@ -138,17 +138,24 @@ export function Footer() {
         <div className="py-14 md:py-16 grid grid-cols-1 lg:grid-cols-12 gap-y-12 lg:gap-x-10 items-start">
           {/* Columna de Marca (Izquierda) */}
           <div className="lg:col-span-4 flex flex-col items-start">
-            <Link href="/" className="inline-block group">
+            <Link href="/" className="inline-flex flex-col items-stretch group">
               <Image
                 src="/ola-footer-logo.png"
                 alt="OLA Datacenter"
-                width={1024}
-                height={243}
+                width={886}
+                height={212}
                 unoptimized
-                className="h-[24px] w-auto transition-opacity duration-200 group-hover:opacity-90"
+                className="h-[24px] w-auto block transition-opacity duration-200 group-hover:opacity-90"
               />
-              <span className="block font-mono text-[11px] uppercase tracking-[0.14em] text-[#f7f7f5]/75 mt-2">
-                Data Center
+              <span
+                aria-label="Data Center"
+                className="w-full flex justify-between px-[1.5px] font-mono text-[10px] uppercase leading-none text-[#f7f7f5]/75 mt-2.5 select-none"
+              >
+                {"DATA CENTER".split("").map((ch, idx) => (
+                  <span key={idx} className={ch === " " ? "w-1.5" : undefined}>
+                    {ch}
+                  </span>
+                ))}
               </span>
             </Link>
           </div>

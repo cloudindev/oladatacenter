@@ -138,7 +138,7 @@ export default function LoginPage() {
           </div>
 
           {/* Columna Derecha: Formulario Desnudo Desplazado a la Izquierda para Respirar a la Derecha */}
-          <div className="lg:col-span-5 lg:col-start-6 lg:pt-12">
+          <div className="lg:col-span-5 lg:col-start-7 lg:pt-12">
             <form onSubmit={handleSubmit} className="space-y-10" noValidate>
               <div>
                 <label

@@ -8,10 +8,6 @@ import { ArchitectureSection } from "@/components/sections/ArchitectureSection"
 import { SolutionsSection } from "@/components/sections/SolutionsSection"
 import { DatacenterBanner } from "@/components/sections/DatacenterBanner"
 
-// V1 Sections (Dark Theme) - Restored
-import { PromiseSection } from "@/components/sections/PromiseSection"
-import { CloudSection } from "@/components/sections/CloudSection"
-
 export default function Home() {
   return (
     <>
@@ -22,10 +18,6 @@ export default function Home() {
         <IntegratedPlatformSection />
         <ArchitectureSection />
         <SolutionsSection />
-
-        {/* OLD V1 DESIGN SECTIONS (Restored) */}
-        <PromiseSection />
-        <CloudSection />
 
         {/* FINAL CLOSING BANNER */}
         <DatacenterBanner />

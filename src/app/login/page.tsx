@@ -109,7 +109,7 @@ export default function LoginPage() {
       <section className="flex-1 flex items-center w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[136px] md:pt-[164px] pb-24 md:pb-32">
         <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-y-14 lg:gap-x-16 items-start pt-8 border-t border-bg-dark/12">
           {/* Columna Izquierda: Titular Editorial y Estado Operativo */}
-          <div className="lg:col-span-6 lg:pr-8">
+          <div className="lg:col-span-5">
             <div className="inline-flex items-center gap-2 font-mono uppercase text-[12px] tracking-[0.04em] text-text-base mb-7">
               <span aria-hidden className="w-2 h-2 bg-primary-hover inline-block" />
               <span>{t("OLA CONSOLE · CLIENT ACCESS", "CONSOLA OLA · ACCESO CLIENTES")}</span>
@@ -119,7 +119,7 @@ export default function LoginPage() {
               <WordRevealText words={heroTitleWords} revealed={revealed} staggerMs={95} />
             </h1>
 
-            <p className="text-[clamp(1.0625rem,calc(1.0625rem+0.005*(100vw-27.5rem)),1.3125rem)] font-normal tracking-[-0.015em] leading-[1.4] text-text-base/75 max-w-[44ch] mb-12">
+            <p className="text-[clamp(1.0625rem,calc(1.0625rem+0.005*(100vw-27.5rem)),1.3125rem)] font-normal tracking-[-0.015em] leading-[1.4] text-text-base/75 max-w-[42ch] mb-12">
               {t(
                 "Manage your colocation telemetry, out-of-band KVM/IPMI consoles, sovereign GPU clusters, and direct 24×7 NOC tickets.",
                 "Gestiona la telemetría de tus racks de colocation, consolas KVM/IPMI fuera de banda, clústeres GPU soberanos y tickets directos con el NOC 24×7."
@@ -130,15 +130,15 @@ export default function LoginPage() {
               <span className="w-2 h-2 rounded-full bg-primary-hover animate-pulse" aria-hidden />
               <span>
                 {t(
-                  "ALL SYSTEMS OPERATIONAL · MADRID DC",
-                  "TODOS LOS SISTEMAS OPERATIVOS · MADRID DC"
+                  "ALL SYSTEMS OPERATIONAL",
+                  "TODOS LOS SISTEMAS OPERATIVOS"
                 )}
               </span>
             </div>
           </div>
 
-          {/* Columna Derecha: Formulario Desnudo Directo Sobre el Lienzo (Sin Card) */}
-          <div className="lg:col-span-5 lg:col-start-8 lg:pt-12">
+          {/* Columna Derecha: Formulario Desnudo Desplazado a la Izquierda para Respirar a la Derecha */}
+          <div className="lg:col-span-5 lg:col-start-6 lg:pt-12">
             <form onSubmit={handleSubmit} className="space-y-10" noValidate>
               <div>
                 <label

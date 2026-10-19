@@ -5,7 +5,9 @@ import Link from "next/link"
 
 // ─── 1. Interfaces ──────────────────────────────────────────────────────────
 export interface ArrowCtaProps {
-  href: string
+  href?: string
+  type?: "button" | "submit"
+  onClick?: React.MouseEventHandler<HTMLAnchorElement | HTMLButtonElement>
   children: React.ReactNode
   /** dark: bloque oscuro + chip menta (por defecto). light: bloque blanco + chip oscuro. */
   variant?: "dark" | "light"
@@ -81,7 +83,14 @@ function morphD(from: Pt[], to: Pt[], t: number): string {
  * frame y solo toca el atributo `d` de 2 paths; sin GSAP (~70KB menos).
  * A11y: SVG decorativos (aria-hidden); foco por teclado = mismo efecto que hover.
  */
-export function ArrowCta({ href, children, variant = "dark", className }: ArrowCtaProps) {
+export function ArrowCta({
+  href,
+  type = "submit",
+  onClick,
+  children,
+  variant = "dark",
+  className,
+}: ArrowCtaProps) {
   const textPath = React.useRef<SVGPathElement>(null)
   const blobPath = React.useRef<SVGPathElement>(null)
   const progress = React.useRef(0) // 0 = reposo, 1 = hover (lineal; el easing se aplica al pintar)
@@ -130,17 +139,8 @@ export function ArrowCta({ href, children, variant = "dark", className }: ArrowC
 
   React.useEffect(() => () => cancelAnimationFrame(raf.current), [])
 
-  // ─── 4. Render ────────────────────────────────────────────────────────────
-  return (
-    <Link
-      href={href}
-      data-variant={variant}
-      className={["ola-btn", className].filter(Boolean).join(" ")}
-      onMouseEnter={() => animateTo(1)}
-      onMouseLeave={() => animateTo(0)}
-      onFocus={() => animateTo(1)}
-      onBlur={() => animateTo(0)}
-    >
+  const innerContent = (
+    <>
       <span className="ola-btn__label">
         {children}
         {/* Esquina que "cose" el bloque con el chip */}
@@ -156,6 +156,41 @@ export function ArrowCta({ href, children, variant = "dark", className }: ArrowC
           <path ref={blobPath} d={SHAPES.blob.rest} />
         </svg>
       </i>
+    </>
+  )
+
+  const sharedClassName = ["ola-btn", className].filter(Boolean).join(" ")
+
+  // ─── 4. Render ────────────────────────────────────────────────────────────
+  if (!href) {
+    return (
+      <button
+        type={type}
+        onClick={onClick}
+        data-variant={variant}
+        className={sharedClassName}
+        onMouseEnter={() => animateTo(1)}
+        onMouseLeave={() => animateTo(0)}
+        onFocus={() => animateTo(1)}
+        onBlur={() => animateTo(0)}
+      >
+        {innerContent}
+      </button>
+    )
+  }
+
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      data-variant={variant}
+      className={sharedClassName}
+      onMouseEnter={() => animateTo(1)}
+      onMouseLeave={() => animateTo(0)}
+      onFocus={() => animateTo(1)}
+      onBlur={() => animateTo(0)}
+    >
+      {innerContent}
     </Link>
   )
 }

@@ -1,18 +1,19 @@
 "use client"
 
 /**
- * PeopleHelpSection — Sección final de acompañamiento cercano en la Home.
- * Inspirada en el bloque de asesoramiento personal ("Nos gusta ayudarte con tus
- * nuevos proyectos") y adaptada al lenguaje editorial de OLA Datacenter:
- *  - Fotografía `ola-people.jpg` con etiquetas flotantes minimalistas junto a
- *    cada persona (**Álvaro Vallina** y **Raquel Sanz**) usando el mismo estilo
- *    tipográfico `font-mono` + indicador cuadrado verde lima del sistema.
- *  - Titular bitono con revelación por cortina (`WordRevealText`), textos limpios
- *    y botón paralelogramo `ArrowCta`.
+ * PeopleHelpSection — Banda full-width de cierre en la Home con estética
+ * techie/editorial minimalista:
+ *  - Banda a sangre (`w-full bg-surface-beige`) con retícula técnica CAD sutil,
+ *    marcas de registro (`+`) y rieles de telemetría superior/inferior.
+ *  - Recorte tipo collage geométrico sobre `ola-people.jpg` mediante `<clipPath>`
+ *    arquitectónico en 3 módulos sincronizados (Álvaro, Raquel + logo OLA en
+ *    pared, y detalle inferior de marca) con contornos técnicos 1px desplazados.
+ *  - Nombres de **Álvaro Vallina** y **Raquel Sanz** sin cards (`cardless`),
+ *    integrados directamente sobre el fondo en los espacios negativos del
+ *    collage y conectados mediante líneas guía CAD ortogonales y nodos lima.
  */
 
 import React, { useEffect, useRef, useState } from "react"
-import Image from "next/image"
 import { ArrowCta } from "@/components/ui/ArrowCta"
 import { useLanguage } from "@/context/LanguageContext"
 import { cn } from "@/lib/utils"
@@ -31,46 +32,15 @@ interface WordRevealTextProps {
   baseDelayMs?: number
 }
 
-interface PersonBadgeDef {
-  id: string
-  name: string
-  roleEs: string
-  roleEn: string
-  positionClass: string
-  pointerSide: "left" | "right"
-  delayMs: number
-}
-
-// ─── 2. Constants & Helpers ─────────────────────────────────────────────────
-const PEOPLE_BADGES: PersonBadgeDef[] = [
-  {
-    id: "alvaro",
-    name: "Álvaro Vallina",
-    roleEs: "Guía OLA",
-    roleEn: "OLA Guide",
-    positionClass: "left-[3.5%] top-[24%] sm:left-[4.5%] sm:top-[26%]",
-    pointerSide: "right",
-    delayMs: 220,
-  },
-  {
-    id: "raquel",
-    name: "Raquel Sanz",
-    roleEs: "Guía OLA",
-    roleEn: "OLA Guide",
-    positionClass: "right-[4%] top-[43%] sm:right-[6%] sm:top-[44%]",
-    pointerSide: "left",
-    delayMs: 380,
-  },
-]
-
+// ─── 2. Helper Components ───────────────────────────────────────────────────
 /**
- * Renderiza una secuencia de palabras con el efecto de cortina `.text-reveal-overlay`
+ * Renderiza palabras con el efecto de cortina `.text-reveal-overlay`
  * animado por compositor GPU (`transform: scaleY`).
  */
 function WordRevealText({
   words,
   revealed,
-  staggerMs = 80,
+  staggerMs = 75,
   baseDelayMs = 0,
 }: WordRevealTextProps) {
   return (
@@ -80,7 +50,7 @@ function WordRevealText({
           <span
             className={cn(
               "relative inline-block align-bottom",
-              w.muted ? "text-[#c9cbbe]" : "text-text-base"
+              w.muted ? "text-[#9a9c8e]" : "text-text-base"
             )}
             style={{ clipPath: "inset(-0.12em)" }}
           >
@@ -98,6 +68,23 @@ function WordRevealText({
         </React.Fragment>
       ))}
     </>
+  )
+}
+
+/**
+ * Cruce técnico de registro CAD (`+`) para las esquinas de la banda.
+ */
+function Crosshair({ className }: { className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={cn(
+        "pointer-events-none select-none font-mono text-[13px] leading-none text-bg-dark/30",
+        className
+      )}
+    >
+      +
+    </span>
   )
 }
 
@@ -125,7 +112,7 @@ export function PeopleHelpSection() {
           }
         })
       },
-      { threshold: 0.18, rootMargin: "0px 0px -10% 0px" }
+      { threshold: 0.16, rootMargin: "0px 0px -10% 0px" }
     )
 
     observer.observe(el)
@@ -157,94 +144,315 @@ export function PeopleHelpSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-bg-light pt-4 pb-24 md:pb-32 text-text-base overflow-hidden"
+      className="relative w-full bg-surface-beige text-text-base border-t border-bg-dark/12 overflow-hidden"
     >
-      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px]">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 lg:gap-x-14 items-center pt-14 md:pt-20 border-t border-bg-dark/12">
-          {/* Columna Izquierda: Imagen `ola-people.jpg` con etiquetas junto a cada persona */}
-          <div className="lg:col-span-7">
-            <figure className="relative w-full aspect-[3/2] rounded-[14px] lg:rounded-[24px] overflow-hidden bg-bg-dark border border-bg-dark/10">
-              <Image
-                src="/ola-people.jpg"
-                alt={t(
-                  "Álvaro Vallina and Raquel Sanz at OLA Datacenter",
-                  "Álvaro Vallina y Raquel Sanz en OLA Datacenter"
-                )}
-                fill
-                unoptimized
-                sizes="(max-width: 1024px) 100vw, 58vw"
-                className={cn(
-                  "object-cover object-center transition-transform duration-[1400ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
-                  revealed ? "scale-100" : "scale-[1.05]"
-                )}
-              />
+      {/* Retícula técnica CAD de fondo a ancho completo */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(34,47,48,0.045)_1px,transparent_1px),linear-gradient(to_bottom,rgba(34,47,48,0.045)_1px,transparent_1px)] bg-[size:56px_56px]"
+      />
 
-              {/* Sutil viñeteado inferior para dar profundidad sin tapar las figuras */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg-dark/20 via-transparent to-transparent"
-              />
-
-              {/* Etiquetas flotantes en pequeño al lado de cada persona */}
-              {PEOPLE_BADGES.map((person) => (
-                <figcaption
-                  key={person.id}
-                  style={{ transitionDelay: `${person.delayMs}ms` }}
-                  className={cn(
-                    "absolute z-10 inline-flex items-center gap-2 bg-surface-light/92 backdrop-blur-md text-text-base rounded-[8px] px-2.5 py-1.5 sm:px-3 sm:py-2 border border-bg-dark/10 shadow-[0_8px_24px_-8px_rgba(34,47,48,0.22)] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
-                    person.positionClass,
-                    revealed
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-3"
-                  )}
-                >
-                  {person.pointerSide === "left" && (
-                    <span
-                      aria-hidden
-                      className="w-1.5 h-1.5 bg-primary-hover shrink-0"
-                    />
-                  )}
-
-                  <div className="leading-none">
-                    <div className="text-[11px] sm:text-[12px] font-medium tracking-[-0.01em] text-text-base">
-                      {person.name}
-                    </div>
-                    <div className="font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.05em] text-text-base/60 mt-1">
-                      {lang === "es" ? person.roleEs : person.roleEn}
-                    </div>
-                  </div>
-
-                  {person.pointerSide === "right" && (
-                    <span
-                      aria-hidden
-                      className="w-1.5 h-1.5 bg-primary-hover shrink-0"
-                    />
-                  )}
-                </figcaption>
-              ))}
-            </figure>
+      {/* Riel superior de telemetría full-width */}
+      <div className="relative z-10 w-full border-b border-bg-dark/10">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px] h-9 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.08em] text-text-base/45">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-primary-hover inline-block" />
+            <span>SYS.HUMAN_DESK // DIRECT_ACCESS</span>
           </div>
+          <div className="hidden sm:flex items-center gap-6">
+            <span>LATENCY: 0_INTERMEDIARIES</span>
+            <span>LOC: ES_MAD</span>
+          </div>
+        </div>
+      </div>
 
-          {/* Columna Derecha: Mensaje Editorial + CTA */}
-          <div className="lg:col-span-5 lg:pl-2">
+      {/* Cuerpo principal dentro del contenedor de 1600px sobre la banda full-width */}
+      <div className="relative z-10 w-full max-w-[1600px] mx-auto px-6 md:px-[44px] py-16 md:py-24">
+        <Crosshair className="absolute top-4 left-6 md:left-[44px]" />
+        <Crosshair className="absolute top-4 right-6 md:right-[44px]" />
+        <Crosshair className="absolute bottom-4 left-6 md:left-[44px]" />
+        <Crosshair className="absolute bottom-4 right-6 md:right-[44px]" />
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-y-12 lg:gap-x-12 items-center">
+          {/* ── COLUMNA IZQUIERDA (7 cols): Collage Geométrico + Nombres Sin Cards ── */}
+          <div className="lg:col-span-7">
             <div
               className={cn(
-                "inline-flex items-center gap-2 font-mono uppercase text-[11px] tracking-[0.05em] text-text-base mb-5 transition-all duration-700 ease-out",
+                "relative w-full transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+              )}
+            >
+              <svg
+                viewBox="0 0 1060 690"
+                fill="none"
+                role="img"
+                aria-label={t(
+                  "Álvaro Vallina and Raquel Sanz — OLA Datacenter team",
+                  "Álvaro Vallina y Raquel Sanz — Equipo de OLA Datacenter"
+                )}
+                className="w-full h-auto block overflow-visible"
+              >
+                <defs>
+                  {/*
+                   * Máscara de collage en 4 paneles geométricos escalonados que
+                   * comparten la misma proyección continua de `ola-people.jpg`:
+                   *  - Panel 1 (Izquierda vertical): Álvaro Vallina.
+                   *  - Panel 2 (Centro): Raquel Sanz con su portátil.
+                   *  - Panel 3 (Arriba derecha): Logotipo verde OLA iluminado en pared.
+                   *  - Panel 4 (Abajo derecha): Detalle de botella/cuaderno OLA.
+                   * Esto libera dos grandes espacios negativos (arriba-izquierda y
+                   * centro-derecha) donde viven los nombres desnudos (sin cards).
+                   */}
+                  <clipPath id="ola-people-collage-clip">
+                    {/* Panel 1: Álvaro Vallina (columna vertical izquierda) */}
+                    <rect x="186" y="14" width="248" height="612" rx="16" />
+                    {/* Panel 2: Raquel Sanz (módulo central escalonado) */}
+                    <rect x="444" y="188" width="298" height="482" rx="16" />
+                    {/* Panel 3: Puente superior + Logo OLA en la pared */}
+                    <rect x="596" y="58" width="392" height="176" rx="16" />
+                    {/* Panel 4: Muesca inferior derecha (detalle mesa OLA) */}
+                    <rect x="752" y="488" width="236" height="182" rx="14" />
+                  </clipPath>
+                </defs>
+
+                {/* ── 1. Contornos CAD desplazados (wireframes técnicos detrás del collage) ── */}
+                <g
+                  stroke="#222f30"
+                  strokeOpacity="0.22"
+                  strokeWidth="1"
+                  strokeDasharray="4 4"
+                >
+                  <rect x="176" y="24" width="248" height="612" rx="16" />
+                  <rect x="454" y="198" width="298" height="482" rx="16" />
+                  <rect x="606" y="48" width="392" height="176" rx="16" />
+                  <rect x="762" y="498" width="236" height="182" rx="14" />
+                </g>
+
+                {/* Líneas técnicas de cota y registro del collage */}
+                <g stroke="#222f30" strokeOpacity="0.18" strokeWidth="1">
+                  {/* Escuadra superior izquierda sobre el panel de Álvaro */}
+                  <path d="M186 4 H434 M186 0 V8 M434 0 V8" />
+                  {/* Escuadra inferior izquierda */}
+                  <path d="M186 646 H434" strokeDasharray="2 3" />
+                  {/* Cruces de registro en las intersecciones del collage */}
+                  <path d="M439 170 V182 M433 176 H445" />
+                  <path d="M747 240 V252 M741 246 H753" />
+                  <path d="M747 472 V484 M741 478 H753" />
+                </g>
+
+                {/* Etiqueta técnica de coordenadas del recorte */}
+                <text
+                  x="188"
+                  y="664"
+                  fill="#222f30"
+                  fillOpacity="0.45"
+                  fontSize="10"
+                  fontFamily="var(--font-mono), monospace"
+                  letterSpacing="0.08em"
+                >
+                  FIG.04 // MULTI-FRAME COLLAGE [1024×682]
+                </text>
+
+                {/* ── 2. Fotografía `ola-people.jpg` proyectada dentro del Collage ── */}
+                <g clipPath="url(#ola-people-collage-clip)">
+                  <image
+                    href="/ola-people.jpg"
+                    x="0"
+                    y="0"
+                    width="1024"
+                    height="682"
+                    preserveAspectRatio="xMidYMid slice"
+                  />
+                  {/* Sutil borde interno sobre cada pieza del collage */}
+                  <rect
+                    x="186"
+                    y="14"
+                    width="248"
+                    height="612"
+                    rx="16"
+                    stroke="#222f30"
+                    strokeOpacity="0.18"
+                    strokeWidth="2"
+                  />
+                  <rect
+                    x="444"
+                    y="188"
+                    width="298"
+                    height="482"
+                    rx="16"
+                    stroke="#222f30"
+                    strokeOpacity="0.18"
+                    strokeWidth="2"
+                  />
+                  <rect
+                    x="596"
+                    y="58"
+                    width="392"
+                    height="176"
+                    rx="16"
+                    stroke="#222f30"
+                    strokeOpacity="0.18"
+                    strokeWidth="2"
+                  />
+                  <rect
+                    x="752"
+                    y="488"
+                    width="236"
+                    height="182"
+                    rx="14"
+                    stroke="#222f30"
+                    strokeOpacity="0.18"
+                    strokeWidth="2"
+                  />
+                </g>
+
+                {/* ── 3. Callout Techie SIN CARD: ÁLVARO VALLINA (Espacio negativo izquierdo) ── */}
+                <g>
+                  {/* Línea guía ortogonal desde el hombro de Álvaro (x=236, y=210) hacia la izquierda (x=8, y=170) */}
+                  <polyline
+                    points="236,210 156,210 138,184 8,184"
+                    stroke="#222f30"
+                    strokeWidth="1.1"
+                    strokeOpacity="0.55"
+                    fill="none"
+                  />
+                  {/* Nodo de anclaje sobre Álvaro */}
+                  <circle
+                    cx="236"
+                    cy="210"
+                    r="6"
+                    stroke="#CEF79E"
+                    strokeWidth="1.2"
+                    fill="#222f30"
+                  />
+                  <rect x="233.5" y="207.5" width="5" height="5" fill="#CEF79E" />
+
+                  {/* Indicador cuadrado verde + Índice técnico (sin caja ni card) */}
+                  <rect x="8" y="132" width="7" height="7" fill="#a7e26e" />
+                  <text
+                    x="22"
+                    y="139"
+                    fill="#222f30"
+                    fillOpacity="0.5"
+                    fontSize="10"
+                    fontFamily="var(--font-mono), monospace"
+                    letterSpacing="0.08em"
+                  >
+                    ID.01 // OLA_TEAM
+                  </text>
+
+                  {/* Nombre desnudo al lado de Álvaro */}
+                  <text
+                    x="8"
+                    y="160"
+                    fill="#222f30"
+                    fontSize="15"
+                    fontWeight="500"
+                    fontFamily="var(--font-sans), sans-serif"
+                    letterSpacing="-0.02em"
+                  >
+                    Álvaro Vallina
+                  </text>
+
+                  {/* Rol en monospace debajo de la línea guía */}
+                  <text
+                    x="8"
+                    y="202"
+                    fill="#222f30"
+                    fillOpacity="0.6"
+                    fontSize="10.5"
+                    fontFamily="var(--font-mono), monospace"
+                    letterSpacing="0.08em"
+                  >
+                    {lang === "es" ? "GUÍA OLA · CLOUD & IA" : "OLA GUIDE · CLOUD & AI"}
+                  </text>
+                </g>
+
+                {/* ── 4. Callout Techie SIN CARD: RAQUEL SANZ (Espacio negativo derecho) ── */}
+                <g>
+                  {/* Línea guía ortogonal desde Raquel (x=632, y=365) hacia la muesca derecha (x=1048, y=340) */}
+                  <polyline
+                    points="632,365 768,365 786,340 1048,340"
+                    stroke="#222f30"
+                    strokeWidth="1.1"
+                    strokeOpacity="0.55"
+                    fill="none"
+                  />
+                  {/* Nodo de anclaje sobre Raquel */}
+                  <circle
+                    cx="632"
+                    cy="365"
+                    r="6"
+                    stroke="#CEF79E"
+                    strokeWidth="1.2"
+                    fill="#222f30"
+                  />
+                  <rect x="629.5" y="362.5" width="5" height="5" fill="#CEF79E" />
+
+                  {/* Indicador cuadrado verde + Índice técnico (sin caja ni card) */}
+                  <rect x="792" y="288" width="7" height="7" fill="#a7e26e" />
+                  <text
+                    x="806"
+                    y="295"
+                    fill="#222f30"
+                    fillOpacity="0.5"
+                    fontSize="10"
+                    fontFamily="var(--font-mono), monospace"
+                    letterSpacing="0.08em"
+                  >
+                    ID.02 // OLA_TEAM
+                  </text>
+
+                  {/* Nombre desnudo al lado de Raquel */}
+                  <text
+                    x="792"
+                    y="316"
+                    fill="#222f30"
+                    fontSize="15"
+                    fontWeight="500"
+                    fontFamily="var(--font-sans), sans-serif"
+                    letterSpacing="-0.02em"
+                  >
+                    Raquel Sanz
+                  </text>
+
+                  {/* Rol en monospace debajo de la línea guía */}
+                  <text
+                    x="792"
+                    y="358"
+                    fill="#222f30"
+                    fillOpacity="0.6"
+                    fontSize="10.5"
+                    fontFamily="var(--font-mono), monospace"
+                    letterSpacing="0.08em"
+                  >
+                    {lang === "es" ? "GUÍA OLA · PROYECTOS" : "OLA GUIDE · PROJECTS"}
+                  </text>
+                </g>
+              </svg>
+            </div>
+          </div>
+
+          {/* ── COLUMNA DERECHA (5 cols): Editorial Techie + CTA ── */}
+          <div className="lg:col-span-5 lg:pl-4">
+            <div
+              className={cn(
+                "inline-flex items-center gap-2 font-mono uppercase text-[11px] tracking-[0.06em] text-text-base mb-5 transition-all duration-700 ease-out",
                 revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
               )}
             >
               <span aria-hidden className="w-2 h-2 bg-primary-hover inline-block" />
-              <span>{t("HUMAN ENGINEERING TEAM", "EQUIPO CERCANO · GUÍA OLA")}</span>
+              <span>{t("HUMAN ENGINEERING TEAM", "INGENIERÍA CERCANA · GUÍA OLA")}</span>
             </div>
 
-            <h2 className="text-[clamp(2rem,calc(2rem+0.028*(100vw-27.5rem)),3.75rem)] font-normal tracking-[-0.03em] leading-[1.06] mb-7">
+            <h2 className="text-[clamp(2.15rem,calc(2.15rem+0.03*(100vw-27.5rem)),3.85rem)] font-normal tracking-[-0.03em] leading-[1.04] mb-7">
               <WordRevealText words={headlineWords} revealed={revealed} staggerMs={75} />
             </h2>
 
             <div
               style={{ transitionDelay: "220ms" }}
               className={cn(
-                "space-y-4 text-[16px] md:text-[17px] text-text-base/75 leading-[1.52] max-w-[46ch] mb-9 transition-all duration-700 ease-out",
+                "space-y-4 text-[16px] md:text-[17px] text-text-base/75 leading-[1.52] max-w-[44ch] mb-9 transition-all duration-700 ease-out",
                 revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
               )}
             >
@@ -262,16 +470,21 @@ export function PeopleHelpSection() {
               </p>
             </div>
 
+            {/* Línea técnica divisoria + Botón paralelogramo */}
             <div
               style={{ transitionDelay: "340ms" }}
               className={cn(
-                "transition-all duration-700 ease-out",
+                "pt-6 border-t border-bg-dark/12 flex flex-wrap items-center justify-between gap-6 transition-all duration-700 ease-out",
                 revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
               )}
             >
               <ArrowCta href="/contact">
                 {t("Get help", "Obtener ayuda")}
               </ArrowCta>
+
+              <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-text-base/45">
+                {t("DIRECT_CHANNEL // 24×7", "CANAL_DIRECTO // 24×7")}
+              </span>
             </div>
           </div>
         </div>
@@ -282,14 +495,16 @@ export function PeopleHelpSection() {
 
 /*
  * ─── 5. Documentación de Memoria ────────────────────────────────────────────
- * - Decisión técnica: Se integró la imagen `ola-people.jpg` en una sección
- *   editorial de 12 columnas al cierre de la Home, posicionando las etiquetas
- *   flotantes de **Álvaro Vallina** (`left-[4.5%] top-[26%]`) y **Raquel Sanz**
- *   (`right-[6%] top-[44%]`) en las zonas limpias junto a cada persona para no
- *   solapar ni sus rostros ni el logotipo luminoso de OLA en la pared.
+ * - Decisión técnica: Se rediseñó la sección como una banda full-width (`w-full
+ *   bg-surface-beige`) con retícula CAD, riel superior de telemetría y un
+ *   collage geométrico SVG de 4 paneles (`#ola-people-collage-clip`) que recorta
+ *   `ola-people.jpg` de forma asimétrica. Los nombres de **Álvaro Vallina** y
+ *   **Raquel Sanz** se renderizan sin cards (`cardless`) directamente sobre el
+ *   fondo en las muescas negativas del collage, unidos a cada persona mediante
+ *   líneas guía ortogonales de 1px y nodos en verde lima.
  * - Edge cases cubiertos:
- *   1. En pantallas móviles (`<640px`), las etiquetas reducen su padding y
- *      tamaño tipográfico (`text-[11px]` / `text-[9px]`) manteniendo sus
- *      coordenadas porcentuales relativas al aspect-ratio `3/2`.
+ *   1. Al formar parte del mismo coordinate space (`viewBox="0 0 1060 690"`),
+ *      los paneles del collage y las líneas guía hacia Álvaro y Raquel mantienen
+ *      su alineación milimétrica en cualquier resolución de pantalla.
  *   2. Soporte completo para `prefers-reduced-motion: reduce`.
  */

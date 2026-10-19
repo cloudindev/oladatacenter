@@ -137,28 +137,20 @@ export function Footer() {
         {/* ── 2. Matriz Principal: Marca + 3 Columnas de Productos ── */}
         <div className="py-14 md:py-16 grid grid-cols-1 lg:grid-cols-12 gap-y-12 lg:gap-x-10 items-start">
           {/* Columna de Marca (Izquierda) */}
-          <div className="lg:col-span-4 flex flex-col justify-between h-full gap-8">
-            <div>
-              <Link href="/" className="inline-block group">
-                <Image
-                  src="/ola-footer-logo.png"
-                  alt="OLA Datacenter"
-                  width={1024}
-                  height={243}
-                  unoptimized
-                  className="h-[24px] w-auto transition-opacity duration-200 group-hover:opacity-90"
-                />
-                <span className="block font-mono text-[11px] uppercase tracking-[0.14em] text-[#f7f7f5]/75 mt-2">
-                  Data Center
-                </span>
-              </Link>
-            </div>
-
-            {/* Indicador técnico sutil alineado en la base de la columna de marca */}
-            <div className="inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.05em] text-[#8e9899]">
-              <span aria-hidden className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0" />
-              <span>{t("SPAIN · SOVEREIGN INFRASTRUCTURE", "ESPAÑA · INFRAESTRUCTURA SOBERANA")}</span>
-            </div>
+          <div className="lg:col-span-4 flex flex-col items-start">
+            <Link href="/" className="inline-block group">
+              <Image
+                src="/ola-footer-logo.png"
+                alt="OLA Datacenter"
+                width={1024}
+                height={243}
+                unoptimized
+                className="h-[24px] w-auto transition-opacity duration-200 group-hover:opacity-90"
+              />
+              <span className="block font-mono text-[11px] uppercase tracking-[0.14em] text-[#f7f7f5]/75 mt-2">
+                Data Center
+              </span>
+            </Link>
           </div>
 
           {/* 3 Columnas de Productos (Derecha) */}

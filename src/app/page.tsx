@@ -7,6 +7,7 @@ import { IntegratedPlatformSection } from "@/components/sections/IntegratedPlatf
 import { ArchitectureSection } from "@/components/sections/ArchitectureSection"
 import { SolutionsSection } from "@/components/sections/SolutionsSection"
 import { DatacenterBanner } from "@/components/sections/DatacenterBanner"
+import { PeopleHelpSection } from "@/components/sections/PeopleHelpSection"
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
 
         {/* FINAL CLOSING BANNER */}
         <DatacenterBanner />
+        <PeopleHelpSection />
       </main>
       <Footer />
     </>

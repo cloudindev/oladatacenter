@@ -1,137 +1,263 @@
 "use client"
 
+/**
+ * Footer — Pie de página arquitectónico de OLA Datacenter.
+ * Estructura alineada a la rejilla global (`max-w-[1600px] px-6 md:px-[44px]`):
+ *  1. Franja superior de CTA horizontal: titular editorial bitono a la izquierda
+ *     y botón paralelogramo `ArrowCta` (`variant="light"`) a la derecha.
+ *  2. Matriz principal 12 columnas: bloque de marca (`ola-footer-logo.png` +
+ *     `Data Center` + telemetría de estado) a la izquierda y las 3 columnas de
+ *     productos (`01 / Datacenter`, `02 / IA`, `03 / Cloud`) ordenadas con
+ *     filetes superiores y espaciado compacto (`space-y-1.5`).
+ *  3. Barra legal inferior con selector de idioma `EN / ES` en acento lima.
+ */
+
 import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { ArrowCta } from "@/components/ui/ArrowCta"
 import { useLanguage } from "@/context/LanguageContext"
 import { cn } from "@/lib/utils"
 
-export function Footer() {
-  const { lang, setLang, t } = useLanguage()
+// ─── 1. Interfaces ──────────────────────────────────────────────────────────
+interface FooterLinkItem {
+  href: string
+  label: string
+}
 
-  const col = (title: string, links: { href: string; label: string }[]) => (
-    <div>
-      <h4 className="text-[#f9f9f6] text-[15px] font-normal mb-3">{title}</h4>
+interface FooterColumnProps {
+  index: string
+  title: string
+  links: FooterLinkItem[]
+}
+
+// ─── 2. Subcomponents ───────────────────────────────────────────────────────
+/**
+ * Columna de producto con filete arquitectónico superior, índice `font-mono`
+ * en verde lima y lista compacta con micro-desplazamiento en hover.
+ */
+function FooterProductColumn({ index, title, links }: FooterColumnProps) {
+  return (
+    <div className="border-t border-white/12 pt-4">
+      <div className="flex items-center gap-2 mb-3.5">
+        <span className="font-mono text-[11px] tracking-[0.06em] text-primary">
+          {index}
+        </span>
+        <span aria-hidden className="text-white/20 font-mono text-[11px]">
+          /
+        </span>
+        <h4 className="font-mono text-[12px] uppercase tracking-[0.08em] text-[#f7f7f5] font-normal">
+          {title}
+        </h4>
+      </div>
+
       <ul className="space-y-1.5">
         {links.map((l) => (
           <li key={l.href + l.label}>
-            <Link href={l.href} className="text-[14px] leading-snug text-[#807d73] hover:text-white transition-colors">
-              {l.label}
+            <Link
+              href={l.href}
+              className="group inline-flex items-center text-[13.5px] leading-snug text-[#8e9899] hover:text-[#f7f7f5] transition-colors duration-200"
+            >
+              <span
+                aria-hidden
+                className="w-0 overflow-hidden opacity-0 group-hover:w-3 group-hover:opacity-100 transition-all duration-200 text-primary font-mono text-[11px]"
+              >
+                ›
+              </span>
+              <span className="transition-transform duration-200">
+                {l.label}
+              </span>
             </Link>
           </li>
         ))}
       </ul>
     </div>
   )
+}
+
+// ─── 3. Component Logic & Render ────────────────────────────────────────────
+export function Footer() {
+  const { lang, setLang, t } = useLanguage()
+
+  const datacenterLinks: FooterLinkItem[] = [
+    { href: "/datacenter/colocation/por-u", label: t("Colocation per U", "Colocation por U") },
+    { href: "/datacenter/colocation/racks", label: t("Half rack / full rack", "Medio rack / rack completo") },
+    { href: "/datacenter/colocation/jaulas", label: t("Cages", "Jaulas") },
+    { href: "/datacenter/colocation/suites", label: t("Suites", "Suites") },
+    { href: "/datacenter/colocation/wholesale", label: t("Housing / wholesale", "Housing / wholesale") },
+    { href: "/datacenter/colocation", label: t("Connectivity", "Conectividad") },
+    { href: "/datacenter/hosting", label: t("Operations services", "Servicios de operación") },
+  ]
+
+  const aiLinks: FooterLinkItem[] = [
+    { href: "/cloud/ai", label: t("AI Infrastructure", "Infraestructura IA") },
+    { href: "/datacenter/ai-servers", label: t("GPU Servers", "Servidores GPU") },
+    { href: "/datacenter/on-premise", label: t("On-Prem Cloud", "On-Prem Cloud") },
+    { href: "/products", label: t("AI box", "AI box") },
+  ]
+
+  const cloudLinks: FooterLinkItem[] = [
+    { href: "/cloud/compute", label: t("Cloud VPS servers", "Servidores VPS Cloud") },
+    { href: "/cloud/compute", label: t("Windows VPS servers", "Servidores VPS Windows") },
+    { href: "/cloud/compute", label: t("Dedicated servers", "Servidores Dedicados") },
+    { href: "/cloud/managed", label: t("Managed services", "Servicios gestionados") },
+    { href: "/cloud/storage", label: t("Disaster Recovery & Backups", "Disaster Recovery y Backups") },
+    { href: "/cloud/database", label: t("Synchronous geo-replication", "Georeplicación síncrona") },
+    { href: "/cloud/build", label: t("Cloud migration", "Migración a la nube") },
+  ]
 
   return (
-    <footer className="bg-[#1b2627]">
-      {/* Pre-footer CTA */}
-      <div className="container mx-auto px-6 pt-28 pb-24 flex flex-col items-center text-center">
-        <p className="text-lg md:text-xl text-[#f9f9f6] max-w-2xl mb-10 leading-relaxed">
-          {t(
-            "Contact our team and we'll help you configure your cloud.",
-            "Contacta con nuestro equipo y te ayudamos a configurar tu nube"
-          )}
-        </p>
-        <Link
-          href="/contact"
-          className="group relative flex items-center h-14 pl-7 pr-1 rounded-lg overflow-clip bg-[#222f30] border border-white/10"
-        >
-          <span
-            aria-hidden
-            className="absolute inset-y-1 right-1 left-[calc(100%-52px)] rounded-md bg-[#f9f9f6] transition-[left] duration-[420ms] ease-out group-hover:left-1"
-          />
-          <span className="relative text-sm font-normal text-[#f9f9f6] mr-10 transition-colors duration-300 group-hover:text-[#222f30]">
-            {t("Talk to an expert", "Contacta con un experto")}
-          </span>
-          <span className="relative w-12 h-12 flex items-center justify-center text-[#333333]">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-            </svg>
-          </span>
-        </Link>
-      </div>
+    <footer className="bg-[#1b2627] text-[#f7f7f5] border-t border-white/10">
+      <div className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px]">
+        {/* ── 1. Banda Superior CTA Arquitectónica ── */}
+        <div className="py-14 md:py-16 border-b border-white/10 flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+          <div className="max-w-2xl">
+            <div className="inline-flex items-center gap-2 font-mono uppercase text-[11px] tracking-[0.06em] text-primary mb-4">
+              <span aria-hidden className="w-1.5 h-1.5 bg-primary inline-block" />
+              <span>{t("CUSTOM INFRASTRUCTURE", "ARQUITECTURA A MEDIDA")}</span>
+            </div>
+            <h3 className="text-[clamp(1.65rem,calc(1.65rem+0.018*(100vw-27.5rem)),2.65rem)] font-normal tracking-[-0.03em] leading-[1.12] text-[#f7f7f5]">
+              {t("Contact our team", "Contacta con nuestro equipo")}{" "}
+              <span className="text-[#859192]">
+                {t(
+                  "and we'll help you configure your cloud.",
+                  "y te ayudamos a configurar tu nube."
+                )}
+              </span>
+            </h3>
+          </div>
 
-      {/* Main grid: brand column + product columns */}
-      <div className="container mx-auto px-6 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-12 items-start">
-        <div className="flex flex-col items-start">
-          <Link href="/" className="mb-2.5 block">
-            <Image
-              src="/ola-footer-logo.png"
-              alt="OLA Datacenter"
-              width={1024}
-              height={243}
-              unoptimized
-              className="h-[22px] w-auto"
+          <div className="shrink-0">
+            <ArrowCta href="/contact" variant="light">
+              {t("Talk to an expert", "Contacta con un experto")}
+            </ArrowCta>
+          </div>
+        </div>
+
+        {/* ── 2. Matriz Principal: Marca + 3 Columnas de Productos ── */}
+        <div className="py-14 md:py-16 grid grid-cols-1 lg:grid-cols-12 gap-y-12 lg:gap-x-10 items-start">
+          {/* Columna de Marca (Izquierda) */}
+          <div className="lg:col-span-4 flex flex-col justify-between h-full gap-8">
+            <div>
+              <Link href="/" className="inline-block group">
+                <Image
+                  src="/ola-footer-logo.png"
+                  alt="OLA Datacenter"
+                  width={1024}
+                  height={243}
+                  unoptimized
+                  className="h-[24px] w-auto transition-opacity duration-200 group-hover:opacity-90"
+                />
+                <span className="block font-mono text-[11px] uppercase tracking-[0.14em] text-[#f7f7f5]/75 mt-2">
+                  Data Center
+                </span>
+              </Link>
+            </div>
+
+            {/* Indicador técnico sutil alineado en la base de la columna de marca */}
+            <div className="inline-flex items-center gap-2.5 font-mono text-[11px] uppercase tracking-[0.05em] text-[#8e9899]">
+              <span aria-hidden className="w-2 h-2 rounded-full bg-primary animate-pulse shrink-0" />
+              <span>{t("SPAIN · SOVEREIGN INFRASTRUCTURE", "ESPAÑA · INFRAESTRUCTURA SOBERANA")}</span>
+            </div>
+          </div>
+
+          {/* 3 Columnas de Productos (Derecha) */}
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-x-8 gap-y-10">
+            <FooterProductColumn
+              index="01"
+              title="Datacenter"
+              links={datacenterLinks}
             />
-          </Link>
-          <p className="font-mono text-[12px] uppercase tracking-[0.06em] text-[#f9f9f6]/80">
-            Data Center
-          </p>
+            <FooterProductColumn
+              index="02"
+              title={t("AI", "IA")}
+              links={aiLinks}
+            />
+            <FooterProductColumn
+              index="03"
+              title="Cloud"
+              links={cloudLinks}
+            />
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-8">
-          {col("Datacenter", [
-            { href: "/datacenter/colocation/por-u", label: t("Colocation per U", "Colocation por U") },
-            { href: "/datacenter/colocation/racks", label: t("Half rack / full rack", "Medio rack / rack completo") },
-            { href: "/datacenter/colocation/jaulas", label: t("Cages", "Jaulas") },
-            { href: "/datacenter/colocation/suites", label: t("Suites", "Suites") },
-            { href: "/datacenter/colocation/wholesale", label: t("Housing / wholesale", "Housing / wholesale") },
-            { href: "/datacenter/colocation", label: t("Connectivity", "Conectividad") },
-            { href: "/datacenter/hosting", label: t("Operations services", "Servicios de operación") },
-          ])}
-          {col(t("AI", "IA"), [
-            { href: "/cloud/ai", label: t("AI Infrastructure", "Infraestructura IA") },
-            { href: "/datacenter/ai-servers", label: t("GPU Servers", "Servidores GPU") },
-            { href: "/datacenter/on-premise", label: t("On-Prem Cloud", "On-Prem Cloud") },
-            { href: "/products", label: t("AI box", "AI box") },
-          ])}
-          {col("Cloud", [
-            { href: "/cloud/compute", label: t("Cloud VPS servers", "Servidores VPS Cloud") },
-            { href: "/cloud/compute", label: t("Windows VPS servers", "Servidores VPS Windows") },
-            { href: "/cloud/compute", label: t("Dedicated servers", "Servidores Dedicados") },
-            { href: "/cloud/managed", label: t("Managed services", "Servicios gestionados") },
-            { href: "/cloud/storage", label: t("Disaster Recovery & Backups", "Disaster Recovery y Backups") },
-            { href: "/cloud/database", label: t("Synchronous geo-replication", "Georeplicación síncrona") },
-            { href: "/cloud/build", label: t("Cloud migration", "Migración a la nube") },
-          ])}
-        </div>
-      </div>
+        {/* ── 3. Barra Legal e Idioma ── */}
+        <div className="border-t border-white/10 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span className="font-mono text-[11px] uppercase tracking-[0.04em] text-[#7c8788]">
+            © 2026 OLA Datacenter. {t("All rights reserved", "Todos los derechos reservados")}
+          </span>
 
-      {/* Bottom legal bar */}
-      <div className="container mx-auto px-6">
-        <div className="border-t border-white/10 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-[#807d73]">
-          <span>© 2026 OLA Datacenter. {t("All rights reserved", "Todos los derechos reservados")}</span>
-
-          <div className="flex items-center gap-6">
-            <Link href="/legal/terms" className="hover:text-white transition-colors">{t("Legal", "Aviso Legal")}</Link>
-            <Link href="/legal/privacy" className="hover:text-white transition-colors">{t("Privacy", "Privacidad")}</Link>
-            <Link href="/legal/cookies" className="hover:text-white transition-colors">Cookies</Link>
-
-            {/* Language toggle */}
-            <div
-              className="relative flex items-center bg-white/5 border border-white/15 rounded-full p-0.5 cursor-pointer select-none"
-              onClick={() => setLang(lang === "en" ? "es" : "en")}
+          <div className="flex flex-wrap items-center gap-6">
+            <Link
+              href="/legal/terms"
+              className="font-mono text-[11px] uppercase tracking-[0.04em] text-[#8e9899] hover:text-[#f7f7f5] transition-colors"
             >
-              <div
+              {t("Legal", "Aviso Legal")}
+            </Link>
+            <Link
+              href="/legal/privacy"
+              className="font-mono text-[11px] uppercase tracking-[0.04em] text-[#8e9899] hover:text-[#f7f7f5] transition-colors"
+            >
+              {t("Privacy", "Privacidad")}
+            </Link>
+            <Link
+              href="/legal/cookies"
+              className="font-mono text-[11px] uppercase tracking-[0.04em] text-[#8e9899] hover:text-[#f7f7f5] transition-colors"
+            >
+              Cookies
+            </Link>
+
+            {/* Conmutador de idioma minimalista con acento lima */}
+            <button
+              type="button"
+              aria-label={t("Switch language", "Cambiar idioma")}
+              onClick={() => setLang(lang === "en" ? "es" : "en")}
+              className="relative flex items-center bg-white/[0.04] border border-white/12 rounded-[6px] p-0.5 cursor-pointer select-none"
+            >
+              <span
+                aria-hidden
                 className={cn(
-                  "absolute top-0.5 bottom-0.5 w-[32px] bg-white rounded-full shadow-sm transition-transform duration-300 ease-in-out",
-                  lang === "es" ? "translate-x-[32px]" : "translate-x-0"
+                  "absolute top-0.5 bottom-0.5 w-[30px] bg-primary rounded-[4px] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                  lang === "es" ? "translate-x-[30px]" : "translate-x-0"
                 )}
               />
-              <div className="relative z-10 flex text-[10px] font-medium uppercase tracking-wide">
-                <span className={cn("w-[32px] text-center py-1 transition-colors duration-300", lang === "en" ? "text-neutral-900" : "text-white/50")}>
+              <span className="relative z-10 flex font-mono text-[10px] font-medium uppercase tracking-[0.06em]">
+                <span
+                  className={cn(
+                    "w-[30px] text-center py-1 transition-colors duration-200",
+                    lang === "en" ? "text-bg-dark" : "text-white/55"
+                  )}
+                >
                   EN
                 </span>
-                <span className={cn("w-[32px] text-center py-1 transition-colors duration-300", lang === "es" ? "text-neutral-900" : "text-white/50")}>
+                <span
+                  className={cn(
+                    "w-[30px] text-center py-1 transition-colors duration-200",
+                    lang === "es" ? "text-bg-dark" : "text-white/55"
+                  )}
+                >
                   ES
                 </span>
-              </div>
-            </div>
+              </span>
+            </button>
           </div>
         </div>
       </div>
     </footer>
   )
 }
+
+/*
+ * ─── 4. Documentación de Memoria ────────────────────────────────────────────
+ * - Decisión técnica: Se unificó el ancho del Footer con el resto del sistema
+ *   editorial (`max-w-[1600px] px-6 md:px-[44px]`), estructurando los elementos
+ *   existentes en 3 niveles horizontales limpios: banda CTA superior con
+ *   titular bitono + `ArrowCta`, matriz 4+8 columnas con filetes superiores e
+ *   índices `01 / 02 / 03` en verde lima para `Datacenter`, `IA` y `Cloud`, y
+ *   barra legal inferior en `font-mono`.
+ * - Edge cases cubiertos:
+ *   1. El conmutador de idioma es ahora un `<button type="button">` accesible
+ *      por teclado en lugar de un `<div>`.
+ *   2. Los enlaces de producto mantienen `space-y-1.5` compacto e incorporan un
+ *      indicador `›` que aparece en hover sin desplazar el layout vertical.
+ */

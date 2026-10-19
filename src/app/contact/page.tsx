@@ -49,8 +49,8 @@ interface ContactChannel {
 // ─── 2. Constants & Helpers ─────────────────────────────────────────────────
 const TOPICS: TopicOption[] = [
   { id: "colocation", labelEs: "Colocation", labelEn: "Colocation" },
-  { id: "ia-cloud", labelEs: "IA Cloud & GPUs", labelEn: "AI Cloud & GPUs" },
-  { id: "dedicated", labelEs: "Servidores Dedicados", labelEn: "Dedicated Servers" },
+  { id: "ia-gpus", labelEs: "IA & GPUs", labelEn: "AI & GPUs" },
+  { id: "cloud", labelEs: "Cloud", labelEn: "Cloud" },
   { id: "connectivity", labelEs: "Conectividad", labelEn: "Connectivity" },
   { id: "other", labelEs: "Consulta General", labelEn: "General Inquiry" },
 ]

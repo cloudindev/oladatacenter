@@ -71,20 +71,6 @@ const CHANNELS: ContactChannel[] = [
     valueEn: "support@oladc.com",
     href: "mailto:support@oladc.com",
   },
-  {
-    code: "03",
-    labelEs: "CAMPUS Y SEDE TÉCNICA",
-    labelEn: "CAMPUS & HEADQUARTERS",
-    valueEs: "Madrid, España · Operación Europea Soberana",
-    valueEn: "Madrid, Spain · Sovereign European Operations",
-  },
-  {
-    code: "04",
-    labelEs: "TIEMPO DE RESPUESTA",
-    labelEn: "RESPONSE SLA",
-    valueEs: "< 15 min · Acceso directo a ingenieros de sistemas",
-    valueEn: "< 15 min · Direct access to systems engineers",
-  },
 ]
 
 /**

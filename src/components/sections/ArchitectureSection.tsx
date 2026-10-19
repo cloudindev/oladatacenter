@@ -552,11 +552,13 @@ export function ArchitectureSection() {
                       </div>
                       <div
                         className={cn(
-                          "overflow-hidden transition-all duration-300 text-[14px] text-text-base/70 leading-snug",
-                          isSelected ? "max-h-20 opacity-100 mt-1" : "max-h-0 opacity-0"
+                          "overflow-hidden transition-[height,opacity] duration-300 ease-in-out text-[14px] text-text-base/70 leading-[20px]",
+                          isSelected ? "h-[44px] opacity-100" : "h-0 opacity-0"
                         )}
                       >
-                        {t(layer.descEn, layer.descEs)}
+                        <div className="pt-1">
+                          {t(layer.descEn, layer.descEs)}
+                        </div>
                       </div>
                     </div>
                   </div>

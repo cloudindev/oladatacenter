@@ -384,9 +384,9 @@ export default function ColocationProductDetailPage({ params }: PageProps) {
       <Header />
 
       {/* ── SECCIÓN 1: c-hero del Producto ── */}
-      <section className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[128px] md:pt-[144px] pb-[48px]">
+      <section className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[96px] md:pt-[144px] pb-[40px] md:pb-[48px]">
         {/* Migas de pan estilo pastilla mono */}
-        <div className="mb-8 flex items-center gap-3">
+        <div className="mb-8 flex flex-wrap items-center gap-2.5">
           <Link
             href="/datacenter/colocation"
             className="inline-flex items-center bg-surface-light hover:bg-[#cef79e]/45 text-text-base rounded-[8px] py-2 pl-2.5 pr-3 font-mono uppercase text-[11px] leading-none tracking-[0.02em] transition-colors"
@@ -400,7 +400,7 @@ export default function ColocationProductDetailPage({ params }: PageProps) {
         </div>
 
         <div className="flex flex-col gap-y-9 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,482px)] md:gap-x-[60px] md:gap-y-9">
-          <h1 className="md:col-span-2 text-[clamp(3rem,calc(2.8rem+0.085*(100vw-27.5rem)),8.25rem)] font-normal tracking-[-0.03em] leading-[1.02] md:min-h-[340px] lg:min-h-[390px] pb-12 md:pb-[110px] relative after:content-[''] after:absolute after:bottom-0 after:inset-x-0 after:h-3 after:rounded-t-[8px] after:border-t after:border-l after:border-r after:border-bg-dark/10">
+          <h1 className="md:col-span-2 text-[clamp(2.25rem,calc(2.25rem+0.085*(100vw-23rem)),8.25rem)] font-normal tracking-[-0.03em] leading-[1.02] md:min-h-[340px] lg:min-h-[390px] pb-10 md:pb-[110px] relative after:content-[''] after:absolute after:bottom-0 after:inset-x-0 after:h-3 after:rounded-t-[8px] after:border-t after:border-l after:border-r after:border-bg-dark/10">
             <WordRevealText words={heroTitleWords} revealed={heroRevealed} staggerMs={105} />
           </h1>
 

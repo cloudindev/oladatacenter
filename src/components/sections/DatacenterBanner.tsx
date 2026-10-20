@@ -10,9 +10,9 @@ export function DatacenterBanner() {
   const { t } = useLanguage()
 
   return (
-    <section className="bg-bg-light pb-24">
-      <div className="max-w-[1600px] mx-auto px-10">
-        <div className="relative rounded-lg overflow-hidden bg-bg-dark text-white min-h-[320px] shadow-2xl">
+    <section className="bg-bg-light pb-16 md:pb-24">
+      <div className="max-w-[1600px] mx-auto px-6 md:px-[44px]">
+        <div className="relative rounded-xl overflow-hidden bg-bg-dark text-white min-h-[320px] shadow-2xl">
           
           {/* Background Image */}
           <div className="absolute inset-y-0 right-0 w-full md:w-[66%] z-0">
@@ -21,14 +21,14 @@ export function DatacenterBanner() {
               alt="OLA AI Datacenter" 
               fill 
               unoptimized
-              className="object-cover object-[center_42%] [mask-image:linear-gradient(to_right,transparent_0%,transparent_8%,black_48%)]" 
+              className="object-cover object-[center_42%] md:[mask-image:linear-gradient(to_right,transparent_0%,transparent_8%,black_48%)]" 
               quality={100}
             />
-            {/* Smooth left gradient blend extended further to the right */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#222f30] via-[#222f30]/70 via-[36%] to-transparent pointer-events-none" />
+            {/* Smooth left gradient blend on desktop + full legibility scrim on mobile */}
+            <div className="absolute inset-0 bg-[#222f30]/78 md:bg-transparent md:bg-gradient-to-r md:from-[#222f30] md:via-[#222f30]/70 md:via-[36%] md:to-transparent pointer-events-none" />
           </div>
 
-          <div className="relative z-10 p-8 md:p-12 lg:p-14 max-w-2xl h-full flex flex-col justify-center">
+          <div className="relative z-10 p-6 sm:p-8 md:p-12 lg:p-14 max-w-2xl h-full flex flex-col justify-center">
             <div className="text-[#CEF79E] label-mono mb-3">
               {t("SOVEREIGN BY DESIGN", "SOBERANÍA POR DISEÑO")}
             </div>

@@ -69,7 +69,7 @@ export function HeroV3() {
       const pad = 15 * (1 - progress)
       frame.style.padding = `${pad}px`
       card.style.borderRadius = `${21 * (1 - progress)}px`
-      card.style.height = `calc(100vh - ${pad * 2}px)`
+      card.style.height = `calc(100svh - ${pad * 2}px)`
     }
 
     window.addEventListener("scroll", onScroll, { passive: true })
@@ -83,7 +83,7 @@ export function HeroV3() {
     <section ref={frameRef} className="bg-[#f7f7f5] p-[15px]">
       <div
         ref={sectionRef}
-        className="relative h-[calc(100vh-30px)] min-h-[660px] rounded-[21px] overflow-hidden flex flex-col justify-between"
+        className="relative h-[calc(100svh-30px)] min-h-[560px] md:min-h-[660px] rounded-[21px] overflow-hidden flex flex-col justify-between"
       >
         {/* Background image */}
         <div className="absolute inset-0">

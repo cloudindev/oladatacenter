@@ -553,7 +553,7 @@ export function ArchitectureSection() {
                       <div
                         className={cn(
                           "overflow-hidden transition-[height,opacity] duration-300 ease-in-out text-[14px] text-text-base/70 leading-[20px]",
-                          isSelected ? "h-[44px] opacity-100" : "h-0 opacity-0"
+                          isSelected ? "h-[62px] sm:h-[44px] opacity-100" : "h-0 opacity-0"
                         )}
                       >
                         <div className="pt-1">
@@ -582,8 +582,135 @@ export function ArchitectureSection() {
             inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
           )}
         >
-          {/* Lienzo SVG Vectorial Animado Flotante */}
-          <div className="w-full aspect-[620/440]">
+          {/* Vista Mobile (< sm): Pila Isométrica arriba + Panel de Inspección abajo a tamaño completo */}
+          <div className="sm:hidden flex flex-col gap-4 w-full">
+            <svg
+              viewBox="4 26 300 374"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-auto"
+            >
+              <g
+                stroke="currentColor"
+                strokeOpacity="0.28"
+                strokeWidth="1.1"
+                strokeDasharray="4 4"
+                className="animate-[blueprintDash_2.5s_linear_infinite]"
+              >
+                <line x1="175" y1="58" x2="175" y2="386" />
+                <line x1="65" y1="110" x2="65" y2="354" />
+                <line x1="285" y1="110" x2="285" y2="354" />
+              </g>
+
+              {[4, 3, 2, 1, 0].map((layerIdx) => {
+                const layer = DC_LAYERS[layerIdx]
+                const isActive = layerIdx === activeIndex
+                const baseY = 78 + layerIdx * 64
+                const offsetY = isActive ? baseY - 10 : baseY
+                const thickness = 8
+
+                const topPts = `175,${offsetY - 46} 285,${offsetY} 175,${offsetY + 46} 65,${offsetY}`
+                const leftSidePts = `65,${offsetY} 175,${offsetY + 46} 175,${offsetY + 46 + thickness} 65,${offsetY + thickness}`
+                const rightSidePts = `285,${offsetY} 175,${offsetY + 46} 175,${offsetY + 46 + thickness} 285,${offsetY + thickness}`
+
+                return (
+                  <g
+                    key={`mob-${layer.id}`}
+                    onClick={() => setActiveIndex(layerIdx)}
+                    className="cursor-pointer"
+                  >
+                    <polygon
+                      points={leftSidePts}
+                      fill={isActive ? "#a7e26e" : "#e3e4dc"}
+                      stroke="currentColor"
+                      strokeWidth={isActive ? "1.3" : "1"}
+                      strokeOpacity={isActive ? "1" : "0.55"}
+                    />
+                    <polygon
+                      points={rightSidePts}
+                      fill={isActive ? "#95d15c" : "#d5d7cd"}
+                      stroke="currentColor"
+                      strokeWidth={isActive ? "1.3" : "1"}
+                      strokeOpacity={isActive ? "1" : "0.55"}
+                    />
+                    <polygon
+                      points={topPts}
+                      fill={isActive ? "#cef79e" : "#ffffff"}
+                      fillOpacity={isActive ? "0.95" : "0.9"}
+                      stroke="currentColor"
+                      strokeWidth={isActive ? "1.6" : "1.1"}
+                      strokeOpacity={isActive ? "1" : "0.65"}
+                    />
+                    <line
+                      x1="120"
+                      y1={offsetY - 23}
+                      x2="230"
+                      y2={offsetY + 23}
+                      stroke="currentColor"
+                      strokeWidth="0.8"
+                      strokeOpacity={isActive ? "0.45" : "0.18"}
+                    />
+                    <line
+                      x1="230"
+                      y1={offsetY - 23}
+                      x2="120"
+                      y2={offsetY + 23}
+                      stroke="currentColor"
+                      strokeWidth="0.8"
+                      strokeOpacity={isActive ? "0.45" : "0.18"}
+                    />
+                    <line
+                      x1="28"
+                      y1={offsetY}
+                      x2="58"
+                      y2={offsetY}
+                      stroke="currentColor"
+                      strokeWidth={isActive ? "1.3" : "0.9"}
+                      strokeOpacity={isActive ? "0.9" : "0.35"}
+                    />
+                    <text
+                      x="10"
+                      y={offsetY + 3}
+                      fill="currentColor"
+                      fillOpacity={isActive ? "1" : "0.45"}
+                      fontSize="10"
+                      fontFamily="monospace"
+                    >
+                      {layer.index}
+                    </text>
+                  </g>
+                )
+              })}
+            </svg>
+
+            <svg
+              viewBox="332 42 272 212"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-full h-auto"
+            >
+              <rect
+                x="336"
+                y="46"
+                width="264"
+                height="204"
+                rx="8"
+                fill="#ffffff"
+                fillOpacity="0.85"
+                stroke="currentColor"
+                strokeWidth="1.3"
+              />
+              <line x1="336" y1="68" x2="600" y2="68" stroke="currentColor" strokeWidth="1" strokeOpacity="0.18" />
+              <text x="348" y="60" fill="currentColor" fontSize="9.5" fontFamily="monospace">
+                {activeLayer.code} · {activeLayer.elevationLabel}
+              </text>
+              <circle cx="584" cy="57" r="3" fill="#cef79e" stroke="currentColor" strokeWidth="1" />
+              <ActiveLayerBlueprint activeId={activeLayer.id} />
+            </svg>
+          </div>
+
+          {/* Lienzo SVG Vectorial Animado Flotante (Desktop >= sm) */}
+          <div className="hidden sm:block w-full aspect-[620/440]">
             <svg
               viewBox="0 0 620 440"
               fill="none"

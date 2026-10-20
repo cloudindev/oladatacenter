@@ -155,13 +155,13 @@ export default function ContactPage() {
       <Header />
 
       {/* ── Cabecera Editorial ── */}
-      <section className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[132px] md:pt-[156px] pb-12 md:pb-16">
+      <section className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[96px] md:pt-[156px] pb-10 md:pb-16">
         <div className="inline-flex items-center gap-2 font-mono uppercase text-[12px] tracking-[0.04em] text-text-base mb-7">
           <span aria-hidden className="w-2 h-2 bg-primary-hover inline-block" />
           <span>{t("DIRECT CONTACT · SPAIN", "CONTACTO DIRECTO · ESPAÑA")}</span>
         </div>
 
-        <h1 className="text-[clamp(3rem,calc(3rem+0.075*(100vw-27.5rem)),7.5rem)] font-normal tracking-[-0.03em] leading-[1.02] pb-12 md:pb-16 border-b border-bg-dark/12">
+        <h1 className="text-[clamp(2.35rem,calc(2.35rem+0.075*(100vw-23rem)),7.5rem)] font-normal tracking-[-0.03em] leading-[1.02] pb-10 md:pb-16 border-b border-bg-dark/12">
           <WordRevealText words={heroTitleWords} revealed={revealed} staggerMs={95} />
         </h1>
       </section>

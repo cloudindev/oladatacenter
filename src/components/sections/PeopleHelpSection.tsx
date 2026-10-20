@@ -182,6 +182,88 @@ export function PeopleHelpSection() {
                 revealed ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
               )}
             >
+              {/* ── VISTA MOBILE (< md): Collage recortado a ancho completo + Callouts HUD en HTML legible ── */}
+              <div className="md:hidden">
+                <svg
+                  viewBox="168 4 836 676"
+                  fill="none"
+                  role="img"
+                  aria-label={t(
+                    "Álvaro Vallina and Raquel Sanz — OLA Datacenter team",
+                    "Álvaro Vallina y Raquel Sanz — Equipo de OLA Datacenter"
+                  )}
+                  className="w-full h-auto block"
+                >
+                  <defs>
+                    <clipPath id="ola-people-collage-clip-mobile">
+                      <rect x="186" y="14" width="248" height="612" rx="16" />
+                      <rect x="444" y="188" width="298" height="482" rx="16" />
+                      <rect x="596" y="58" width="392" height="176" rx="16" />
+                      <rect x="752" y="488" width="236" height="182" rx="14" />
+                    </clipPath>
+                  </defs>
+
+                  <g
+                    stroke="#222f30"
+                    strokeOpacity="0.22"
+                    strokeWidth="1.2"
+                    strokeDasharray="4 4"
+                  >
+                    <rect x="176" y="24" width="248" height="612" rx="16" />
+                    <rect x="454" y="198" width="298" height="482" rx="16" />
+                    <rect x="606" y="48" width="392" height="176" rx="16" />
+                    <rect x="762" y="498" width="236" height="182" rx="14" />
+                  </g>
+
+                  <g clipPath="url(#ola-people-collage-clip-mobile)">
+                    <image
+                      href="/ola-people.jpg"
+                      x="0"
+                      y="0"
+                      width="1024"
+                      height="682"
+                      preserveAspectRatio="xMidYMid slice"
+                    />
+                  </g>
+
+                  {/* Nodos de anclaje en verde lima sobre Álvaro y Raquel */}
+                  <circle cx="280" cy="210" r="8" stroke="#CEF79E" strokeWidth="1.5" fill="#222f30" />
+                  <rect x="276.5" y="206.5" width="7" height="7" fill="#CEF79E" />
+                  <circle cx="610" cy="365" r="8" stroke="#CEF79E" strokeWidth="1.5" fill="#222f30" />
+                  <rect x="606.5" y="361.5" width="7" height="7" fill="#CEF79E" />
+                </svg>
+
+                {/* Callouts techie SIN CARDS en tamaño real legible para móvil */}
+                <div className="mt-4 pt-4 border-t border-bg-dark/15 grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-text-base/55 mb-1">
+                      <span className="w-2 h-2 bg-primary-hover inline-block shrink-0" />
+                      <span>ID.01 // OLA_TEAM</span>
+                    </div>
+                    <div className="text-[15px] font-medium tracking-[-0.02em] text-text-base leading-tight">
+                      Álvaro Vallina
+                    </div>
+                    <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-text-base/60 mt-1">
+                      {lang === "es" ? "GUÍA OLA · CLOUD & IA" : "OLA GUIDE · CLOUD & AI"}
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.06em] text-text-base/55 mb-1">
+                      <span className="w-2 h-2 bg-primary-hover inline-block shrink-0" />
+                      <span>ID.02 // OLA_TEAM</span>
+                    </div>
+                    <div className="text-[15px] font-medium tracking-[-0.02em] text-text-base leading-tight">
+                      Raquel Sanz
+                    </div>
+                    <div className="font-mono text-[10px] uppercase tracking-[0.06em] text-text-base/60 mt-1">
+                      {lang === "es" ? "GUÍA OLA · PROYECTOS" : "OLA GUIDE · PROJECTS"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* ── VISTA DESKTOP (>= md): Collage + Callouts Laterales integrados en el SVG ── */}
               <svg
                 viewBox="0 0 1060 690"
                 fill="none"
@@ -190,7 +272,7 @@ export function PeopleHelpSection() {
                   "Álvaro Vallina and Raquel Sanz — OLA Datacenter team",
                   "Álvaro Vallina y Raquel Sanz — Equipo de OLA Datacenter"
                 )}
-                className="w-full h-auto block overflow-visible"
+                className="hidden md:block w-full h-auto overflow-visible"
               >
                 <defs>
                   {/*

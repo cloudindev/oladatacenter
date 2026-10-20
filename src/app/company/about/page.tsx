@@ -424,11 +424,11 @@ export default function AboutPage() {
       {/* ── SECCIÓN 1: c-hero (Réplica 1:1 de integratedbio.com/company/) ── */}
       <section
         ref={heroRef}
-        className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[132px] md:pt-[148px] pb-[50px]"
+        className="w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[96px] md:pt-[148px] pb-[40px] md:pb-[50px]"
       >
         <div className="flex flex-col gap-y-9 md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,482px)] md:gap-x-[60px] md:gap-y-9">
           {/* Titular H1 bicolor con corchete arquitectónico inferior */}
-          <h1 className="md:col-span-2 text-[clamp(3.125rem,calc(3.125rem+0.09*(100vw-27.5rem)),8.75rem)] font-normal tracking-[-0.03em] leading-[1.02] md:min-h-[380px] lg:min-h-[425px] pb-12 md:pb-[125px] relative after:content-[''] after:absolute after:bottom-0 after:inset-x-0 after:h-3 after:rounded-t-[8px] after:border-t after:border-l after:border-r after:border-bg-dark/10">
+          <h1 className="md:col-span-2 text-[clamp(2.35rem,calc(2.35rem+0.095*(100vw-23rem)),8.75rem)] font-normal tracking-[-0.03em] leading-[1.02] md:min-h-[380px] lg:min-h-[425px] pb-10 md:pb-[125px] relative after:content-[''] after:absolute after:bottom-0 after:inset-x-0 after:h-3 after:rounded-t-[8px] after:border-t after:border-l after:border-r after:border-bg-dark/10">
             <WordRevealText words={heroTitleWords} revealed={heroRevealed} staggerMs={110} />
           </h1>
 

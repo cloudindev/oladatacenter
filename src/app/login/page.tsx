@@ -106,8 +106,8 @@ export default function LoginPage() {
     <main className="min-h-screen flex flex-col bg-bg-light text-text-base selection:bg-primary selection:text-bg-dark">
       <Header />
 
-      <section className="flex-1 flex items-center w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[136px] md:pt-[164px] pb-24 md:pb-32">
-        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-y-14 lg:gap-x-16 items-start pt-8 border-t border-bg-dark/12">
+      <section className="flex-1 flex items-center w-full max-w-[1600px] mx-auto px-6 md:px-[44px] pt-[96px] md:pt-[164px] pb-20 md:pb-32">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-12 gap-y-12 lg:gap-x-16 items-start pt-6 md:pt-8 border-t border-bg-dark/12">
           {/* Columna Izquierda: Titular Editorial y Estado Operativo */}
           <div className="lg:col-span-5">
             <div className="inline-flex items-center gap-2 font-mono uppercase text-[12px] tracking-[0.04em] text-text-base mb-7">
@@ -115,7 +115,7 @@ export default function LoginPage() {
               <span>{t("OLA CONSOLE · CLIENT ACCESS", "CONSOLA OLA · ACCESO CLIENTES")}</span>
             </div>
 
-            <h1 className="text-[clamp(3rem,calc(3rem+0.07*(100vw-27.5rem)),6.75rem)] font-normal tracking-[-0.03em] leading-[1.02] mb-8">
+            <h1 className="text-[clamp(2.35rem,calc(2.35rem+0.07*(100vw-23rem)),6.75rem)] font-normal tracking-[-0.03em] leading-[1.02] mb-8">
               <WordRevealText words={heroTitleWords} revealed={revealed} staggerMs={95} />
             </h1>
 

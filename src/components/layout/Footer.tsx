@@ -85,7 +85,7 @@ export function Footer() {
     { href: "/datacenter/colocation/jaulas", label: t("Cages", "Jaulas") },
     { href: "/datacenter/colocation/suites", label: t("Suites", "Suites") },
     { href: "/datacenter/colocation/wholesale", label: t("Housing / wholesale", "Housing / wholesale") },
-    { href: "/datacenter/colocation", label: t("Connectivity", "Conectividad") },
+    { href: "/datacenter/connectivity", label: t("Connectivity", "Conectividad") },
     { href: "/datacenter/hosting", label: t("Operations services", "Servicios de operación") },
   ]
 
@@ -97,9 +97,9 @@ export function Footer() {
   ]
 
   const cloudLinks: FooterLinkItem[] = [
-    { href: "/cloud/compute", label: t("Cloud VPS servers", "Servidores VPS Cloud") },
-    { href: "/cloud/compute", label: t("Windows VPS servers", "Servidores VPS Windows") },
-    { href: "/cloud/compute", label: t("Dedicated servers", "Servidores Dedicados") },
+    { href: "/cloud/compute#vps-cloud", label: t("Cloud VPS servers", "Servidores VPS Cloud") },
+    { href: "/cloud/compute#vps-windows", label: t("Windows VPS servers", "Servidores VPS Windows") },
+    { href: "/cloud/compute#dedicados", label: t("Dedicated servers", "Servidores Dedicados") },
     { href: "/cloud/managed", label: t("Managed services", "Servicios gestionados") },
     { href: "/cloud/storage", label: t("Disaster Recovery & Backups", "Disaster Recovery y Backups") },
     { href: "/cloud/database", label: t("Synchronous geo-replication", "Georeplicación síncrona") },

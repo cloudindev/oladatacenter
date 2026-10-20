@@ -49,15 +49,15 @@ const COLOCATION_ITEMS: PanelItem[] = [
 ]
 
 const CONNECTIVITY_ITEMS: PanelItem[] = [
-  { href: "/datacenter/colocation", en: "Cross-connects", es: "Cross-connects" },
-  { href: "/datacenter/colocation", en: "Meet-me room", es: "Meet-me room" },
-  { href: "/datacenter/colocation", en: "IP transit", es: "Tránsito IP" },
+  { href: "/datacenter/connectivity#cross-connects", en: "Cross-connects", es: "Cross-connects" },
+  { href: "/datacenter/connectivity#mmr", en: "Meet-me room", es: "Meet-me room" },
+  { href: "/datacenter/connectivity#ip-transit", en: "IP transit", es: "Tránsito IP" },
 ]
 
 const OPERATIONS_ITEMS: PanelItem[] = [
-  { href: "/datacenter/hosting", en: "Remote smart hands", es: "Remote smart hands" },
-  { href: "/datacenter/hosting", en: "Installation & racking", es: "Instalación y racking" },
-  { href: "/datacenter/hosting", en: "Logistics", es: "Logística" },
+  { href: "/datacenter/hosting#smart-hands", en: "Remote smart hands", es: "Remote smart hands" },
+  { href: "/datacenter/hosting#racking", en: "Installation & racking", es: "Instalación y racking" },
+  { href: "/datacenter/hosting#logistics", en: "Logistics", es: "Logística" },
 ]
 
 const AI_CLOUD_ITEMS: PanelItem[] = [
@@ -70,9 +70,9 @@ const ON_PREM_ITEMS: PanelItem[] = [
 ]
 
 const CLOUD_SERVER_ITEMS: PanelItem[] = [
-  { href: "/cloud/compute", en: "Cloud VPS servers", es: "Servidores VPS Cloud" },
-  { href: "/cloud/compute", en: "Windows VPS servers", es: "Servidores VPS Windows" },
-  { href: "/cloud/compute", en: "Dedicated servers", es: "Servidores Dedicados" },
+  { href: "/cloud/compute#vps-cloud", en: "Cloud VPS servers", es: "Servidores VPS Cloud" },
+  { href: "/cloud/compute#vps-windows", en: "Windows VPS servers", es: "Servidores VPS Windows" },
+  { href: "/cloud/compute#dedicados", en: "Dedicated servers", es: "Servidores Dedicados" },
 ]
 
 const CLOUD_ADDON_ITEMS: PanelItem[] = [
@@ -578,7 +578,7 @@ export function Header() {
                 </div>
                 <div>
                   {panelHeading(
-                    null,
+                    "/datacenter/connectivity",
                     t("Connectivity", "Conectividad"),
                     t(
                       "Connect your infrastructure to carriers",

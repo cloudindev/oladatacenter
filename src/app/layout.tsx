@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Montserrat, Roboto_Mono } from "next/font/google";
+import Script from "next/script";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
@@ -44,6 +45,11 @@ export default function RootLayout({
         <LanguageProvider>
           {children}
         </LanguageProvider>
+        <Script
+          src="https://app.olabrain.com/widget.js"
+          data-agent="dd2560d8-188b-4ba7-af47-2badbe12663a"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

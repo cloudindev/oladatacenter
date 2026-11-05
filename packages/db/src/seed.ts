@@ -15,8 +15,8 @@ import {
   parseCatalog,
   type AddonFamily,
 } from "@ola/core"
-import { createDatabase } from "./index.js"
-import { addons, ovhCatalogSnapshots, plans } from "./schema.js"
+import { createDatabase } from "./index"
+import { addons, ovhCatalogSnapshots, plans } from "./schema"
 
 const here = dirname(fileURLToPath(import.meta.url))
 const FIXTURE = resolve(here, "../../core/test/fixtures/ovh-catalog-vps-es.json")

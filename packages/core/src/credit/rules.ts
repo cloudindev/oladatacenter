@@ -1,6 +1,6 @@
 import { z } from "zod"
-import { type Cents } from "../money.js"
-import { MS_PER_DAY } from "../pricing/proration.js"
+import { type Cents } from "../money"
+import { MS_PER_DAY } from "../pricing/proration"
 
 export const WELCOME_CREDIT_CENTS = 1000
 export const WELCOME_CREDIT_DAYS = 30

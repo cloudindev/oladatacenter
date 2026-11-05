@@ -1,4 +1,4 @@
-import { multiplyCents, type Cents } from "../money.js"
+import { multiplyCents, type Cents } from "../money"
 
 export const DEFAULT_PLAN_MARGIN = 0.75
 export const DEFAULT_ADDON_MARGIN = 0.5

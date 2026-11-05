@@ -1,5 +1,5 @@
 import { z } from "zod"
-import type { Cents } from "../money.js"
+import type { Cents } from "../money"
 
 /** Billing term offered to the customer. OVH pricing mode is derived from it. */
 export const TERMS = ["P1M", "P12M"] as const

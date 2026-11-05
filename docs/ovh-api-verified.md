@@ -137,6 +137,23 @@ confirmed: `vps.VPS` carries `netbootMode`.
 `/ip/{ip}/reverse` (GET, POST) · `/ip/{ip}/firewall` (GET, POST) ·
 `/ip/{ip}/firewall/{ipOnFirewall}/rule` (GET, POST) · `/ip/{ip}/mitigation` (GET, POST)
 
+### Per-entity routes — verified 2026-11-06 (second pass)
+
+The collection routes above only return identifiers; reading or deleting one entity needs
+these. All four confirmed present in the same downloaded schemas.
+
+| Route | Methods | Returns | Path params |
+|---|---|---|---|
+| `/order/cart/{cartId}/item/{itemId}/requiredConfiguration` | GET | `order.cart.ConfigurationRequirements[]` | `cartId: string`, `itemId: long` |
+| `/ip/{ip}/firewall/{ipOnFirewall}/rule/{sequence}` | GET, DELETE | `ip.FirewallNetworkRule` | `ip: ipBlock`, `ipOnFirewall: ipv4`, `sequence: long` |
+| `/ip/{ip}/reverse/{ipReverse}` | GET, DELETE | `ip.ReverseIp` / void | `ip: ipBlock`, `ipReverse: ip` |
+| `/ip/{ip}/mitigation/{ipOnMitigation}` | GET, PUT, DELETE | `ip.MitigationIp` | `ip: ipBlock`, `ipOnMitigation: ipv4` |
+
+Note the distinction that caused the first pass to stop: `GET …/item/{itemId}/configuration`
+returns the ids of configurations **already set** on the item, while
+`…/requiredConfiguration` returns the ones the item **still requires**. Both are needed and
+they are not interchangeable.
+
 ## 3. ⚠ CPU / RAM / network metrics are NOT available
 
 The brief (§9) asks for CPU, RAM and network graphs from

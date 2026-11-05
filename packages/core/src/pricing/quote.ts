@@ -1,5 +1,5 @@
-import { sumCents, type Cents } from "../money.js"
-import { cheapestAddonOfFamily } from "../catalog/parse.js"
+import { sumCents, type Cents } from "../money"
+import { cheapestAddonOfFamily } from "../catalog/parse"
 import {
   MANDATORY_FAMILIES,
   TERM_MONTHS,
@@ -8,9 +8,9 @@ import {
   type ParsedCatalog,
   type PlanCost,
   type Term,
-} from "../catalog/types.js"
-import { DEFAULT_ADDON_MARGIN, DEFAULT_PLAN_MARGIN, resolvePrice } from "./margin.js"
-import { applyVat, type TaxedAmount, type VatContext } from "./vat.js"
+} from "../catalog/types"
+import { DEFAULT_ADDON_MARGIN, DEFAULT_PLAN_MARGIN, resolvePrice } from "./margin"
+import { applyVat, type TaxedAmount, type VatContext } from "./vat"
 
 export class QuoteError extends Error {}
 

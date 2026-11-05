@@ -1,4 +1,4 @@
-import { multiplyCents, type Cents } from "../money.js"
+import { multiplyCents, type Cents } from "../money"
 
 export const SPAIN_VAT_RATE = 0.21
 

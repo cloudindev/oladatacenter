@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { catalogPriceToCents, type Cents } from "../money.js"
+import { catalogPriceToCents, type Cents } from "../money"
 import {
   ADDON_FAMILIES,
   MVP_PLAN_CODES,
@@ -11,7 +11,7 @@ import {
   type ParsedCatalog,
   type PlanCost,
   type Term,
-} from "./types.js"
+} from "./types"
 
 /**
  * Minimal shape of the OVH public catalog. Verified against

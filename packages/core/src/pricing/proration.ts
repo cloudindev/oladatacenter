@@ -1,4 +1,4 @@
-import { type Cents } from "../money.js"
+import { type Cents } from "../money"
 
 export const MS_PER_DAY = 24 * 60 * 60 * 1000
 

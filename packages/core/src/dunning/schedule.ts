@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { MS_PER_DAY } from "../pricing/proration.js"
+import { MS_PER_DAY } from "../pricing/proration"
 
 /**
  * Renewal and dunning calendar, relative to `next_due_at` (T).

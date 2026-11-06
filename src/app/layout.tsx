@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Montserrat, Roboto_Mono } from "next/font/google";
+import { Geist, Roboto_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
@@ -14,10 +15,13 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const montserrat = Montserrat({
+// Self-hosted: on Linux builds (Vercel, CI) Turbopack 16.2.7 fails to resolve the
+// next/font/google URLs for Montserrat ("queries have exactly one entry").
+const montserrat = localFont({
+  src: "./fonts/montserrat-latin-variable.woff2",
   variable: "--font-montserrat",
-  subsets: ["latin"],
-  weight: ["800", "900"],
+  weight: "800 900",
+  display: "swap",
 });
 
 const robotoMono = Roboto_Mono({

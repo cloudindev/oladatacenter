@@ -70,9 +70,9 @@ const ON_PREM_ITEMS: PanelItem[] = [
 ]
 
 const CLOUD_SERVER_ITEMS: PanelItem[] = [
-  { href: "/cloud/compute#vps-cloud", en: "Cloud VPS servers", es: "Servidores VPS Cloud" },
-  { href: "/cloud/compute#vps-windows", en: "Windows VPS servers", es: "Servidores VPS Windows" },
-  { href: "/cloud/compute#dedicados", en: "Dedicated servers", es: "Servidores Dedicados" },
+  { href: "/cloud/compute#vps-windows", en: "VPS", es: "VPS" },
+  { href: "/cloud/compute#vps-cloud", en: "Cloud", es: "Cloud" },
+  { href: "/cloud/compute#dedicados", en: "Dedicated", es: "Dedicados" },
 ]
 
 const CLOUD_ADDON_ITEMS: PanelItem[] = [

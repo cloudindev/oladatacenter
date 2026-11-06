@@ -19,7 +19,17 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@ola/core": ["./packages/core/src/index.ts"],
+      "@ola/core/*": ["./packages/core/src/*"],
+      "@ola/db": ["./packages/db/src/index.ts"],
+      "@ola/db/*": ["./packages/db/src/*"],
+      "@ola/ovh": ["./packages/ovh/src/index.ts"],
+      "@ola/ovh/*": ["./packages/ovh/src/*"],
+      "@ola/whmcs": ["./packages/whmcs/src/index.ts"],
+      "@ola/whmcs/*": ["./packages/whmcs/src/*"],
+      "@ola/email": ["./packages/email/src/index.ts"],
+      "@ola/email/*": ["./packages/email/src/*"]
     }
   },
   "include": [
@@ -30,5 +40,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/node_modules"]
 }

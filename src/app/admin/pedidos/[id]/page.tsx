@@ -20,8 +20,12 @@ import {
   whmcsInvoiceUrl,
   whmcsOrderUrl,
 } from "@/components/admin/ui"
-import { Field, Notice, Panel, StatusBadge, Textarea } from "@/components/app/ui"
-import { cancelAndRefundOrder, retryOrderProvisioning } from "@/server/admin/actions"
+import { Field, Input, Notice, Panel, StatusBadge, Textarea } from "@/components/app/ui"
+import {
+  assignOrderVps,
+  cancelAndRefundOrder,
+  retryOrderProvisioning,
+} from "@/server/admin/actions"
 import { formatMargin } from "@/server/admin/pricing"
 import { orderScreen, requireAdminPage } from "@/server/admin/queries"
 
@@ -127,6 +131,33 @@ export default async function AdminPedidoPage({ params }: { params: Promise<{ id
               </Notice>
             ) : (
               <>
+                {detail.status === "failed" && detail.errorCode === "delivery_review" ? (
+                  <Panel className="p-4">
+                    <p className="mb-1 font-medium text-text-base">Asignar el VPS a mano</p>
+                    <p className="mb-3 text-sm text-text-muted">
+                      Varios servidores nuevos de la cuenta OVH encajan con este pedido (los tienes
+                      en el error de arriba) y el sistema no adivina. Comprueba en OVH cuál se creó
+                      con el pedido {detail.ovhOrderId ?? ""} y escribe su nombre. El
+                      aprovisionamiento continúa con ese servidor.
+                    </p>
+                    <ActionForm
+                      action={assignOrderVps}
+                      fields={{ orderId: detail.id }}
+                      submitLabel="Asignar y continuar"
+                      variant="primary"
+                    >
+                      <Field label="Nombre del VPS en OVH" htmlFor="assign-vps">
+                        <Input
+                          id="assign-vps"
+                          name="serviceName"
+                          placeholder="vps-1a2b3c4d.vps.ovh.net"
+                          autoComplete="off"
+                          required
+                        />
+                      </Field>
+                    </ActionForm>
+                  </Panel>
+                ) : null}
                 {alreadyAtOvh ? (
                   <Notice tone="danger" title="OVH ya aceptó este pedido">
                     El pedido OVH <Mono>{detail.ovhOrderId}</Mono> existe. Un reintento a ciegas

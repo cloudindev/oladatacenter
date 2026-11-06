@@ -278,3 +278,30 @@ has no money at stake, so it does not need the same gate as OVH orders.
 **Consequence.** Local dev with a key in `.env.local` sends real email to whatever address
 you register with; leave the key blank there to keep the old behaviour (links are then
 logged to the console).
+
+## 2026-11-06 — Matching a delivered order to its VPS: inventory, plan and datacenter, never a guess
+
+**Context.** OVH's order details return ids, not the delivered server's name, so the job
+identifies the server by inventory: a VPS we have no row for. The production OVH account
+also holds the operator's own servers (6 on this date), which made every one of them a
+candidate and left "pick the newest" as the tie-break: one VPS created by hand during an
+order could have been handed, with a fresh root password, to a customer.
+
+**Decision.** Three layers, all in `src/inngest/jobs/provision.ts`:
+1. The VPS list is stored in the `ovh.checkout.attempt` audit row right before the checkout
+   POST (`inventoryBefore`). Nothing in it can ever be this order's server.
+2. A remaining server is ruled out when it provably differs from the order: vCores or RAM
+   other than the plan's, or a zone in another datacenter. Zones are mapped only for the
+   prefixes seen on real servers (`os-gra*`, `os-sbg*`, `os-de*`, `os-uk*`); an unknown zone
+   never rules a server out.
+3. Exactly one candidate must remain. With more, the order stops with `delivery_review`
+   (customer sees "lo estamos revisando") and a critical alert; an admin writes the right
+   VPS name on the order page (`ovh.delivery.assigned`), and the job re-checks that it exists
+   and belongs to no other service before continuing.
+
+**Also fixed.** `failed` was terminal, so an admin retry of a failed order could never reach
+`delivered`. `failed -> provisioning` is now allowed; only the admin retry triggers it.
+
+**Still to verify.** `billing.OrderDetail` has a `domain` field that may carry the
+delivered service name. Check it on the first real order; if it does, use it first and keep
+these layers as the fallback.

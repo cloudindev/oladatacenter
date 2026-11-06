@@ -6,6 +6,7 @@ import { z } from "zod"
  *   draft -> pending_payment -> paid -> provisioning -> delivered
  *                                                   \-> delayed -> delivered
  *   (pending_payment | paid | provisioning | delayed) -> failed
+ *   failed -> provisioning   (only an admin retry, which resumes from completedSteps)
  *   (draft | pending_payment) -> cancelled
  */
 export const ORDER_STATUSES = [
@@ -28,7 +29,7 @@ export const ORDER_TRANSITIONS: Readonly<Record<OrderStatus, readonly OrderStatu
   provisioning: ["delivered", "delayed", "failed"],
   delayed: ["delivered", "failed"],
   delivered: [],
-  failed: [],
+  failed: ["provisioning"],
   cancelled: [],
 }
 

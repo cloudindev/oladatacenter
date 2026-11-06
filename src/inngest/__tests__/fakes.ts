@@ -84,7 +84,12 @@ export interface FakeDbState {
   snapshots: CatalogSnapshotRecord[]
   actions: { id: string; serviceId: string; type: string; ovhTaskId: number | null }[]
   /** Audit rows the jobs rely on as markers (see `countAuditActions`). */
-  auditActions: { entity: string; entityId: string | null; action: string }[]
+  auditActions: {
+    entity: string
+    entityId: string | null
+    action: string
+    diff?: Record<string, unknown>
+  }[]
   webhookEvents: Map<string, { eventType: string | null; processedAt: Date | null; error: string | null }>
 }
 
@@ -347,6 +352,13 @@ export function createFakeDb(seed: Partial<FakeDbState> = {}): FakeDb {
       ).length
     },
 
+    async latestAuditDiff(entity, entityId, action) {
+      const rows = state.auditActions.filter(
+        (row) => row.entity === entity && row.entityId === entityId && row.action === action,
+      )
+      return rows.at(-1)?.diff ?? null
+    },
+
     async claimWebhookEvent(input) {
       const key = `${input.provider}:${input.eventId}`
       if (state.webhookEvents.has(key)) return "duplicate"
@@ -379,8 +391,22 @@ export interface MockOvhOptions {
   previewCents?: number
   /** Statuses returned by `getOrderStatus`, consumed in order; the last one repeats. */
   orderStatuses?: readonly OvhOrderStatus[]
-  /** VPS names OVH already holds. The one that is not in our DB is the delivered server. */
+  /**
+   * The full VPS list, fixed whatever happens. Leave unset to simulate a real account:
+   * `existingVps` before the checkout, plus `deliveredVps` and `appearsAfterCheckout` once
+   * the checkout has been posted.
+   */
   vpsNames?: readonly string[]
+  /** Servers the OVH account already holds (the operator's own). Default none. */
+  existingVps?: readonly string[]
+  /** The server the checkout delivers. Default `vps-ola1.ovh.net`. */
+  deliveredVps?: string
+  /** Other servers that show up after the checkout, e.g. one created by hand meanwhile. */
+  appearsAfterCheckout?: readonly string[]
+  /** Per-server model and zone, for servers that are not the default S in GRA. */
+  vpsSpecs?: Readonly<
+    Record<string, { vcore: number; memory: number; zone: string; model?: string }>
+  >
   catalog?: unknown
   /** Orders OVH already holds, for the "checkout may have gone through" re-check. */
   existingOrders?: readonly Order[]
@@ -593,20 +619,36 @@ export class MockOvhJobs implements OvhJobs {
 
   async listVps(): Promise<readonly string[]> {
     this.record("listVps")
-    return this.options.vpsNames ?? ["vps-ola1.ovh.net"]
+    if (this.options.vpsNames) return this.options.vpsNames
+    const before = this.options.existingVps ?? []
+    if (!this.calls.includes("checkout")) return before
+    return [
+      ...before,
+      this.options.deliveredVps ?? "vps-ola1.ovh.net",
+      ...(this.options.appearsAfterCheckout ?? []),
+    ]
   }
 
   async getVps(serviceName: string): Promise<VpsSummary> {
     this.record("getVps")
+    const spec = this.options.vpsSpecs?.[serviceName]
+    const model = spec
+      ? {
+          ...MOCK_MODEL,
+          name: spec.model ?? MOCK_MODEL.name,
+          vcore: spec.vcore,
+          memory: spec.memory,
+        }
+      : MOCK_MODEL
     return {
       name: serviceName,
       displayName: null,
       state: this.options.vpsState ?? "running",
-      model: MOCK_MODEL,
-      vcore: 2,
-      memoryLimit: 4096,
+      model,
+      vcore: model.vcore,
+      memoryLimit: model.memory,
       netbootMode: "local",
-      zone: "gra",
+      zone: spec?.zone ?? "gra",
       zoneType: "region",
       offerType: "classic",
       cluster: null,
@@ -845,6 +887,7 @@ export function createTestDeps(options: {
           entity: entry.entity,
           entityId: entry.entityId ?? null,
           action: entry.action,
+          ...(entry.diff ? { diff: entry.diff } : {}),
         })
       },
     },

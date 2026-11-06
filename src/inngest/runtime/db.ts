@@ -527,6 +527,22 @@ export function createJobDb(): JobDb {
       return rows[0]?.count ?? 0
     },
 
+    async latestAuditDiff(entity, entityId, action) {
+      const rows = await db()
+        .select({ diff: auditLog.diff })
+        .from(auditLog)
+        .where(
+          and(
+            eq(auditLog.entity, entity),
+            eq(auditLog.entityId, entityId),
+            eq(auditLog.action, action),
+          ),
+        )
+        .orderBy(desc(auditLog.createdAt))
+        .limit(1)
+      return rows[0]?.diff ?? null
+    },
+
     /* ---- webhooks ---- */
     async claimWebhookEvent(input) {
       const inserted = await db()

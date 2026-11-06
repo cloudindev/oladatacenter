@@ -1,11 +1,17 @@
 import { describe, expect, it } from "vitest"
-import { CHECKOUT_ATTEMPT_ACTION, runProvisioning } from "../jobs/provision"
+import {
+  CHECKOUT_ATTEMPT_ACTION,
+  DELIVERY_ASSIGNED_ACTION,
+  datacenterOfZone,
+  runProvisioning,
+} from "../jobs/provision"
 import {
   ALL_WHMCS_STEPS,
   MockOvhJobs,
   MockWhmcsJobs,
   createFakeDb,
   createTestDeps,
+  type FakeDbState,
   makeCustomer,
   makeOrder,
   makePlan,
@@ -17,6 +23,8 @@ function seed(options: {
   previewCents?: number
   completedSteps?: typeof ALL_WHMCS_STEPS
   orderOverrides?: Parameters<typeof makeOrder>[0]
+  ovh?: ConstructorParameters<typeof MockOvhJobs>[0]
+  auditActions?: FakeDbState["auditActions"]
 }) {
   const customer = makeCustomer({ whmcsClientId: 5001 })
   const order = makeOrder({
@@ -29,8 +37,15 @@ function seed(options: {
     customers: new Map([[customer.id, customer]]),
     orders: new Map([[order.id, order]]),
     plans: [makePlan()],
+    auditActions: options.auditActions?.map((row) => ({
+      ...row,
+      entityId: order.id,
+    })),
   })
-  const ovh = new MockOvhJobs({ previewCents: options.previewCents })
+  const ovh = new MockOvhJobs({
+    previewCents: options.previewCents,
+    ...options.ovh,
+  })
   const whmcs = new MockWhmcsJobs({ existingClientId: 5001 })
   return { ...createTestDeps({ fake, ovh, whmcs }), customer, order }
 }
@@ -218,5 +233,198 @@ describe("provisioning", () => {
     expect(stored?.error).toContain("No hemos podido emitir la factura")
     expect(stored?.completedSteps).toEqual([])
     expect(recorded.alerts.some((alert) => alert.severity === "critical")).toBe(true)
+  })
+})
+
+describe("matching the delivered VPS", () => {
+  // The operator's own servers, one of them the very same plan and datacenter.
+  const OWN = ["vps-own-1.ovh.net", "vps-own-2.ovh.net", "vps-own-3.ovh.net"]
+  const S_IN_GRA = {
+    vcore: 2,
+    memory: 4096,
+    zone: "Region OpenStack: os-gra8",
+  }
+
+  function run(deps: Parameters<typeof runProvisioning>[0], orderId: string) {
+    return runProvisioning(deps, recordingStepTools(), {
+      orderId,
+      correlationId: "test-match",
+    })
+  }
+
+  it("never counts the servers the OVH account already held, even an identical one", async () => {
+    const { deps, fake, ovh, recorded, order } = seed({
+      completedSteps: ALL_WHMCS_STEPS,
+      ovh: { existingVps: OWN, vpsSpecs: { "vps-own-1.ovh.net": S_IN_GRA } },
+    })
+
+    const outcome = await run(deps, order.id)
+
+    expect(outcome.status).toBe("delivered")
+    expect([...fake.state.services.values()][0]?.ovhServiceName).toBe("vps-ola1.ovh.net")
+    expect(recorded.alerts).toHaveLength(0)
+    expect(ovh.countOf("checkout")).toBe(1)
+  })
+
+  it("stores the inventory in the checkout marker, before posting the checkout", async () => {
+    const { deps, fake, order } = seed({
+      completedSteps: ALL_WHMCS_STEPS,
+      ovh: { existingVps: OWN },
+    })
+
+    await run(deps, order.id)
+
+    const marker = fake.state.auditActions.find((row) => row.action === CHECKOUT_ATTEMPT_ACTION)
+    expect(marker?.diff?.["inventoryBefore"]).toEqual(OWN)
+  })
+
+  it("rules out a new server with another plan or in another datacenter", async () => {
+    const { deps, fake, order } = seed({
+      completedSteps: ALL_WHMCS_STEPS,
+      ovh: {
+        appearsAfterCheckout: ["vps-bigger.ovh.net", "vps-elsewhere.ovh.net"],
+        vpsSpecs: {
+          "vps-bigger.ovh.net": {
+            vcore: 8,
+            memory: 16384,
+            zone: "Region OpenStack: os-gra8",
+          },
+          "vps-elsewhere.ovh.net": {
+            ...S_IN_GRA,
+            zone: "Region OpenStack: os-sbg8",
+          },
+        },
+      },
+    })
+
+    const outcome = await run(deps, order.id)
+
+    expect(outcome.status).toBe("delivered")
+    expect([...fake.state.services.values()][0]?.ovhServiceName).toBe("vps-ola1.ovh.net")
+  })
+
+  it("stops for an admin instead of guessing when two new servers both match", async () => {
+    const { deps, fake, ovh, recorded, order } = seed({
+      completedSteps: ALL_WHMCS_STEPS,
+      ovh: {
+        appearsAfterCheckout: ["vps-twin.ovh.net"],
+        vpsSpecs: { "vps-twin.ovh.net": S_IN_GRA },
+      },
+    })
+
+    const outcome = await run(deps, order.id)
+
+    expect(outcome).toMatchObject({
+      status: "failed",
+      code: "delivery_review",
+      step: "ovh_delivery",
+    })
+    expect(fake.state.services.size).toBe(0)
+    expect(ovh.countOf("rebuild")).toBe(0)
+    expect(recorded.passwords).toHaveLength(0)
+    const stored = fake.state.orders.get(order.id)
+    expect(stored?.error).toContain("lo estamos revisando")
+    expect(stored?.error).toContain("vps-twin.ovh.net")
+    expect(recorded.alerts.some((alert) => alert.severity === "critical")).toBe(true)
+  })
+
+  it("uses the server an admin assigned by hand", async () => {
+    const { deps, fake, order } = seed({
+      completedSteps: [
+        ...ALL_WHMCS_STEPS,
+        "ovh_cart",
+        "ovh_configure",
+        "ovh_price_check",
+        "ovh_checkout",
+      ],
+      orderOverrides: {
+        ovhCartId: "cart-1",
+        ovhOrderId: 99_001,
+        status: "failed",
+      },
+      ovh: { vpsNames: [...OWN, "vps-ola1.ovh.net", "vps-twin.ovh.net"] },
+      auditActions: [
+        {
+          entity: "order",
+          entityId: null,
+          action: CHECKOUT_ATTEMPT_ACTION,
+          diff: { inventoryBefore: OWN },
+        },
+        {
+          entity: "order",
+          entityId: null,
+          action: DELIVERY_ASSIGNED_ACTION,
+          diff: { context: { serviceName: "vps-twin.ovh.net" } },
+        },
+      ],
+    })
+
+    const outcome = await run(deps, order.id)
+
+    expect(outcome, JSON.stringify(outcome)).toMatchObject({
+      status: "delivered",
+    })
+    expect([...fake.state.services.values()][0]?.ovhServiceName).toBe("vps-twin.ovh.net")
+  })
+
+  it("refuses a hand assignment of a server that belongs to another customer", async () => {
+    const other = makeService({
+      id: "svc_other",
+      orderId: "ord_other",
+      ovhServiceName: "vps-taken.ovh.net",
+    })
+    const customer = makeCustomer({ whmcsClientId: 5001 })
+    const order = makeOrder({
+      completedSteps: [
+        ...ALL_WHMCS_STEPS,
+        "ovh_cart",
+        "ovh_configure",
+        "ovh_price_check",
+        "ovh_checkout",
+      ],
+      ovhCartId: "cart-1",
+      ovhOrderId: 99_001,
+      status: "failed",
+    })
+    const fake = createFakeDb({
+      customers: new Map([[customer.id, customer]]),
+      orders: new Map([[order.id, order]]),
+      services: new Map([[other.id, other]]),
+      plans: [makePlan()],
+      auditActions: [
+        {
+          entity: "order",
+          entityId: order.id,
+          action: DELIVERY_ASSIGNED_ACTION,
+          diff: { context: { serviceName: "vps-taken.ovh.net" } },
+        },
+      ],
+    })
+    const ovh = new MockOvhJobs({
+      vpsNames: ["vps-taken.ovh.net", "vps-ola1.ovh.net"],
+    })
+    const { deps } = createTestDeps({ fake, ovh, whmcs: new MockWhmcsJobs() })
+
+    const outcome = await run(deps, order.id)
+
+    expect(outcome).toMatchObject({
+      status: "failed",
+      code: "delivery_review",
+    })
+    expect(fake.state.orders.get(order.id)?.error).toContain("already belongs to service svc_other")
+  })
+})
+
+describe("datacenterOfZone", () => {
+  it("reads the zones OVH reports on real servers", () => {
+    expect(datacenterOfZone("Region OpenStack: os-gra8")).toBe("GRA")
+    expect(datacenterOfZone("Region OpenStack: os-sbg6")).toBe("SBG")
+    expect(datacenterOfZone("Region OpenStack: os-de2")).toBe("DE")
+    expect(datacenterOfZone("Region OpenStack: os-uk2")).toBe("UK")
+  })
+
+  it("never guesses an unseen zone", () => {
+    expect(datacenterOfZone("Region OpenStack: os-bhs5")).toBeNull()
+    expect(datacenterOfZone("something else entirely")).toBeNull()
   })
 })

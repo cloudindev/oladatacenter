@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest"
 import {
+  assignOrderVps,
   cancelAndRefundOrder,
   changeServiceNextDueAt,
   changeServiceStatus,
@@ -58,6 +59,70 @@ afterEach(() => setAdminDeps(null))
 function audited(action: string): boolean {
   return deps.recordedAudit.some((row) => row.entry.action === action)
 }
+
+/** An order the job stopped at delivery because two new servers matched it. */
+function installOrderAwaitingAssignment(): void {
+  install({
+    store: new FakeAdminStore({
+      plans: [planRow()],
+      orders: [
+        orderDetail({
+          status: "failed",
+          errorCode: "delivery_review",
+          ovhOrderId: 99_001,
+          completedSteps: [
+            "whmcs_client",
+            "whmcs_order",
+            "whmcs_invoice",
+            "whmcs_payment",
+            "ovh_cart",
+            "ovh_configure",
+            "ovh_price_check",
+            "ovh_checkout",
+          ],
+        }),
+      ],
+    }),
+  })
+}
+
+describe("assigning a VPS to an order by hand", () => {
+  it("records the choice where the job reads it, then resumes provisioning", async () => {
+    installOrderAwaitingAssignment()
+
+    const result = await assignOrderVps(
+      null,
+      formOf({ orderId: orderDetail().id, serviceName: "VPS-1a2b3c4d.vps.ovh.net" }),
+    )
+
+    expect(result.ok).toBe(true)
+    const row = deps.recordedAudit.find((entry) => entry.entry.action === "ovh.delivery.assigned")
+    expect(row?.entry.context).toMatchObject({ serviceName: "vps-1a2b3c4d.vps.ovh.net" })
+    expect(deps.recordedEvents.map((event) => event.name)).toEqual(["ola/order.provision"])
+  })
+
+  it("refuses an order that never reached the OVH checkout", async () => {
+    const result = await assignOrderVps(
+      null,
+      formOf({ orderId: orderDetail().id, serviceName: "vps-1a2b3c4d.vps.ovh.net" }),
+    )
+
+    expect(result.ok).toBe(false)
+    expect(deps.recordedEvents).toHaveLength(0)
+  })
+
+  it("refuses something that is not a VPS name", async () => {
+    installOrderAwaitingAssignment()
+
+    const result = await assignOrderVps(
+      null,
+      formOf({ orderId: orderDetail().id, serviceName: "vps; drop table" }),
+    )
+
+    expect(result.ok).toBe(false)
+    expect(deps.recordedEvents).toHaveLength(0)
+  })
+})
 
 describe("the order retry refuses when it could cost money", () => {
   it("refuses with the kill switch off, and says which variable", async () => {
@@ -570,6 +635,17 @@ describe("every admin Server Action writes an audit row", () => {
       name: "retryOrderProvisioning",
       action: "order.retry.requested",
       run: () => retryOrderProvisioning(null, formOf({ orderId: orderDetail().id })),
+    },
+    {
+      name: "assignOrderVps",
+      action: "ovh.delivery.assigned",
+      run: () => {
+        installOrderAwaitingAssignment()
+        return assignOrderVps(
+          null,
+          formOf({ orderId: orderDetail().id, serviceName: "vps-1a2b3c4d.vps.ovh.net" }),
+        )
+      },
     },
     {
       name: "cancelAndRefundOrder",

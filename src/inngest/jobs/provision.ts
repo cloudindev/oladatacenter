@@ -1,6 +1,7 @@
 import {
   DomainError,
   OVH_PRICING_MODE,
+  PLAN_BRANDING,
   PROVISION_STEPS,
   SELLABLE_DATACENTERS,
   TERM_MONTHS,
@@ -17,7 +18,7 @@ import {
   type ProvisionStep,
   type Term,
 } from "@ola/core"
-import type { GenericProductDefinition, OrderPrice, VpsTask } from "@ola/ovh"
+import type { GenericProductDefinition, OrderPrice, VpsSummary, VpsTask } from "@ola/ovh"
 import type { StepTools } from "../steps"
 import {
   orderItemsSchema,
@@ -215,8 +216,22 @@ export async function runProvisioning(
     })
     order.status = "provisioning"
   } else if (order.status === "failed") {
-    // A manual retry of a failed order: clear the error and continue from the markers.
-    await deps.db.updateOrder(order.id, { error: null, errorCode: null })
+    // A manual retry of a failed order: back to provisioning, clear the error and continue
+    // from the markers. Staying in `failed` would make the final `delivered` impossible.
+    assertOrderTransition(order.status, "provisioning")
+    await deps.db.updateOrder(order.id, {
+      status: "provisioning",
+      error: null,
+      errorCode: null,
+    })
+    await deps.audit.record({
+      entity: "order",
+      entityId: order.id,
+      action: "order.provisioning.resumed",
+      correlationId: input.correlationId,
+      diff: { status: { from: order.status, to: "provisioning" } },
+    })
+    order.status = "provisioning"
   }
 
   let completed = order.completedSteps
@@ -703,17 +718,100 @@ async function checkOvhPrice(deps: JobDeps, context: StepContext): Promise<Provi
 /** Audit action written immediately BEFORE the checkout POST. */
 export const CHECKOUT_ATTEMPT_ACTION = "ovh.checkout.attempt"
 
+/** Audit action an admin writes to hand a specific VPS to an order (see `assignOrderVps`). */
+export const DELIVERY_ASSIGNED_ACTION = "ovh.delivery.assigned"
+
 /**
  * VPS names OVH knows and we do not. A checkout that may have gone through shows up here
- * as a server appearing out of nowhere.
+ * as a server appearing out of nowhere. Servers the account already held before this
+ * order's checkout (the inventory stored in the checkout marker) are never counted: the
+ * OVH account also holds the operator's own servers, which are not ours to hand out.
  */
-async function unknownVpsNames(deps: JobDeps, ovh: OvhJobs): Promise<readonly string[]> {
-  const names = await ovh.listVps()
+async function unknownVpsNames(
+  deps: JobDeps,
+  ovh: OvhJobs,
+  orderId: string,
+): Promise<readonly string[]> {
+  const [names, before] = await Promise.all([ovh.listVps(), inventoryBeforeCheckout(deps, orderId)])
   const unknown: string[] = []
   for (const name of names) {
+    if (before?.has(name)) continue
     if ((await deps.db.findServiceByOvhName(name)) === null) unknown.push(name)
   }
   return unknown
+}
+
+/** The VPS list stored right before the checkout POST; null for orders checked out earlier. */
+async function inventoryBeforeCheckout(
+  deps: JobDeps,
+  orderId: string,
+): Promise<Set<string> | null> {
+  const diff = await deps.db.latestAuditDiff("order", orderId, CHECKOUT_ATTEMPT_ACTION)
+  const names = diff?.["inventoryBefore"]
+  if (!Array.isArray(names)) return null
+  return new Set(names.filter((name): name is string => typeof name === "string"))
+}
+
+/** The VPS an admin assigned to this order by hand, if any. */
+async function assignedServiceName(deps: JobDeps, orderId: string): Promise<string | null> {
+  const diff = await deps.db.latestAuditDiff("order", orderId, DELIVERY_ASSIGNED_ACTION)
+  // Admin audit rows keep their facts under `context`.
+  const context = diff?.["context"]
+  const value =
+    context && typeof context === "object" && "serviceName" in context
+      ? (context as { serviceName: unknown }).serviceName
+      : diff?.["serviceName"]
+  return typeof value === "string" && value.length > 0 ? value : null
+}
+
+/**
+ * OVH zones read like `Region OpenStack: os-gra8`. Only prefixes seen on real servers are
+ * mapped (verified 2026-11-06 on the account's own VPS); any other zone returns null and
+ * is never used to rule a server out.
+ */
+const ZONE_DATACENTERS: Readonly<Record<string, string>> = {
+  gra: "GRA",
+  sbg: "SBG",
+  de: "DE",
+  uk: "UK",
+}
+
+export function datacenterOfZone(zone: string): string | null {
+  const match = /(?:^|os-)([a-z]+)\d*$/i.exec(zone.trim())
+  const prefix = match?.[1]?.toLowerCase()
+  return prefix ? (ZONE_DATACENTERS[prefix] ?? null) : null
+}
+
+/**
+ * False only when the server provably is not what the order bought: a different number of
+ * vCores or amount of RAM than the plan, or a zone in another datacenter. Anything we
+ * cannot tell keeps the server in the running; the "exactly one candidate" rule decides.
+ */
+export function vpsMatchesOrder(vps: VpsSummary, items: OrderItems): boolean {
+  const plan = PLAN_BRANDING[items.planCode]
+  if (plan) {
+    if (Number(vps.model.vcore) !== plan.vcores) return false
+    if (Number(vps.model.memory) !== plan.ramGb * 1024) return false
+  }
+  const datacenter = datacenterOfZone(vps.zone)
+  return datacenter === null || datacenter === items.datacenter
+}
+
+/** Unknown VPS that could be this order's server, plus the ones ruled out and why. */
+async function deliveryCandidates(
+  deps: JobDeps,
+  ovh: OvhJobs,
+  context: StepContext,
+): Promise<{ candidates: string[]; ruledOut: string[] }> {
+  const unknown = await unknownVpsNames(deps, ovh, context.order.id)
+  const candidates: string[] = []
+  const ruledOut: string[] = []
+  for (const name of unknown) {
+    const vps = await ovh.getVps(name)
+    if (vpsMatchesOrder(vps, context.items)) candidates.push(name)
+    else ruledOut.push(`${name} (${vps.model.name}, ${vps.zone})`)
+  }
+  return { candidates, ruledOut }
 }
 
 async function checkoutOvhCart(
@@ -739,7 +837,7 @@ async function checkoutOvhCart(
    */
   const attempts = await deps.db.countAuditActions("order", order.id, CHECKOUT_ATTEMPT_ACTION)
   if (attempts > 0) {
-    const unknown = await unknownVpsNames(deps, ovh)
+    const { candidates: unknown } = await deliveryCandidates(deps, ovh, context)
     if (unknown.length > 0) {
       await deps.alerts.raise({
         severity: "warning",
@@ -771,11 +869,14 @@ async function checkoutOvhCart(
     }
   }
 
+  // What the account holds right now. Whatever appears later is the only thing this
+  // order can have delivered; the operator's own servers stay out of reach.
+  const inventoryBefore = await ovh.listVps()
   await deps.audit.record({
     entity: "order",
     entityId: order.id,
     action: CHECKOUT_ATTEMPT_ACTION,
-    diff: { cartId },
+    diff: { cartId, inventoryBefore: [...inventoryBefore] },
     correlationId: input.correlationId,
   })
 
@@ -940,40 +1041,54 @@ async function reportLateDelivery(
  * Finds the VPS the order delivered and writes our `services` row.
  *
  * `GET /me/order/{orderId}/details` returns detail *ids*, not service names (see
- * `docs/ovh-api-verified.md`), so the delivered server is identified by inventory: the VPS
- * OVH lists and we have no row for. With several candidates the newest one wins and an
- * admin is told, because guessing the wrong server would hand it to the wrong customer.
+ * `docs/ovh-api-verified.md`), so the delivered server is identified by inventory: a VPS
+ * that appeared after this order's checkout, that we have no row for, and whose plan and
+ * datacenter match the order. Exactly one must qualify. Anything else stops the order for
+ * an admin to assign by hand: guessing would hand someone else's server to this customer.
  */
+async function deliveredServiceName(
+  deps: JobDeps,
+  ovh: OvhJobs,
+  context: StepContext,
+): Promise<string> {
+  const { order } = context
+
+  const assigned = await assignedServiceName(deps, order.id)
+  if (assigned !== null) {
+    if (!(await ovh.listVps()).includes(assigned)) {
+      throw new DomainError("delivery_review", {
+        detail: `the VPS assigned by hand (${assigned}) does not exist in the OVH account`,
+      })
+    }
+    const owner = await deps.db.findServiceByOvhName(assigned)
+    if (owner !== null && owner.orderId !== order.id) {
+      throw new DomainError("delivery_review", {
+        detail: `the VPS assigned by hand (${assigned}) already belongs to service ${owner.id}`,
+      })
+    }
+    return assigned
+  }
+
+  const { candidates, ruledOut } = await deliveryCandidates(deps, ovh, context)
+  const excluded = ruledOut.length > 0 ? `; ruled out: ${ruledOut.join(", ")}` : ""
+  if (candidates.length === 0) {
+    throw new DomainError("provider_rejected", {
+      detail: `OVH order ${order.ovhOrderId ?? "unknown"} is delivered but no matching new VPS appeared in the account${excluded}`,
+    })
+  }
+  if (candidates.length > 1) {
+    throw new DomainError("delivery_review", {
+      detail: `several new VPS could be this order's server: ${candidates.join(", ")}${excluded}. Assign the right one by hand from the order page`,
+    })
+  }
+  return candidates[0] as string
+}
+
 async function materialiseService(deps: JobDeps, context: StepContext): Promise<null> {
   const { order, items, input } = context
   const ovh = deps.ovh()
 
-  const candidates = await unknownVpsNames(deps, ovh)
-  if (candidates.length === 0) {
-    throw new DomainError("provider_rejected", {
-      detail: `OVH order ${order.ovhOrderId ?? "unknown"} is delivered but no new VPS appeared in the account`,
-    })
-  }
-
-  let serviceName = candidates[0] as string
-  if (candidates.length > 1) {
-    const withCreation = await Promise.all(
-      candidates.map(async (name) => ({
-        name,
-        creation: (await ovh.getServiceInfos(name)).creation,
-      })),
-    )
-    withCreation.sort((left, right) => right.creation.getTime() - left.creation.getTime())
-    serviceName = withCreation[0]?.name ?? serviceName
-    await deps.alerts.raise({
-      severity: "warning",
-      title: "Varios VPS sin asignar al entregar un pedido",
-      entity: "order",
-      entityId: order.id,
-      detail: `candidates: ${candidates.join(", ")}; picked the newest: ${serviceName}`,
-      correlationId: input.correlationId,
-    })
-  }
+  const serviceName = await deliveredServiceName(deps, ovh, context)
 
   const [vps, ips] = await Promise.all([ovh.getVps(serviceName), ovh.getVpsIps(serviceName)])
   const ipv4 = ips.find((ip) => ip.version === 4 && !ip.isBlock)?.address ?? null

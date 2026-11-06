@@ -50,7 +50,8 @@ describe("order state machine", () => {
 
   it("treats delivered, failed and cancelled as terminal", () => {
     expect(isTerminalOrderStatus("delivered")).toBe(true)
-    expect(isTerminalOrderStatus("failed")).toBe(true)
+    // An admin retry resumes a failed order, so it is not terminal.
+    expect(isTerminalOrderStatus("failed")).toBe(false)
     expect(isTerminalOrderStatus("cancelled")).toBe(true)
     expect(isTerminalOrderStatus("paid")).toBe(false)
   })

@@ -41,8 +41,8 @@ import type {
  * Isolated in its own module so the test suite can exercise every billing service without
  * importing the database driver at all.
  *
- * Note on atomicity: the Neon HTTP driver has no interactive transactions, so
- * `consumeCredit` uses optimistic concurrency — each row is updated conditionally on the
+ * Note on atomicity: `consumeCredit` uses optimistic concurrency rather than a transaction,
+ * so it holds no lock across the pooler — each row is updated conditionally on the
  * `consumed` value it was read with, and a lost race is retried. Two orders can never
  * spend the same cent.
  */

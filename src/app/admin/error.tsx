@@ -7,7 +7,7 @@ import { RawError } from "@/components/admin/ui"
 /**
  * The last line of defence for the internal panel.
  *
- * There is no database configured in this environment, and in production Neon can be
+ * There is no database configured in this environment, and in production Supabase can be
  * down. Every read already degrades through `load()`, but anything that throws outside it
  * — a missing `AUTH_SECRET`, a bad Inngest key — lands here, and an operator gets the raw
  * message rather than a blank screen.

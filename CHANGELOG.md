@@ -129,6 +129,9 @@ oladc.com Next.js application.
 
 ### Changed
 
+- The database moves from Neon to Supabase: `@ola/db` now uses the `postgres` driver through
+  Supabase's transaction pooler, and migrations use `DIRECT_URL`. Schema unchanged.
+
 - The repository keeps the Next.js application at its root instead of moving to `apps/web` with
   Turborepo and pnpm; domain code lives in npm workspaces under `packages/*`. oladc.com is already
   deployed to Vercel from the root, and the move would break every deploy until a Vercel setting

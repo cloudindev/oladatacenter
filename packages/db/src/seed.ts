@@ -15,7 +15,7 @@ import {
   parseCatalog,
   type AddonFamily,
 } from "@ola/core"
-import { createDatabase } from "./index"
+import { closeDatabase, createDatabase } from "./index"
 import { addons, ovhCatalogSnapshots, plans } from "./schema"
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -106,6 +106,7 @@ async function main(): Promise<void> {
   }
 
   console.log(`seeded ${catalog.plans.length} plans and ${catalog.addons.length} addons`)
+  await closeDatabase(db)
 }
 
 main().catch((error: unknown) => {

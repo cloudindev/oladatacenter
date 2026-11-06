@@ -175,3 +175,24 @@ and blocking a customer instantly. A stateless JWT cannot be revoked before it e
 whatever `node` is on `PATH`, which panics with
 `node: --enable-source-maps is not allowed in NODE_OPTIONS` and 500s every page.
 Running `nvm alias default 22` on the machine would make this unnecessary.
+
+---
+
+## 2026-11-06 — Database on Supabase instead of Neon
+
+**Decision.** Postgres is hosted on Supabase. `@ola/db` uses `drizzle-orm/postgres-js` with the
+`postgres` driver instead of `@neondatabase/serverless` + `neon-http`.
+
+**Why.** Operator preference: Supabase is the provider the team already uses. The schema and the
+migrations are plain Postgres and did not change.
+
+**How it connects.** The app's `DATABASE_URL` is Supabase's **transaction pooler** (port 6543),
+which is what serverless functions on Vercel need; it does not support prepared statements, so
+the client runs with `prepare: false`. Migrations run through `DIRECT_URL` (session pooler or
+direct connection, port 5432), which `drizzle.config.ts` prefers when set.
+
+**Not used.** Supabase Auth, Storage and the auto-generated REST API: auth stays in our own
+tables (see "Sessions in the database"). Turn off the Data API in the project, or keep RLS
+enabled with no policies on every table, so nothing is reachable through the anon key.
+
+**Reversible?** Yes — swap the driver back in `packages/db/src/index.ts`; nothing else depends on it.

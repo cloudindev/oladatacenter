@@ -67,7 +67,15 @@ export async function sendTemplateEmail<K extends EmailTemplateName>(
         .where(eqOutboundEmail(rowId))
     }
     if (mocksEnabled()) {
-      console.info("[mailer] mock email", { to, template, subject })
+      // Local testing needs the verification and reset links, which otherwise only exist
+      // inside an email nobody receives. Only `*Url` props are printed: never the whole
+      // props object, which for some templates carries a one-time root password.
+      const links = Object.fromEntries(
+        Object.entries(props as object).filter(
+          ([key, value]) => key.endsWith("Url") && typeof value === "string",
+        ),
+      )
+      console.info("[mailer] mock email", { to, template, subject, ...links })
     }
     return { sent: true }
   } catch (error) {

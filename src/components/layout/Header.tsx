@@ -83,7 +83,11 @@ const CLOUD_ADDON_ITEMS: PanelItem[] = [
 ]
 
 // ─── 3. Component Logic ─────────────────────────────────────────────────────
-export function Header() {
+/**
+ * `solidBar`: on long pages where content scrolls under the floating menu (the VPS shop
+ * and configurator), paint a full-width band behind it so it reads as a fixed bar.
+ */
+export function Header({ solidBar = false }: { solidBar?: boolean } = {}) {
   const { lang, t } = useLanguage()
   const pathname = usePathname()
 
@@ -225,6 +229,12 @@ export function Header() {
   // ─── 4. Render ────────────────────────────────────────────────────────────
   return (
     <header className="fixed top-3 md:top-[29px] inset-x-0 z-50 pointer-events-none px-3 sm:px-4 md:px-[44px] [&_.label-mono]:!text-[12.5px]">
+      {solidBar ? (
+        <div
+          aria-hidden
+          className="absolute inset-x-0 -top-3 h-[76px] md:-top-[29px] md:h-[124px] bg-bg-light/95 backdrop-blur-sm border-b border-bg-dark/10"
+        />
+      ) : null}
       {/* ── VERSIÓN MOBILE (< md) ── */}
       <div className="md:hidden pointer-events-auto">
         <div

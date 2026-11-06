@@ -68,9 +68,10 @@ describe("plan slugs", () => {
 describe("datacenters", () => {
   it("labels a datacenter by city and country, never by its OVH code", () => {
     expect(datacenterLabel("EU-WEST-RBX")).toBe("Roubaix, Francia")
-    expect(datacenterLabel("BHS")).toBeNull()
+    expect(datacenterLabel("BHS")).toBe("Beauharnois, Canadá")
+    expect(datacenterLabel("RBX-LZ")).toBeNull()
     expect(datacenterSlug("EU-WEST-RBX")).toBe("roubaix")
-    expect(datacenterSlug("BHS")).toBeNull()
+    expect(datacenterSlug("RBX-LZ")).toBeNull()
     expect(datacenterCodeForSlug("roubaix")).toBe("EU-WEST-RBX")
     expect(datacenterCodeForSlug("mars")).toBeNull()
   })
@@ -81,11 +82,16 @@ describe("datacenters", () => {
       "gravelines",
       "estrasburgo",
       "roubaix",
-      "francfort",
+      "limburgo",
       "londres",
       "varsovia",
       "milan",
+      "beauharnois",
+      "singapur",
+      "sidney",
+      "bombay",
     ])
+    expect(dcs.filter((dc) => dc.region === "europe")).toHaveLength(7)
     expect(dcs.some((dc) => dc.label.includes("BHS"))).toBe(false)
   })
 })
@@ -309,14 +315,14 @@ describe("the shareable configuration", () => {
   it("restores a full configuration from the query string", () => {
     const config = resolveConfig(plans, {
       plan: "l",
-      dc: "francfort",
+      dc: "limburgo",
       os: "debian-13",
       term: "anual",
       addons: "snapshot,disco-200gb,plesk-web-pro",
     })
     expect(config).toEqual({
       plan: "l",
-      dc: "francfort",
+      dc: "limburgo",
       os: "debian-13",
       term: "P12M",
       addons: ["snapshot", "disco-200gb", "plesk-web-pro"],
@@ -498,7 +504,7 @@ describe("applyDatacenterStock", () => {
   })
 
   it("marks the plan sold out when no sellable datacenter has stock", () => {
-    const result = applyDatacenterStock(plan, new Set(["BHS"]))
+    const result = applyDatacenterStock(plan, new Set(["RBX-LZ"]))
     expect(result.available).toBe(false)
   })
 

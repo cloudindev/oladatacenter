@@ -26,6 +26,7 @@ import {
   TERM_MONTHS,
   type AddonCost,
   type AddonFamily,
+  type DatacenterRegion,
   type ParsedCatalog,
   type PlanCost,
   type Term,
@@ -187,6 +188,8 @@ export interface PublicDatacenter {
   country: string
   /** "Gravelines, Francia" — the only thing a customer ever reads. */
   label: string
+  /** `europe` keeps the data in the EU/EEA or the UK; `world` does not. */
+  region: DatacenterRegion
   /**
    * OVH has stock here for this plan right now. `true` until live stock is applied with
    * `applyDatacenterStock`, and kept `true` when the stock source cannot be reached.
@@ -219,6 +222,7 @@ export function datacentersFor(plan: PlanCost): readonly PublicDatacenter[] {
     city: dc.city,
     country: dc.country,
     label: `${dc.city}, ${dc.country}`,
+    region: dc.region,
     available: true,
   }))
 }

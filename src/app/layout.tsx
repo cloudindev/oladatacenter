@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Geist, Roboto_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import Script from "next/script";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -10,13 +9,16 @@ import "./globals.css";
  * Montserrat Black for heavy display headlines, and
  * Roboto Mono for uppercase labels, nav items and CTAs.
  */
-const geistSans = Geist({
+// All three fonts are self-hosted (latin subset, variable). next/font/google downloads
+// them during the build: Turbopack 16.2.7 cannot resolve Montserrat's URLs on Linux, and
+// any hiccup reaching Google fails the whole build ("Error while requesting resource").
+const geistSans = localFont({
+  src: "./fonts/geist-latin-variable.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  weight: "100 900",
+  display: "swap",
 });
 
-// Self-hosted: on Linux builds (Vercel, CI) Turbopack 16.2.7 fails to resolve the
-// next/font/google URLs for Montserrat ("queries have exactly one entry").
 const montserrat = localFont({
   src: "./fonts/montserrat-latin-variable.woff2",
   variable: "--font-montserrat",
@@ -24,10 +26,11 @@ const montserrat = localFont({
   display: "swap",
 });
 
-const robotoMono = Roboto_Mono({
+const robotoMono = localFont({
+  src: "./fonts/roboto-mono-latin-variable.woff2",
   variable: "--font-roboto-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: "400 500",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

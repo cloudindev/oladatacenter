@@ -108,12 +108,7 @@ export function Configurator({
                 value={candidate.slug}
                 checked={candidate.slug === config.plan}
                 onSelect={(value) => patch({ plan: value })}
-                disabled={!candidate.available}
-                caption={
-                  candidate.available
-                    ? `${formatCents(candidate.price[config.term].monthly)} / mes`
-                    : "Sin stock ahora mismo"
-                }
+                caption={`${formatCents(candidate.price[config.term].monthly)} / mes`}
                 title={candidate.name}
                 note={`${candidate.specs.vcores} vCores · ${candidate.specs.ramGb} GB RAM · ${candidate.specs.nvmeGb} GB NVMe`}
               />

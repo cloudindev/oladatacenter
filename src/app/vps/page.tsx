@@ -63,7 +63,7 @@ export default async function VpsPlansPage() {
         </p>
         {entry ? (
           <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.06em] text-text-muted">
-            Desde {formatCents(entry.price.P12M.monthly)} al mes, sin IVA
+            Desde {formatCents(entry.price.P1M.monthly)} al mes, sin IVA
           </p>
         ) : null}
       </section>

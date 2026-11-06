@@ -50,7 +50,7 @@ const serverSchema = z.object({
   SMS_PROVIDER_KEY: z.string().optional(),
   SENTRY_DSN: z.string().optional(),
 
-  PRICING_DEFAULT_MARGIN: z.coerce.number().default(0.75),
+  PRICING_DEFAULT_MARGIN: z.coerce.number().default(0.7),
   ADDON_DEFAULT_MARGIN: z.coerce.number().default(0.5),
   /**
    * Alert threshold for the daily catalog sync: when an OVH cost rise would push a plan's

@@ -252,12 +252,16 @@ export function Notice({
 export function EmptyState({
   children,
   action,
+  illustration,
 }: {
   children: React.ReactNode
   action?: React.ReactNode
+  /** Optional drawing shown above the message. Decorative. */
+  illustration?: React.ReactNode
 }) {
   return (
     <div className="border border-dashed border-border-base rounded-xl px-6 py-12 text-center">
+      {illustration ? <div className="mx-auto mb-8 max-w-[440px]">{illustration}</div> : null}
       <p className="text-text-muted mb-5">{children}</p>
       {action}
     </div>

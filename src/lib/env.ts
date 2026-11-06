@@ -14,6 +14,15 @@ export const envFlag = z
   .optional()
   .transform((value) => value === "true" || value === "1")
 
+/**
+ * Optional per-provider override: unset means "follow USE_MOCK_PROVIDERS". Same strict
+ * values as `envFlag`, so "false" can never be read as true.
+ */
+export const overrideFlag = z
+  .enum(["true", "false", "1", "0"])
+  .optional()
+  .transform((value) => (value === undefined ? undefined : value === "true" || value === "1"))
+
 const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 
@@ -66,6 +75,10 @@ const serverSchema = z.object({
 
   /** Use the in-memory mocks instead of the real providers. */
   USE_MOCK_PROVIDERS: envFlag,
+  /** Per-provider overrides of USE_MOCK_PROVIDERS, to switch one provider on at a time. */
+  MOCK_OVH: overrideFlag,
+  MOCK_WHMCS: overrideFlag,
+  MOCK_STRIPE: overrideFlag,
 })
 
 const clientSchema = z.object({
@@ -121,4 +134,31 @@ export const clientEnv: ClientEnv = clientSchema.parse({
 export function mocksEnabled(): boolean {
   const current = env()
   return current.USE_MOCK_PROVIDERS || current.NODE_ENV === "test"
+}
+
+export type MockableProvider = "ovh" | "whmcs" | "stripe"
+
+type MockSettings = Pick<
+  ServerEnv,
+  "NODE_ENV" | "USE_MOCK_PROVIDERS" | "MOCK_OVH" | "MOCK_WHMCS" | "MOCK_STRIPE"
+>
+
+/** Pure resolution of one provider's mock switch; the test runner always mocks. */
+export function resolveProviderMock(settings: MockSettings, provider: MockableProvider): boolean {
+  if (settings.NODE_ENV === "test") return true
+  const override = {
+    ovh: settings.MOCK_OVH,
+    whmcs: settings.MOCK_WHMCS,
+    stripe: settings.MOCK_STRIPE,
+  }[provider]
+  return override ?? settings.USE_MOCK_PROVIDERS
+}
+
+/**
+ * True when this provider runs on its in-memory mock. `USE_MOCK_PROVIDERS` sets the
+ * default for all of them; `MOCK_OVH`, `MOCK_WHMCS` and `MOCK_STRIPE` override one each,
+ * so WHMCS can go live while OVH orders stay simulated.
+ */
+export function providerMocked(provider: MockableProvider): boolean {
+  return resolveProviderMock(env(), provider)
 }

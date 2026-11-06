@@ -3,7 +3,7 @@ import { Resend } from "resend"
 import { MockEmailSender, ResendSender, type EmailSender } from "@ola/email"
 import { HttpOvhClient, MockOvhClient, type OvhClient } from "@ola/ovh"
 import { HttpWhmcsClient, MockWhmcsClient, type WhmcsClient } from "@ola/whmcs"
-import { env, mocksEnabled } from "@/lib/env"
+import { env, providerMocked } from "@/lib/env"
 
 /**
  * The only place in the codebase where a provider adapter is constructed.
@@ -16,14 +16,14 @@ let whmcsClient: WhmcsClient | null = null
 export function ovh(): OvhClient {
   if (ovhClient) return ovhClient
 
-  if (mocksEnabled()) {
+  if (providerMocked("ovh")) {
     ovhClient = new MockOvhClient()
     return ovhClient
   }
 
   const config = env()
   if (!config.OVH_APP_KEY || !config.OVH_APP_SECRET || !config.OVH_CONSUMER_KEY) {
-    throw new Error("OVH credentials are missing; set OVH_APP_KEY/SECRET/CONSUMER_KEY or USE_MOCK_PROVIDERS=true")
+    throw new Error("OVH credentials are missing; set OVH_APP_KEY/SECRET/CONSUMER_KEY or MOCK_OVH=true")
   }
 
   ovhClient = new HttpOvhClient({
@@ -66,14 +66,21 @@ export function ovhPublic(): OvhPublic {
 export function whmcs(): WhmcsClient {
   if (whmcsClient) return whmcsClient
 
-  if (mocksEnabled()) {
+  if (providerMocked("whmcs")) {
     whmcsClient = new MockWhmcsClient()
     return whmcsClient
   }
 
   const config = env()
+  // A simulated Stripe charge recorded in the real WHMCS would be a fake payment in the
+  // books. Refuse the combination instead of trusting the operator to notice.
+  if (config.WHMCS_WRITE_ENABLED && providerMocked("stripe")) {
+    throw new Error(
+      "WHMCS_WRITE_ENABLED is true while Stripe is mocked; refusing to book simulated payments in the real WHMCS",
+    )
+  }
   if (!config.WHMCS_API_URL || !config.WHMCS_API_IDENTIFIER || !config.WHMCS_API_SECRET) {
-    throw new Error("WHMCS credentials are missing; set WHMCS_API_* or USE_MOCK_PROVIDERS=true")
+    throw new Error("WHMCS credentials are missing; set WHMCS_API_* or MOCK_WHMCS=true")
   }
 
   whmcsClient = new HttpWhmcsClient({
@@ -115,9 +122,13 @@ export function emailSender(): EmailSender {
  * misconfigured environment can never spend money.
  */
 export function assertOvhOrdersEnabled(): void {
-  if (mocksEnabled()) return
+  if (providerMocked("ovh")) return
   if (!env().OVH_ORDERS_ENABLED) {
     throw new Error("OVH_ORDERS_ENABLED is false; refusing to place a real order")
+  }
+  // A real server must never be bought for a payment that was only simulated.
+  if (providerMocked("stripe")) {
+    throw new Error("Stripe is mocked; refusing to place a real OVH order without a real payment")
   }
 }
 

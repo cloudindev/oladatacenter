@@ -63,7 +63,7 @@ function recordingLogger(): { logger: WhmcsLogger; entries: WhmcsLogFields[] } {
 }
 
 const CREDENTIALS = {
-  apiUrl: "https://panel.cloudin.pro/cdin/includes/api.php",
+  apiUrl: "https://panel.cloudin.pro/includes/api.php",
   identifier: "test-identifier",
   secret: "test-secret",
 }

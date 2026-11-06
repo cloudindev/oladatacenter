@@ -15,7 +15,7 @@
 ## Comprobación
 
 1. ¿Es la aplicación o es la red?
-   `curl -s -o /dev/null -w '%{http_code}\n' https://panel.cloudin.pro/cdin/includes/api.php`
+   `curl -s -o /dev/null -w '%{http_code}\n' https://panel.cloudin.pro/includes/api.php`
    Un `200` con cuerpo de error de API es muy distinto de un timeout.
 2. **Lo más frecuente no es una caída: es la lista blanca de IPs.** WHMCS filtra por IP y Vercel
    no tiene IP de salida fija. Por eso existe `WHMCS_PROXY_URL`, un proxy de IP fija. Si el error

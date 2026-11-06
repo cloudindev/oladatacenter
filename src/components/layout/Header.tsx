@@ -96,6 +96,22 @@ export function Header({ solidBar = false }: { solidBar?: boolean } = {}) {
   const open = active !== null
   const menu: MenuKey | null = active === null || active === "bare" ? null : active
 
+  // Sesión: si hay cliente conectado, "Mi panel" sustituye a "Entrar".
+  const [signedIn, setSignedIn] = React.useState(false)
+  React.useEffect(() => {
+    let cancelled = false
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data: { signedIn?: boolean } | null) => {
+        if (!cancelled) setSignedIn(data?.signedIn === true)
+      })
+      .catch(() => undefined)
+    return () => {
+      cancelled = true
+    }
+  }, [pathname])
+  const accountHref = signedIn ? "/app" : "/login"
+
   // Estado Mobile
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const [mobileSection, setMobileSection] = React.useState<MenuKey | null>("datacenter")
@@ -501,11 +517,13 @@ export function Header({ solidBar = false }: { solidBar?: boolean } = {}) {
             {/* Acciones inferiores del cajón móvil */}
             <div className="mt-3 pt-3 border-t border-bg-dark/10 flex items-center justify-between gap-3">
               <Link
-                href="/login"
+                href={accountHref}
                 onClick={() => setMobileOpen(false)}
                 className="flex-1 text-center font-mono text-[12px] uppercase tracking-[0.05em] py-3 rounded-xl border border-bg-dark/15 text-text-base hover:bg-surface-beige/60 transition-colors"
               >
-                {t("Client Portal · Log in", "Portal Clientes · Entrar")}
+                {signedIn
+                  ? t("Client Portal · My panel", "Portal Clientes · Mi panel")
+                  : t("Client Portal · Log in", "Portal Clientes · Entrar")}
               </Link>
             </div>
           </div>
@@ -699,11 +717,18 @@ export function Header({ solidBar = false }: { solidBar?: boolean } = {}) {
               )}
             />
             <Link
-              href="/login"
+              href={accountHref}
               onMouseEnter={() => setActive("bare")}
-              className="label-mono text-[rgba(30,29,29,0.93)] hover:text-text-base transition-colors"
+              className="label-mono inline-flex items-center gap-2 text-[rgba(30,29,29,0.93)] hover:text-text-base transition-colors"
             >
-              {t("Log in", "Entrar")}
+              {signedIn ? (
+                <>
+                  <span aria-hidden className="size-1.5 rounded-full bg-primary-hover" />
+                  {t("My panel", "Mi panel")}
+                </>
+              ) : (
+                t("Log in", "Entrar")
+              )}
             </Link>
             <ChipCta href="/contact">{t("Talk to us", "Habla con nosotros")}</ChipCta>
           </div>

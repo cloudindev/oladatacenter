@@ -10,6 +10,7 @@ import { fileURLToPath } from "node:url"
 import { dirname, resolve } from "node:path"
 import {
   MANDATORY_FAMILIES,
+  MVP_PLAN_CODES,
   PLAN_BRANDING,
   cheapestAddonOfFamily,
   parseCatalog,
@@ -33,7 +34,6 @@ async function main(): Promise<void> {
 
   await db.insert(ovhCatalogSnapshots).values({ raw: raw as Record<string, unknown> })
 
-  let sort = 0
   for (const plan of catalog.plans) {
     const branding = PLAN_BRANDING[plan.planCode]
     if (!branding) continue
@@ -62,7 +62,8 @@ async function main(): Promise<void> {
         cost12m: plan.monthlyCost.P12M,
         trueCostMonth: plan.monthlyCost.P1M + mandatoryMonthly,
         trueCost12m: plan.monthlyCost.P12M + mandatoryAnnual,
-        sort: sort++,
+        // Same order the public pages use: S, M, L, XL — not the order OVH lists them in.
+        sort: MVP_PLAN_CODES.indexOf(plan.planCode),
       })
       .onConflictDoUpdate({
         target: plans.ovhPlanCode,

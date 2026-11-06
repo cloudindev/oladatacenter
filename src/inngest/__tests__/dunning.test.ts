@@ -145,6 +145,60 @@ describe("dunning calendar", () => {
     expect(recorded.emails.map((email) => email.template)).toContain("service-terminating")
   })
 
+  it("reminds the payment at T-3 with the invoice amount", async () => {
+    const now = new Date("2026-11-28T06:15:00.000Z")
+    // The T-7 step runs for real so there is an unpaid invoice to remind about.
+    const { deps, recorded, service } = setup({ now })
+    await runDunningStep(deps, recordingStepTools(), {
+      serviceId: service.id,
+      stage: "invoiced",
+      action: "issue_invoice",
+      dueAt: new Date("2026-11-24T00:00:00.000Z").toISOString(),
+      correlationId: "test-invoice-for-reminder",
+    })
+
+    const dispatches = await scanDunning(deps, now)
+    expect(dispatches[0]).toMatchObject({ stage: "reminded", action: "remind_payment" })
+
+    await runDunningStep(deps, recordingStepTools(), {
+      serviceId: service.id,
+      stage: "reminded",
+      action: "remind_payment",
+      dueAt: new Date("2026-11-28T00:00:00.000Z").toISOString(),
+      correlationId: "test-remind",
+    })
+
+    expect(recorded.emails.map((email) => email.template)).toContain("payment-reminder")
+  })
+
+  it("warns of the deletion at T+7 only while the server is still suspended", async () => {
+    const now = new Date("2026-12-08T06:15:00.000Z")
+    const completed: DunningStage[] = ["invoiced", "reminded", "charging", "retry_1", "retry_2", "suspended"]
+    const suspended = setup({ now, completed, service: { status: "suspended", dunningStage: "suspended" } })
+
+    const dispatches = await scanDunning(suspended.deps, now)
+    expect(dispatches[0]).toMatchObject({ stage: "deletion_warned", action: "warn_deletion" })
+
+    await runDunningStep(suspended.deps, recordingStepTools(), {
+      serviceId: suspended.service.id,
+      stage: "deletion_warned",
+      action: "warn_deletion",
+      dueAt: new Date("2026-12-08T00:00:00.000Z").toISOString(),
+      correlationId: "test-warn",
+    })
+    expect(suspended.recorded.emails.map((email) => email.template)).toContain("deletion-warning")
+
+    const active = setup({ now, completed, service: { status: "active", dunningStage: "suspended" } })
+    await runDunningStep(active.deps, recordingStepTools(), {
+      serviceId: active.service.id,
+      stage: "deletion_warned",
+      action: "warn_deletion",
+      dueAt: new Date("2026-12-08T00:00:00.000Z").toISOString(),
+      correlationId: "test-warn-active",
+    })
+    expect(active.recorded.emails.map((email) => email.template)).not.toContain("deletion-warning")
+  })
+
   it("reactivates a suspended service when the payment arrives", async () => {
     const now = new Date("2026-12-05T10:00:00.000Z")
     const { deps, fake, ovh, whmcs, service } = setup({

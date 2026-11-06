@@ -418,6 +418,43 @@ describe("dunning", () => {
       .toBe("suspended")
   })
 
+  it("reminds the payment at T-3 and warns of the deletion at T+7", () => {
+    const schedule = dunningSchedule(dueAt)
+    expect(schedule.find((s) => s.stage === "reminded")?.at.toISOString()).toBe(
+      "2026-11-28T00:00:00.000Z",
+    )
+    expect(schedule.find((s) => s.stage === "deletion_warned")?.at.toISOString()).toBe(
+      "2026-12-08T00:00:00.000Z",
+    )
+    expect(pendingStep(dueAt, new Date("2026-11-29"), ["invoiced"])?.stage).toBe("reminded")
+    expect(
+      pendingStep(dueAt, new Date("2026-12-09"), [
+        "invoiced",
+        "reminded",
+        "charging",
+        "retry_1",
+        "retry_2",
+        "suspended",
+      ])?.stage,
+    ).toBe("deletion_warned")
+  })
+
+  it("skips a notice once the next step is due, instead of sending it late", () => {
+    // The cycle started late: at T-0 the reminder is stale and the charge goes first.
+    expect(pendingStep(dueAt, new Date("2026-12-01T01:00:00Z"), ["invoiced"])?.stage).toBe(
+      "charging",
+    )
+    expect(
+      pendingStep(dueAt, new Date("2026-12-11T01:00:00Z"), [
+        "invoiced",
+        "charging",
+        "retry_1",
+        "retry_2",
+        "suspended",
+      ])?.stage,
+    ).toBe("terminating")
+  })
+
   it("advances the due date by the term", () => {
     expect(nextDueDate(dueAt, 1).toISOString()).toBe("2027-01-01T00:00:00.000Z")
     expect(nextDueDate(dueAt, 12).toISOString()).toBe("2027-12-01T00:00:00.000Z")

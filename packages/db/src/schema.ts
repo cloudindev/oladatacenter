@@ -65,10 +65,12 @@ export const actorType = pgEnum("actor_type", ["user", "admin", "system", "webho
 export const dunningStage = pgEnum("dunning_stage", [
   "scheduled",
   "invoiced",
+  "reminded",
   "charging",
   "retry_1",
   "retry_2",
   "suspended",
+  "deletion_warned",
   "terminating",
   "paid",
 ])

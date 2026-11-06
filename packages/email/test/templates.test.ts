@@ -12,17 +12,19 @@ const SPANISH_MARKERS =
 
 describe("catálogo de plantillas", () => {
   it("cubre las quince plantillas del ciclo de vida", () => {
-    expect(EMAIL_TEMPLATE_NAMES).toHaveLength(15)
+    expect(EMAIL_TEMPLATE_NAMES).toHaveLength(17)
     expect([...EMAIL_TEMPLATE_NAMES].sort()).toEqual(
       [
         "account-verified",
         "admin-alert",
         "credit-expiring",
+        "deletion-warning",
         "order-delayed",
         "order-failed",
         "order-received",
         "password-reset",
         "payment-failed",
+        "payment-reminder",
         "phone-otp",
         "renewal-upcoming",
         "server-ready",

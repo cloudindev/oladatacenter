@@ -48,7 +48,7 @@ export default async function VpsPlansPage() {
 
   return (
     <main className="flex min-h-screen flex-col bg-bg-light text-text-base selection:bg-primary selection:text-bg-dark">
-      <Header />
+      <Header solidBar />
 
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className={`${CONTAINER} pt-[96px] md:pt-[148px] pb-12 md:pb-16`}>

@@ -243,3 +243,23 @@ unchanged because ,99 rounding absorbs the difference; L and XL drop. The public
 
 The brief's published PVP table (7.99 / 14.99 / 21.99 / 41.99) was reproduced with 1.75; it
 no longer is, by decision.
+
+---
+
+## 2026-11-06 — Datacenters outside Europe are offered when they have stock
+
+**Decision (operator).** The configurator lists every datacenter with stock for the chosen
+plan, Europe first, then Beauharnois (Canada), Singapore, Sydney and Mumbai. Non-European
+ones are labelled "fuera de la Unión Europea". When no European datacenter has stock, a note
+says so under the list.
+
+**Why.** With Europe out of stock for most plans, hiding the only deliverable locations
+stops every sale.
+
+**To check before selling outside the EU.** GDPR: a customer who stores personal data on a
+server in Canada, Singapore, Australia or India is transferring it outside the EEA; Canada
+has an adequacy decision, the others do not. The label makes the location explicit; the
+terms of service should say who is responsible for that choice.
+
+Also corrected: the OVH `DE` site is in Limburg (was labelled Frankfurt); its URL slug is
+now `limburgo`.

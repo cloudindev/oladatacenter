@@ -41,7 +41,7 @@ export default async function VpsConfiguratorPage({
 
   return (
     <main className="flex min-h-screen flex-col bg-bg-light text-text-base selection:bg-primary selection:text-bg-dark">
-      <Header />
+      <Header solidBar />
 
       <section className={`${CONTAINER} pt-[96px] md:pt-[136px] pb-10`}>
         <SectionLabel>Cloud · Servidores VPS</SectionLabel>

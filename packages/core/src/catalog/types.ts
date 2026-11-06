@@ -108,15 +108,25 @@ export const PLAN_BRANDING: Readonly<Record<string, PlanBranding>> = {
 
 export const MVP_PLAN_CODES = Object.keys(PLAN_BRANDING)
 
-/** Datacenters we sell in the MVP, in the order the configurator shows them. */
+/**
+ * Datacenters we sell, in the order the configurator shows them: Europe first, then the
+ * rest of the world. Cities as OVH names them (the DE site is Limburg, the UK one Erith,
+ * in the London area).
+ */
 export const SELLABLE_DATACENTERS = [
-  { code: "GRA", city: "Gravelines", country: "Francia" },
-  { code: "SBG", city: "Estrasburgo", country: "Francia" },
-  { code: "EU-WEST-RBX", city: "Roubaix", country: "Francia" },
-  { code: "DE", city: "Fráncfort", country: "Alemania" },
-  { code: "UK", city: "Londres", country: "Reino Unido" },
-  { code: "WAW", city: "Varsovia", country: "Polonia" },
-  { code: "EU-SOUTH-MIL", city: "Milán", country: "Italia" },
+  { code: "GRA", city: "Gravelines", country: "Francia", region: "europe" },
+  { code: "SBG", city: "Estrasburgo", country: "Francia", region: "europe" },
+  { code: "EU-WEST-RBX", city: "Roubaix", country: "Francia", region: "europe" },
+  { code: "DE", city: "Limburgo", country: "Alemania", region: "europe" },
+  { code: "UK", city: "Londres", country: "Reino Unido", region: "europe" },
+  { code: "WAW", city: "Varsovia", country: "Polonia", region: "europe" },
+  { code: "EU-SOUTH-MIL", city: "Milán", country: "Italia", region: "europe" },
+  { code: "BHS", city: "Beauharnois", country: "Canadá", region: "world" },
+  { code: "SGP", city: "Singapur", country: "Singapur", region: "world" },
+  { code: "SYD", city: "Sídney", country: "Australia", region: "world" },
+  { code: "YNM", city: "Bombay", country: "India", region: "world" },
 ] as const
+
+export type DatacenterRegion = (typeof SELLABLE_DATACENTERS)[number]["region"]
 
 export const SELLABLE_DATACENTER_CODES = SELLABLE_DATACENTERS.map((dc) => dc.code)

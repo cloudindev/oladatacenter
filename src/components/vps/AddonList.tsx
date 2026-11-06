@@ -8,6 +8,7 @@
  * part of the plan. cPanel is out of scope and never reaches the view model.
  */
 import { formatCents, type AddonGroup, type Term } from "@ola/core"
+import { cn } from "@/lib/utils"
 import { ChoiceCheckbox, ChoiceRadio } from "./Choice"
 
 const VISIBLE_FAMILIES: readonly string[] = [
@@ -58,11 +59,50 @@ export function AddonList({
   return (
     <div className="flex flex-col gap-8">
       {visible.map((group) => {
-        const options = group.options.filter((option) => !option.disabled)
+        // Cheapest first: sizes and editions then read in their natural order.
+        const options = group.options
+          .filter((option) => !option.disabled)
+          .sort((a, b) => a.monthlyPrice[term] - b.monthlyPrice[term])
         if (options.length === 0) return null
         const chosen = options.find((option) => selected.includes(option.slug))
         const isCheckbox = options.length === 1 && !group.mandatory
         const baseline = options.find((option) => option.included)?.monthlyPrice[term] ?? 0
+
+        if (group.family === "additionalDisk") {
+          return (
+            <fieldset key={group.family}>
+              <legend className="mb-1 text-[16px]">{group.label}</legend>
+              <p className="mb-3 text-[13px] text-text-muted">{group.hint}</p>
+              <div
+                className={cn(
+                  "flex flex-col gap-3 rounded-[14px] border p-4 transition-colors sm:flex-row sm:items-center sm:justify-between",
+                  chosen
+                    ? "border-primary-hover bg-primary text-bg-dark"
+                    : "border-bg-dark/12 bg-surface-light",
+                )}
+              >
+                <select
+                  aria-label={group.label}
+                  value={chosen?.slug ?? NONE}
+                  onChange={(event) =>
+                    replaceInFamily(group, event.target.value === NONE ? null : event.target.value)
+                  }
+                  className="h-11 w-full rounded-lg border border-bg-dark/15 bg-surface-light px-3 text-[14px] text-text-base sm:max-w-[360px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
+                >
+                  <option value={NONE}>Sin disco adicional</option>
+                  {options.map((option) => (
+                    <option key={option.slug} value={option.slug}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <span className="font-mono text-[13px] tabular-nums tracking-[0.02em] sm:text-right">
+                  {chosen ? `+ ${formatCents(chosen.monthlyPrice[term])} / mes` : "Sin coste"}
+                </span>
+              </div>
+            </fieldset>
+          )
+        }
 
         return (
           <fieldset key={group.family}>
@@ -89,7 +129,10 @@ export function AddonList({
               <div
                 role="radiogroup"
                 aria-label={group.label}
-                className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3"
+                className={cn(
+                  "grid grid-cols-1 gap-3 sm:grid-cols-2",
+                  group.family === "plesk" ? "lg:grid-cols-4" : "lg:grid-cols-3",
+                )}
               >
                 {group.mandatory ? null : (
                   <ChoiceRadio

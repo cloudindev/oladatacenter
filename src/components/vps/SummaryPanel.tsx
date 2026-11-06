@@ -38,7 +38,7 @@ export function SummaryPanel({
   return (
     <aside
       aria-label="Resumen de la configuración"
-      className="lg:sticky lg:top-[108px] rounded-[18px] border border-bg-dark/12 bg-surface-light p-6"
+      className="lg:sticky lg:top-[140px] lg:self-start rounded-[18px] border border-bg-dark/12 bg-surface-light p-6"
     >
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="font-mono text-[11px] uppercase tracking-[0.06em] text-text-muted">

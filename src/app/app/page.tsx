@@ -15,6 +15,7 @@ import { dunningWarning, formatDate, specsLine, TERM_LABEL } from "@/components/
 import { creditSummary } from "@/server/billing/credit"
 import { customerContext } from "@/server/services/customer"
 import { load } from "@/server/services/load"
+import { pendingOrderHref } from "@/server/pending-order"
 import { listServicesForCustomer } from "@/server/services/repository"
 import type { ServiceListItem } from "@/server/services/types"
 
@@ -42,9 +43,10 @@ export default async function ServersPage() {
     )
   }
 
-  const [services, credit] = await Promise.all([
+  const [services, credit, pendingOrder] = await Promise.all([
     load("listServicesForCustomer", () => listServicesForCustomer(context.customerId)),
     load("creditSummary", () => creditSummary(context.customerId)),
+    pendingOrderHref(),
   ])
 
   return (
@@ -52,13 +54,29 @@ export default async function ServersPage() {
       <PageTitle
         description="Todo lo que tienes contratado con nosotros, con su estado y su próxima renovación."
         action={
-          <ButtonLink href="/cloud/vps/configurar" withArrow>
+          <ButtonLink href="/vps/configurar" withArrow>
             Crear servidor
           </ButtonLink>
         }
       >
         Tus servidores
       </PageTitle>
+
+      {pendingOrder ? (
+        <div className="mb-6">
+          <Notice
+            tone="ok"
+            title="Tienes un servidor a medio contratar"
+            action={
+              <ButtonLink href={pendingOrder} withArrow>
+                Continuar con tu pedido
+              </ButtonLink>
+            }
+          >
+            Guardamos la configuración que elegiste antes de crear tu cuenta.
+          </Notice>
+        </div>
+      ) : null}
 
       {credit.ok && credit.data.expiringSoon && credit.data.expiringAt ? (
         <div className="mb-6">
@@ -76,7 +94,7 @@ export default async function ServersPage() {
       ) : services.data.length === 0 ? (
         <EmptyState
           action={
-            <ButtonLink href="/cloud/vps/configurar" withArrow>
+            <ButtonLink href="/vps/configurar" withArrow>
               Crear servidor
             </ButtonLink>
           }

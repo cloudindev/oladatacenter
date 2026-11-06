@@ -90,6 +90,6 @@ cadena de proveedores: "nuestro proveedor de infraestructura" es suficiente y es
 ### Cómo verificar que se arregló
 - `npx playwright test --project=contract` en verde (con
   `PLAYWRIGHT_SKIP_WEBSERVER=1`; no necesita navegador ni app).
-- Los precios de `/cloud/vps` coinciden con la tabla aprobada.
+- Los precios de `/vps` coinciden con la tabla aprobada.
 - Un pedido de prueba con mocks (`USE_MOCK_PROVIDERS=true`) llega a `delivered`.
 - Con `OVH_ORDERS_ENABLED=true` de nuevo, un pedido real de control pasa `ovh_price_check`.

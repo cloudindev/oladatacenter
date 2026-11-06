@@ -19,7 +19,7 @@ export const subject: (props: AccountVerifiedProps) => string = () =>
   "Cuenta verificada y crédito de bienvenida disponible"
 
 export function AccountVerifiedEmail(props: AccountVerifiedProps) {
-  const { creditCents, creditExpiresAt, customerAreaUrl, shopUrl = "https://oladc.com/cloud/vps" } = props
+  const { creditCents, creditExpiresAt, customerAreaUrl, shopUrl = "https://oladc.com/vps" } = props
   const amount = formatMoney(creditCents)
   const expiry = formatDate(creditExpiresAt)
   return (
@@ -55,7 +55,7 @@ export function AccountVerifiedEmail(props: AccountVerifiedProps) {
 }
 
 export function text(props: AccountVerifiedProps): string {
-  const { creditCents, creditExpiresAt, shopUrl = "https://oladc.com/cloud/vps" } = props
+  const { creditCents, creditExpiresAt, shopUrl = "https://oladc.com/vps" } = props
   const amount = formatMoney(creditCents)
   const expiry = formatDate(creditExpiresAt)
   return plainText([

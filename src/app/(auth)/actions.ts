@@ -63,7 +63,8 @@ const emailSchema = z.string().trim().toLowerCase().email().max(320)
 /** Only in-app paths are accepted as a post-login destination. */
 function safeNext(raw: FormDataEntryValue | null): string {
   const value = typeof raw === "string" ? raw : ""
-  if (!value.startsWith("/") || value.startsWith("//")) return "/app"
+  // Browsers read "/\host" like "//host", so a backslash anywhere is refused too.
+  if (!value.startsWith("/") || value.startsWith("//") || /[\\\s]/.test(value)) return "/app"
   return value
 }
 

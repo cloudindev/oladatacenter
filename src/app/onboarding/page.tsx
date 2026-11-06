@@ -20,6 +20,7 @@ import { authError, authNotice, firstParam } from "@/components/auth/messages"
 import { requireUser } from "@/server/auth/session"
 import { pendingOtpTarget } from "@/server/auth/tokens"
 import { verificationSnapshot } from "@/server/auth/verification"
+import { pendingOrderHref } from "@/server/pending-order"
 import { cn } from "@/lib/utils"
 import {
   refreshVerificationAction,
@@ -70,6 +71,7 @@ export default async function OnboardingPage({
 
   const otpTarget = step === 3 ? await pendingOtpTarget(session.user.id) : null
   const customer = snapshot.customer
+  const pendingOrder = await pendingOrderHref()
 
   return (
     <div className="flex-1 bg-bg-light">
@@ -125,7 +127,7 @@ export default async function OnboardingPage({
         {step === 2 ? <StepBilling customer={customer} /> : null}
         {step === 3 ? <StepPhone customer={customer} otpTarget={otpTarget} /> : null}
         {step === 4 ? <StepCard /> : null}
-        {step > 4 ? <StepDone /> : null}
+        {step > 4 ? <StepDone pendingOrder={pendingOrder} /> : null}
 
         {step < naturalStep ? (
           <p className="mt-6 text-sm text-text-muted">
@@ -365,7 +367,7 @@ function StepCard() {
   )
 }
 
-function StepDone() {
+function StepDone({ pendingOrder }: { pendingOrder: string | null }) {
   return (
     <Panel>
       <h2 className="text-xl font-normal tracking-tight text-text-base mb-3">Todo listo</h2>
@@ -376,9 +378,15 @@ function StepDone() {
         <DataRow label="Tarjeta">Verificada</DataRow>
       </dl>
       <div className="flex flex-wrap gap-4">
-        <ButtonLink href="/cloud/vps" withArrow>
-          Configurar un servidor
-        </ButtonLink>
+        {pendingOrder ? (
+          <ButtonLink href={pendingOrder} withArrow>
+            Continuar con tu pedido
+          </ButtonLink>
+        ) : (
+          <ButtonLink href="/vps" withArrow>
+            Configurar un servidor
+          </ButtonLink>
+        )}
         <ButtonLink href="/app" variant="secondary">
           Ir a mi cuenta
         </ButtonLink>

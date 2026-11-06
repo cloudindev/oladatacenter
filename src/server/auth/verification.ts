@@ -250,7 +250,7 @@ async function requestWelcomeCredit(input: {
       ...baseEmailProps(input.legalName),
       creditCents: decision.amount,
       creditExpiresAt: decision.expiresAt,
-      shopUrl: absoluteUrl("/cloud/vps"),
+      shopUrl: absoluteUrl("/vps"),
     },
     { customerId: input.customerId },
   )

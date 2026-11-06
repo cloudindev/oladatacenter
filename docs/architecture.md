@@ -11,7 +11,7 @@ setting is changed by hand. Ports-and-adapters separation is unaffected.
 
 ```
 /                     oladc.com Next.js app (App Router)
-  src/app/cloud/vps   public plans + configurator
+  src/app/vps   public plans + configurator
   src/app/app         customer area       (auth required)
   src/app/admin       admin panel         (admin role + 2FA)
   src/app/api         route handlers, webhooks, Inngest endpoint

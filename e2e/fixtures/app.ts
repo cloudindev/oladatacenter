@@ -24,8 +24,8 @@
 
 export const routes = {
   home: "/",
-  plans: "/cloud/vps",
-  configurator: "/cloud/vps/configurar",
+  plans: "/vps",
+  configurator: "/vps/configurar",
   checkout: "/checkout",
   login: "/login",
   register: "/registro",

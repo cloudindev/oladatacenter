@@ -40,7 +40,7 @@ export function PlanCards({ plans }: { plans: readonly SellablePlan[] }) {
 
   return (
     <div>
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-8 flex flex-col items-center gap-3">
         <TermToggle term={term} onChange={setTerm} savingPercent={bestSaving} />
         <p className="font-mono text-[11px] uppercase tracking-[0.06em] text-text-muted">
           Precios sin IVA
@@ -108,7 +108,7 @@ export function PlanCards({ plans }: { plans: readonly SellablePlan[] }) {
               </ul>
 
               <Link
-                href={`/cloud/vps/configurar?plan=${plan.slug}&term=${TERM_PARAMS[term]}`}
+                href={`/vps/configurar?plan=${plan.slug}&term=${TERM_PARAMS[term]}`}
                 className={cn(
                   "mt-auto inline-flex h-11 items-center justify-center gap-2 rounded-lg font-mono text-[11px] uppercase tracking-[0.06em] transition-colors",
                   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink",

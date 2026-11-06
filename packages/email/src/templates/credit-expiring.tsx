@@ -25,7 +25,7 @@ export function CreditExpiringEmail(props: CreditExpiringProps) {
     amountCents,
     days,
     expiresAt,
-    shopUrl = "https://oladc.com/cloud/vps",
+    shopUrl = "https://oladc.com/vps",
     customerAreaUrl,
   } = props
   const amount = formatMoney(amountCents)
@@ -60,7 +60,7 @@ export function CreditExpiringEmail(props: CreditExpiringProps) {
 }
 
 export function text(props: CreditExpiringProps): string {
-  const { amountCents, days, expiresAt, shopUrl = "https://oladc.com/cloud/vps" } = props
+  const { amountCents, days, expiresAt, shopUrl = "https://oladc.com/vps" } = props
   const amount = formatMoney(amountCents)
   const expiry = formatDate(expiresAt)
   return plainText([

@@ -32,7 +32,7 @@ const skipWebServer =
 
 /**
  * Environment for the application under test. Real values are taken from the
- * shell when present (a developer with a Neon branch in `.env.local` keeps
+ * shell when present (a developer with a Supabase project in `.env.local` keeps
  * using it); the fallbacks only need to satisfy the zod schema in
  * `src/lib/env.ts` so the server boots.
  */

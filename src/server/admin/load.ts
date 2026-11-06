@@ -4,7 +4,7 @@ import { logger } from "@/lib/logger"
 
 /**
  * There is no database configured in this environment, and there may not be one in
- * production the day Neon has an incident. Every admin read goes through this so the page
+ * production the day Supabase has an incident. Every admin read goes through this so the page
  * renders a notice instead of a stack trace.
  *
  * Unlike the customer-area equivalent, this keeps the RAW message: the admin panel exists

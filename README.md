@@ -61,7 +61,7 @@ cp .env.example .env.local      # then fill in DATABASE_URL and AUTH_SECRET
 `.env.example` ships with `USE_MOCK_PROVIDERS=true`, which swaps in `MockOvhClient`,
 `MockWhmcsClient` and the mock email sender. **No money moves and no real server is ordered.**
 Keep `OVH_ORDERS_ENABLED` and `WHMCS_WRITE_ENABLED` at `false`; they are the two kill switches and
-`false` is their safe value. You need a real `DATABASE_URL` (a Neon branch) and an `AUTH_SECRET` of
+`false` is their safe value. You need a real `DATABASE_URL` (a Supabase project: the transaction pooler URL, plus `DIRECT_URL` for migrations) and an `AUTH_SECRET` of
 at least 32 characters — `openssl rand -base64 32`.
 
 ```bash

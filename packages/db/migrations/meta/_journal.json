@@ -15,6 +15,13 @@
       "when": 1793921220145,
       "tag": "0001_add_session_totp_verified",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793976729338,
+      "tag": "0002_enable_rls",
+      "breakpoints": true
     }
   ]
 }

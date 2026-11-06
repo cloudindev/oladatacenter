@@ -22,7 +22,6 @@
     "verify": "npm run typecheck && npm run lint && npm run test"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^0.10.4",
     "@node-rs/argon2": "^2.0.2",
     "@ola/core": "*",
     "@ola/db": "*",
@@ -40,6 +39,7 @@
     "next-auth": "^5.0.0-beta.25",
     "otplib": "^12.0.1",
     "pino": "^9.5.0",
+    "postgres": "^3.4.9",
     "qrcode": "^1.5.4",
     "react": "19.2.4",
     "react-dom": "19.2.4",

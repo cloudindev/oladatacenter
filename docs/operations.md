@@ -18,7 +18,7 @@ Companion documents: [`architecture.md`](./architecture.md) (the code contract),
 | | Local | Staging | Production |
 |---|---|---|---|
 | Host | `next dev` on `localhost:3000` | Vercel preview | Vercel production (oladc.com) |
-| Database | Neon branch `dev` | Neon branch `staging` | Neon `main` |
+| Database | Supabase project `ola-dev` | Supabase project `ola-staging` | Supabase project `ola-prod` |
 | OVH | **mock** (`MockOvhClient`) | **real API, orders OFF** | **real** |
 | WHMCS | **mock** (`MockWhmcsClient`) | **real API, writes OFF** | **real** |
 | Stripe | test keys | test keys | live keys |
@@ -83,9 +83,9 @@ export PATH="$HOME/.nvm/versions/node/v22.22.0/bin:/usr/bin:/bin:/usr/sbin:/sbin
    drops or renames a column, stop and think: `orders`, `services`, `invoices` and `audit_log` rows
    are never deleted, and a rename on a live table needs a two-step migration.
 3. Commit the migration together with the schema change. They travel as one commit.
-4. Apply it, lowest environment first, with `DATABASE_URL` pointing at that environment:
-   `DATABASE_URL=... npm run db:migrate`
-5. Verify on the Neon branch, then repeat for staging and production.
+4. Apply it, lowest environment first, with `DIRECT_URL` (session connection, port 5432) pointing at that environment:
+   `DIRECT_URL=... npm run db:migrate`
+5. Verify on the dev project, then repeat for staging and production.
 
 Apply the migration **before** deploying code that depends on it. For a destructive change, use
 two deploys: add the new shape, move the code over, remove the old shape later.
@@ -153,7 +153,7 @@ Nothing below is optional. Tick it in order; each line is verifiable.
 - [ ] The OVH consumer key has only the minimum rights (`/vps/*`, `/order/*`, `/me/order/*`,
       `/ip/*`, `GET /me`) and no expiry.
 - [ ] The WHMCS API credential has a restricted role, and the proxy IP is allowlisted.
-- [ ] **2FA enabled on every admin account**, in our panel and in the OVH, WHMCS, Stripe, Neon
+- [ ] **2FA enabled on every admin account**, in our panel and in the OVH, WHMCS, Stripe, Supabase
       and Vercel accounts. `requireAdmin()` demands 2FA; confirm no admin can get in without it.
 - [ ] No secret in the repository, in a log line or in any Client Component bundle.
 - [ ] `AUTH_SECRET` is unique to production.
@@ -180,7 +180,7 @@ Nothing below is optional. Tick it in order; each line is verifiable.
 **Legal and tax**
 - [ ] **GDPR texts published** and reachable from the footer: privacy policy, cookie policy,
       terms of service, and the data-processing terms a business customer will ask for. They must
-      name the sub-processors actually in use (OVHcloud, Neon, Vercel, Stripe, Resend) and the
+      name the sub-processors actually in use (OVHcloud, Supabase, Vercel, Stripe, Resend) and the
       regions where data is held.
 - [ ] Cookie consent working, with no non-essential cookie set before consent.
 - [ ] The customer can exercise access and deletion, and the procedure is written down —
@@ -195,7 +195,7 @@ Nothing below is optional. Tick it in order; each line is verifiable.
 - [ ] The on-call operator has read the six runbooks and knows where the two kill switches live.
 - [ ] `ALERTS_EMAIL` and `ALERTS_SLACK_WEBHOOK` set, and an alert actually received by someone.
 - [ ] Sentry receiving events.
-- [ ] A restore rehearsed: a Neon point-in-time restore into a branch, and an OVH automated-backup
+- [ ] A restore rehearsed: a Supabase point-in-time restore (or daily backup restore) into a scratch project, and an OVH automated-backup
       restore on a test VPS.
 
 ## Runbooks

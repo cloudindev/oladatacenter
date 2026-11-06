@@ -4,6 +4,16 @@ import { z } from "zod"
  * Environment contract. Every secret is server-only: nothing here may be imported
  * from a Client Component. The two `NEXT_PUBLIC_` values are the only exceptions.
  */
+/**
+ * Strict boolean for flags. `z.coerce.boolean()` is NOT usable here: it is `Boolean(value)`,
+ * so the string "false" becomes true and would switch a kill switch ON. Only "true"/"1"
+ * enable; "false"/"0"/empty disable; anything else fails validation loudly.
+ */
+export const envFlag = z
+  .enum(["true", "false", "1", "0", ""])
+  .optional()
+  .transform((value) => value === "true" || value === "1")
+
 const serverSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 
@@ -18,14 +28,14 @@ const serverSchema = z.object({
   OVH_CONSUMER_KEY: z.string().optional(),
   OVH_SUBSIDIARY: z.string().default("ES"),
   /** Kill switch. Real orders are only ever sent when this is explicitly "true". */
-  OVH_ORDERS_ENABLED: z.coerce.boolean().default(false),
+  OVH_ORDERS_ENABLED: envFlag,
 
   WHMCS_API_URL: z.string().url().optional(),
   WHMCS_API_IDENTIFIER: z.string().optional(),
   WHMCS_API_SECRET: z.string().optional(),
   /** Fixed-IP proxy, because Vercel egress IPs are not static. */
   WHMCS_PROXY_URL: z.string().url().optional(),
-  WHMCS_WRITE_ENABLED: z.coerce.boolean().default(false),
+  WHMCS_WRITE_ENABLED: envFlag,
   WHMCS_WEBHOOK_SECRET: z.string().optional(),
 
   STRIPE_SECRET_KEY: z.string().optional(),
@@ -55,7 +65,7 @@ const serverSchema = z.object({
   ALERTS_SLACK_WEBHOOK: z.string().optional(),
 
   /** Use the in-memory mocks instead of the real providers. */
-  USE_MOCK_PROVIDERS: z.coerce.boolean().default(false),
+  USE_MOCK_PROVIDERS: envFlag,
 })
 
 const clientSchema = z.object({

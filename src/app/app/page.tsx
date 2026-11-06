@@ -11,6 +11,7 @@ import {
   SERVICE_STATUS_UI,
 } from "@/components/app/ui"
 import { CopyField } from "@/components/servers/CopyField"
+import { EmptyServersIllustration } from "@/components/servers/EmptyServersIllustration"
 import { dunningWarning, formatDate, specsLine, TERM_LABEL } from "@/components/servers/labels"
 import { creditSummary } from "@/server/billing/credit"
 import { customerContext } from "@/server/services/customer"
@@ -93,6 +94,7 @@ export default async function ServersPage() {
         </Notice>
       ) : services.data.length === 0 ? (
         <EmptyState
+          illustration={<EmptyServersIllustration className="h-auto w-full text-bg-dark" />}
           action={
             <ButtonLink href="/vps/configurar" withArrow>
               Crear servidor

@@ -69,8 +69,10 @@ so no code path can quote a VPS without its backup.
 CPU, memory or network time series. The only monitoring the VPS API exposes is per-disk
 (`/disks/{id}/use`, `/disks/{id}/monitoring`).
 
-**Decision.** The MVP ships real status + disk usage behind a `MetricsProvider` port, and the
-server detail page shows those instead of inventing graphs.
+**Decision.** The MVP ships real status + disk usage, read straight from `listDisks` /
+`getDiskUse` in `src/server/services/provider.ts`, and the server detail page shows those plus
+one honest line saying the provider does not serve CPU/RAM/network — no invented graphs.
+There is no dedicated metrics port yet; adding one is part of whichever option below is chosen.
 
 **Options for real graphs, for the operator to pick** (none chosen without approval, per rule 9):
 
@@ -108,6 +110,31 @@ is worth a conscious decision. Options:
    the customer's, so support has to forward it.
 
 Recommendation: keep (1), and make the SSH key the default path in the UI, which it is.
+
+---
+
+## 2026-11-06 — OPEN: is the mandatory backup charged on top of the published price?
+
+**Not decided — this is a pricing call for the operator (rule 9).** The modules are consistent
+with each other today, but the two documents that describe the price are not.
+
+What the code does now: `buildQuote` adds the mandatory 1-day backup as its own line and
+applies the addon margin rule, so its 0.35 € cost is sold at **0.99 €**. The entry plan is
+therefore charged **7.99 € + 0.99 € = 8.98 €/month** net, and the public page shows 8.98 € as
+the headline (so the card matches the checkout).
+
+What the earlier entry above says: "the published prices stay as the brief specifies" —
+i.e. 7.99 €.
+
+| Option | Headline price | Real margin on true cost (4.84 €) | What changes |
+|---|---|---|---|
+| **A. Backup on top** (current) | 8.98 € | 85 % | nothing |
+| **B. Backup absorbed** | 7.99 € | 65 % | price the 1-day backup line at 0 € (a manual addon price of 0 in `/admin/planes` per model), keep 7-day as a paid upgrade |
+| **C. Rebase the plan** | e.g. 7.99 € incl. backup | depends | set manual plan PVPs so plan + backup lands where you want |
+
+Note also that the ,99 rounding turns a 0.35 € cost into 0.99 € (+183 %), and the same happens
+to every small addon (snapshot 0.30 € → 0.99 €). Whichever option is picked, the admin panel's
+"margen real" column already computes against the true cost and the margin floor.
 
 ---
 

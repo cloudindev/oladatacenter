@@ -32,9 +32,9 @@ oladc.com Next.js application.
     `/order/cartServiceOption/vps/{serviceName}/{planCode}` do not exist as written; the real
     forms are `{id}` and the `planCode` in the POST body.
   - `GET /vps/{serviceName}/statistics` does not exist at all. There is no CPU, RAM or network
-    time series in the VPS API, so the MVP ships real status plus disk usage behind a
-    `MetricsProvider` port instead of inventing graphs. Three options for real graphs are written
-    up for the operator to choose from.
+    time series in the VPS API, so the MVP ships real status plus disk usage instead of
+    inventing graphs. Three options for real graphs are written up for the operator to choose
+    from.
 
 **Pricing engine (`@ola/core`)**
 - Money is integer cents throughout. Catalog prices are normalised from OVH's 1e-8 EUR units, and
@@ -66,6 +66,50 @@ oladc.com Next.js application.
 - Structured logging with per-order correlation ids and secret redaction; an audit helper that
   records one row per write with an effect.
 - OVH request signer with clock-skew correction from `GET /auth/time`.
+
+**Provider adapters**
+- `@ola/ovh`: signed HTTP client and a stateful in-memory mock seeded from the real catalog,
+  every response validated with zod, retries with backoff except on checkout, which is sent once.
+  Covers ordering, delivery tracking, power, reinstall, rescue, console, snapshots, automated
+  backups, disks, upgrades, reverse DNS, firewall (including enabling it on an IP) and
+  anti-DDoS state.
+- `@ola/whmcs`: client, order, invoice, payment, service and SSO actions behind a write guard
+  (`WHMCS_WRITE_ENABLED`), no delete method by design, PHP-compatible `configoptions` encoding
+  checked byte for byte against a real PHP interpreter, and a signed `includes/hooks/ola_vps.php`
+  for paid/cancelled invoices and client edits.
+- `@ola/email`: fifteen transactional templates in Spanish, image-free so they survive images-off,
+  with plain-text twins and tests for house style and credential leaks.
+
+**Selling (F1)**
+- Public plans page at `/cloud/vps` and a configurator whose prices always come from the server;
+  the configuration lives in the URL so a link restores it, and no OVH identifier ever reaches the
+  browser.
+- Registration, email verification, login with optional TOTP 2FA, password reset, and a four-step
+  onboarding (email, billing details with NIF/CIF checksum and VIES, phone OTP, verified card)
+  that grants the welcome credit once per person.
+- Stripe checkout with 3-D Secure card setup, server-computed totals, idempotent charges,
+  credit applied before VAT, zero-euro orders when credit covers everything, and a verified,
+  idempotent webhook.
+- Provisioning job that walks WHMCS client, order, invoice and payment, then OVH cart,
+  configuration, a zero-tolerance price check, checkout, delivery polling and first boot. It
+  resumes from the last completed step and never posts an OVH checkout twice.
+
+**Managing (F2)**
+- Customer area at `/app`: server list and a detail view with power actions, console,
+  reinstall with typed confirmation, rescue mode, single-slot snapshots, backup restore,
+  reverse DNS, firewall rules and mitigation state, plan and auto-renew, and an activity log.
+  Long actions show the real OVH task state.
+
+**Billing over time (F3)**
+- Renewal and dunning calendar: invoice at T-7, charge at T-0, retries at T+1 and T+3, stop at
+  T+3, deletion scheduled at T+10, immediate reactivation on payment by card or by bank transfer
+  recorded in WHMCS.
+- Daily catalog sync with cost-rise and margin-floor alerts; hourly service reconciliation.
+
+**Operating (F4)**
+- Admin panel at `/admin` (admin role and TOTP required): dashboard, pricing with true-cost
+  margins, catalog diff, order queue with safe retry and refund, services, customers with manual
+  credit and audited impersonation, payments, feature flags and an audit search with CSV export.
 
 **Delivery and operations**
 - GitHub Actions CI: lint, typecheck, tests with the vitest coverage thresholds as the gate, a

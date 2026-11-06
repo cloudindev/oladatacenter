@@ -50,15 +50,21 @@ export function adminBaseUrl(): string {
 function adminUrl(input: RaiseAlertInput): string {
   const base = adminBaseUrl()
   if (!input.entityId) return base
-  const section =
-    input.entity === "order"
-      ? "pedidos"
-      : input.entity === "service"
-        ? "servidores"
-        : input.entity === "invoice"
-          ? "facturas"
-          : null
-  return section ? `${base}/${section}/${input.entityId}` : base
+  // Must match the route segments under src/app/admin. Invoices and payments have no
+  // detail view of their own, so those alerts land on the payments list.
+  switch (input.entity) {
+    case "order":
+      return `${base}/pedidos/${input.entityId}`
+    case "service":
+      return `${base}/servicios/${input.entityId}`
+    case "customer":
+      return `${base}/clientes/${input.entityId}`
+    case "invoice":
+    case "payment":
+      return `${base}/pagos`
+    default:
+      return base
+  }
 }
 
 export async function raiseAlert(input: RaiseAlertInput): Promise<void> {

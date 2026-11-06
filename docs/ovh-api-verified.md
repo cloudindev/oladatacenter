@@ -163,8 +163,9 @@ the `/vps` schema has 70 routes and none of them serves CPU/RAM/network time ser
 What the API does offer: `GET /vps/{serviceName}/disks/{id}/use` (disk usage) and
 `/disks/{id}/monitoring` (disk monitoring flag).
 
-Implemented for the MVP: real **status + disk usage**, behind a `MetricsProvider` port in
-`packages/ovh` so a future source can be dropped in without touching the UI.
+Implemented for the MVP: real **status + disk usage**, read directly through the port's
+`listDisks` / `getDiskUse`. There is no separate metrics port; one should be introduced together
+with whichever source below is chosen.
 Options for real CPU/RAM/network graphs, for the operator to decide:
 
 1. **Guest agent at provisioning** (recommended) — a small exporter installed by the

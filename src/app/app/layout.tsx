@@ -38,7 +38,14 @@ export default async function AppLayout({ children }: { children: React.ReactNod
               className="flex items-center gap-2 shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
               aria-label="Panel de OLA"
             >
-              <Image src="/ola-logo.png?v=2" alt="OLA" width={28} height={28} priority />
+              <Image
+                src="/ola-logo-panel.png"
+                alt="OLA"
+                width={900}
+                height={213}
+                priority
+                className="h-6 w-auto"
+              />
               <span className="label-mono text-text-base hidden sm:inline">
                 Panel de cliente
               </span>

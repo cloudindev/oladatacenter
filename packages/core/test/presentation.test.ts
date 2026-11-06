@@ -107,6 +107,14 @@ describe("operating systems", () => {
       "rocky",
       "fedora",
       "freebsd",
+      "apps",
+    ])
+    const debian = groups.find((group) => group.family === "debian")
+    expect(debian?.options.map((option) => option.name)).toEqual(["Debian 13", "Debian 12"])
+    const apps = groups.find((group) => group.family === "apps")
+    expect(apps?.options.map((option) => option.name)).toEqual([
+      "Debian 12 - n8n",
+      "Debian 12 - Docker",
     ])
     const ubuntu = groups.find((group) => group.family === "ubuntu")
     expect(ubuntu?.options.map((option) => option.name)).toEqual([

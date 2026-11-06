@@ -11,6 +11,7 @@ import { useState } from "react"
 import type { OsGroup, OsOption } from "@ola/core"
 import { cn } from "@/lib/utils"
 import { OS_LOGOS } from "./os-logos"
+import { Select } from "./Select"
 
 /** Small brand mark for a distribution; a neutral server glyph when there is none. */
 function OsLogo({ family }: { family: string }) {
@@ -30,8 +31,13 @@ function OsLogo({ family }: { family: string }) {
   )
 }
 
-/** "Ubuntu 26.04" → "26.04"; falls back to the full name when there is no prefix. */
+/** "Ubuntu 26.04" → "Versión 26.04"; app images keep their full name ("Debian 12 - Docker"). */
 function versionLabel(option: OsOption, group: OsGroup): string {
+  if (group.family === "apps") return option.name
+  return `Versión ${bareVersion(option, group)}`
+}
+
+function bareVersion(option: OsOption, group: OsGroup): string {
   const prefix = new RegExp(`^${group.label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\s*`, "i")
   const stripped = option.name.replace(prefix, "").replace(/^[-_\s]+/, "").trim()
   return stripped.length > 0 ? stripped : option.name
@@ -97,23 +103,19 @@ export function OsPicker({
               <span className="text-[15px] leading-snug">{group.label}</span>
             </label>
 
-            <select
-              aria-label={`Versión de ${group.label}`}
+            <Select
+              ariaLabel={group.family === "apps" ? "Imagen con aplicación" : `Versión de ${group.label}`}
               value={current.slug}
               disabled={disabled}
-              onChange={(event) => {
-                const slug = event.target.value
+              onChange={(slug) => {
                 setShown((previous) => ({ ...previous, [group.family]: slug }))
                 onChange(slug)
               }}
-              className="h-10 w-full rounded-lg border border-bg-dark/15 bg-surface-light px-3 text-[14px] text-text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink disabled:cursor-not-allowed"
-            >
-              {(disabled ? group.options : options).map((option) => (
-                <option key={option.slug} value={option.slug}>
-                  Versión {versionLabel(option, group)}
-                </option>
-              ))}
-            </select>
+              options={(disabled ? group.options : options).map((option) => ({
+                value: option.slug,
+                label: versionLabel(option, group),
+              }))}
+            />
 
             <span className="font-mono text-[10px] uppercase tracking-[0.06em] opacity-70">
               {disabled ? (group.options[0]?.note ?? "No disponible") : "Incluido"}

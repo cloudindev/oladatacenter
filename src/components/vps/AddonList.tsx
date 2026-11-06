@@ -10,6 +10,7 @@
 import { formatCents, type AddonGroup, type Term } from "@ola/core"
 import { cn } from "@/lib/utils"
 import { ChoiceCheckbox, ChoiceRadio } from "./Choice"
+import { Select } from "./Select"
 
 const VISIBLE_FAMILIES: readonly string[] = [
   "automatedBackup",
@@ -81,21 +82,20 @@ export function AddonList({
                     : "border-bg-dark/12 bg-surface-light",
                 )}
               >
-                <select
-                  aria-label={group.label}
+                <Select
+                  ariaLabel={group.label}
                   value={chosen?.slug ?? NONE}
-                  onChange={(event) =>
-                    replaceInFamily(group, event.target.value === NONE ? null : event.target.value)
-                  }
-                  className="h-11 w-full rounded-lg border border-bg-dark/15 bg-surface-light px-3 text-[14px] text-text-base sm:max-w-[360px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
-                >
-                  <option value={NONE}>Sin disco adicional</option>
-                  {options.map((option) => (
-                    <option key={option.slug} value={option.slug}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                  onChange={(next) => replaceInFamily(group, next === NONE ? null : next)}
+                  className="w-full sm:max-w-[420px]"
+                  options={[
+                    { value: NONE, label: "Sin disco adicional", hint: "Sin coste" },
+                    ...options.map((option) => ({
+                      value: option.slug,
+                      label: option.label,
+                      hint: `+ ${formatCents(option.monthlyPrice[term])} / mes`,
+                    })),
+                  ]}
+                />
                 <span className="font-mono text-[13px] tabular-nums tracking-[0.02em] sm:text-right">
                   {chosen ? `+ ${formatCents(chosen.monthlyPrice[term])} / mes` : "Sin coste"}
                 </span>

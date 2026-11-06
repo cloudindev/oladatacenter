@@ -66,7 +66,7 @@ const DEFAULT_MAX_RETRIES = 3
 const DEFAULT_BACKOFF_MS = 250
 
 export interface HttpWhmcsClientOptions {
-  /** Full URL of `includes/api.php`, e.g. `https://panel.cloudin.pro/cdin/includes/api.php`. */
+  /** Full URL of `includes/api.php`, e.g. `https://panel.cloudin.pro/includes/api.php`. */
   apiUrl: string
   identifier: string
   secret: string

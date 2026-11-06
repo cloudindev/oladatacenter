@@ -1,7 +1,7 @@
 import "server-only"
 import Stripe from "stripe"
 
-import { env, mocksEnabled } from "@/lib/env"
+import { env, providerMocked } from "@/lib/env"
 import { HttpStripeGateway } from "./http"
 import { MockStripe } from "./mock"
 import { STRIPE_API_VERSION, type StripeGateway } from "./types"
@@ -19,14 +19,14 @@ let gateway: StripeGateway | null = null
 export function stripeGateway(): StripeGateway {
   if (gateway) return gateway
 
-  if (mocksEnabled()) {
+  if (providerMocked("stripe")) {
     gateway = new MockStripe({ webhookSecret: env().STRIPE_WEBHOOK_SECRET ?? "whsec_mock" })
     return gateway
   }
 
   const config = env()
   if (!config.STRIPE_SECRET_KEY) {
-    throw new Error("STRIPE_SECRET_KEY is missing; set it or USE_MOCK_PROVIDERS=true")
+    throw new Error("STRIPE_SECRET_KEY is missing; set it or MOCK_STRIPE=true")
   }
 
   gateway = new HttpStripeGateway(

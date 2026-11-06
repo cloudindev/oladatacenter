@@ -2,7 +2,7 @@ import "server-only"
 import { revalidatePath } from "next/cache"
 import { DEFAULT_ADDON_MARGIN, DEFAULT_PLAN_MARGIN, type ParsedCatalog } from "@ola/core"
 import { inngest } from "@/inngest/client"
-import { env, mocksEnabled } from "@/lib/env"
+import { env, providerMocked } from "@/lib/env"
 import { diffOf, recordAudit } from "@/server/audit"
 import { requireAdmin, requestMeta } from "@/server/auth/session"
 import { loadCatalog } from "@/server/catalog/service"
@@ -97,7 +97,8 @@ function liveSafety(): AdminSafetyPort {
     },
     usingMocks() {
       try {
-        return mocksEnabled()
+        // The retry gate is about OVH orders, so the OVH switch is the one that counts.
+        return providerMocked("ovh")
       } catch {
         return false
       }

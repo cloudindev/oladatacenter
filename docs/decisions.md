@@ -305,3 +305,39 @@ order could have been handed, with a fresh root password, to a customer.
 **Still to verify.** `billing.OrderDetail` has a `domain` field that may carry the
 delivered service name. Check it on the first real order; if it does, use it first and keep
 these layers as the fallback.
+
+## 2026-11-06 — Fase 5: WHMCS es el sistema financiero, OLA la experiencia del cliente
+
+Decidido con el operador (prompt completo en `docs/prompts/fase-5-whmcs-y-panel-cliente.md`):
+
+1. Las facturas son las de WHMCS, con su numeración; OLA no tiene serie propia.
+2. El cliente se identifica por email: si existe en WHMCS se le asigna el pedido, si no se
+   crea. Es seguro porque el checkout exige email verificado.
+3. Con un cliente existente mandan sus datos de WHMCS; OLA se los enseña para confirmar y
+   los cambios hechos en OLA se envían a WHMCS.
+4. Las renovaciones las cobra OLA con Stripe y las registra en WHMCS; WHMCS no cobra.
+5. El panel de OLA lista solo las facturas de servicios OLA y las abre en WHMCS por SSO; los
+   avisos los envía OLA. WHMCS no envía ningún email al cliente.
+6. Cancelación desde el panel al final del periodo pagado (o del compromiso), sin reembolso
+   y reversible hasta esa fecha.
+7. Calendario: T-7 factura y aviso, T-3 recordatorio, T-0 cobro, T+1 y T+3 reintentos,
+   T+3 parada, T+7 aviso de borrado, T+10 baja.
+8. Solo empresas por ahora (razón social y NIF/VAT obligatorios); particulares preparado
+   pero desactivado hasta tener textos legales y desistimiento.
+9. Panel del VPS v1: básico, copias y snapshots, red y seguridad, gráficas y ampliación.
+
+## 2026-11-06 — Interruptores de simulación por proveedor
+
+**Decisión.** `USE_MOCK_PROVIDERS` fija el valor por defecto y `MOCK_OVH`, `MOCK_WHMCS` y
+`MOCK_STRIPE` lo sobrescriben uno a uno (vacío = seguir el general).
+
+**Por qué.** Hay que poner WHMCS en real antes que los pedidos a OVH, y el interruptor único
+lo impedía.
+
+**Salvaguardas.** Con escrituras en WHMCS activadas y Stripe simulado, el adaptador de WHMCS
+se niega a arrancar: registraría pagos inexistentes en la contabilidad real. Un pedido real a
+OVH con Stripe simulado también se rechaza.
+
+**Corrección.** La API de WHMCS está en `https://panel.cloudin.pro/includes/api.php`; `/cdin/`
+es la carpeta del panel de administración (la ruta documentada respondía 404). Verificado el
+2026-11-06 con `GetClients` (éxito) y `GetAdminDetails` (rechazada por el rol, como debe).

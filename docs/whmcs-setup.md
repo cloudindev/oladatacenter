@@ -5,7 +5,7 @@ Todo lo que hay aquí se hace una vez y se puede verificar. El código de la pla
 inglés; este documento está en español porque lo ejecuta el operador.
 
 - Panel: `https://panel.cloudin.pro/cdin/`
-- API: `https://panel.cloudin.pro/cdin/includes/api.php`
+- API: `https://panel.cloudin.pro/includes/api.php`
 - Versión soportada: WHMCS **8.13**
 
 ## 0. Cómo encaja
@@ -94,7 +94,7 @@ Contrato del proxy (lo cumple el adaptador, lo tiene que cumplir el proxy):
 Reglas obligatorias del proxy:
 
 1. **Lista blanca de destino**: rechazar con `400` cualquier `X-Target-Url` que no sea
-   exactamente `https://panel.cloudin.pro/cdin/includes/api.php`. Sin esto el proxy es un
+   exactamente `https://panel.cloudin.pro/includes/api.php`. Sin esto el proxy es un
    SSRF abierto.
 2. **No registrar el cuerpo**: contiene `identifier` y `secret`. Registrar como máximo
    método, destino, código HTTP y duración.
@@ -302,7 +302,7 @@ Si el envío falla, el hook **no rompe nunca el panel**: captura el error y lo e
 ## 11. Variables de entorno de la plataforma
 
 ```
-WHMCS_API_URL=https://panel.cloudin.pro/cdin/includes/api.php
+WHMCS_API_URL=https://panel.cloudin.pro/includes/api.php
 WHMCS_API_IDENTIFIER=...
 WHMCS_API_SECRET=...
 WHMCS_PROXY_URL=            # vacío si no hay proxy de IP fija
@@ -320,7 +320,7 @@ dentro de WHMCS: en un entorno de pruebas sin escrituras hay que usar
 ## 12. Prueba manual de la API
 
 ```bash
-curl -sS https://panel.cloudin.pro/cdin/includes/api.php \
+curl -sS https://panel.cloudin.pro/includes/api.php \
   -d identifier="$WHMCS_API_IDENTIFIER" \
   -d secret="$WHMCS_API_SECRET" \
   -d action=GetClients \

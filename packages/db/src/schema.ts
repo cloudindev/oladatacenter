@@ -235,7 +235,7 @@ export const plans = pgTable(
     /** Manual PVP; null means "use the margin rule". */
     priceMonth: integer("price_month"),
     price12m: integer("price_12m"),
-    margin: integer("margin_basis_points").notNull().default(7500),
+    margin: integer("margin_basis_points").notNull().default(7000),
     active: boolean("active").notNull().default(true),
     sort: integer("sort").notNull().default(0),
     ...timestamps,

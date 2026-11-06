@@ -50,7 +50,7 @@ export function PlanCards({ plans }: { plans: readonly SellablePlan[] }) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {plans.map((plan) => {
           const price = plan.price[term]
-          const featured = plan.slug === "m"
+          const featured = plan.slug === "l"
           return (
             <article
               key={plan.slug}
@@ -61,13 +61,9 @@ export function PlanCards({ plans }: { plans: readonly SellablePlan[] }) {
             >
               <header className="mb-5 flex items-start justify-between gap-3">
                 <h3 className="text-[22px] font-normal tracking-[-0.02em]">{plan.name}</h3>
-                {!plan.available ? (
-                  <span className="rounded-full border border-bg-dark/20 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-text-muted">
-                    Sin stock ahora
-                  </span>
-                ) : featured ? (
+                {featured ? (
                   <span className="rounded-full bg-primary px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-bg-dark">
-                    El más elegido
+                    El más vendido
                   </span>
                 ) : null}
               </header>

@@ -226,3 +226,20 @@ show everything in stock, which is the bug this fixes.
 **Fails open.** If OVH cannot be reached the public pages show every datacenter; the fresh
 read at checkout still protects the charge, and if that also fails the order proceeds as it
 did before and provisioning's own error handling applies.
+
+---
+
+## 2026-11-06 — Plan margin lowered from 1.75 to 1.70
+
+**Decision (operator).** VPS plans are priced at `ceilTo99(cost × 1.70)`; addons stay at
+×1.5. Changed in `DEFAULT_PLAN_MARGIN`, the `PRICING_DEFAULT_MARGIN` default, the
+`plans.margin_basis_points` column default and, through migration `0003`, every plan row
+still on the old 7500 (a margin set by hand in `/admin` is left alone).
+
+**Effect (net, plan + mandatory 1-day backup).** Monthly: S 8.98 · M 15.98 · L 21.98 ·
+XL 41.98 €. 12-month commitment: 7.98 · 13.98 · 18.98 · 35.98 € per month. S and M are
+unchanged because ,99 rounding absorbs the difference; L and XL drop. The public page's
+"Desde" now quotes the monthly (no commitment) price: 8.98 €.
+
+The brief's published PVP table (7.99 / 14.99 / 21.99 / 41.99) was reproduced with 1.75; it
+no longer is, by decision.

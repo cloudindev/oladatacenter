@@ -29,6 +29,7 @@ import {
   type ServiceStatus,
   type Term,
 } from "@ola/core"
+import { DELIVERY_ASSIGNED_ACTION } from "@/inngest/jobs/provision"
 import { adminDeps, type AdminActor, type AdminDeps } from "./deps"
 import {
   InputError,
@@ -515,6 +516,57 @@ export async function retryOrderProvisioning(
         ? `Reintento confirmado pese al riesgo de duplicado (pedido OVH ${order.ovhOrderId ?? "desconocido"}).`
         : undefined,
     )
+  })
+}
+
+/** OVH VPS service names: `vps-1a2b3c4d.vps.ovh.net` and the like. */
+const VPS_SERVICE_NAME = /^[a-z0-9][a-z0-9.-]{2,120}$/
+
+/**
+ * Hands one specific OVH VPS to an order the job refused to match on its own (two new
+ * servers could have been this order's). Writes the choice to the audit log, where the job
+ * reads it, and resumes provisioning. The job still checks that the server exists in the
+ * account and belongs to nobody else.
+ */
+export async function assignOrderVps(
+  _previous: AdminActionResult | null,
+  form: FormData,
+): Promise<AdminActionResult> {
+  return withAdmin("asignar el VPS", async ({ deps, actor }) => {
+    const orderId = requiredText(form, "orderId", "el pedido")
+    const serviceName = requiredText(form, "serviceName", "el nombre del VPS").toLowerCase()
+    if (!VPS_SERVICE_NAME.test(serviceName)) {
+      return fail(
+        "Escribe el nombre del VPS tal como lo muestra OVH, p. ej. vps-1a2b3c4d.vps.ovh.net.",
+      )
+    }
+
+    const order = await deps.store.getOrder(orderId)
+    if (!order) return fail("El pedido no existe.")
+    if (order.status !== "failed") {
+      return fail(
+        `El pedido está en «${order.status}»: solo se asigna un VPS a un pedido detenido.`,
+      )
+    }
+    if (!order.completedSteps.includes("ovh_checkout")) {
+      return fail(
+        "Este pedido aún no ha pasado por el checkout de OVH: no hay ningún VPS que asignar.",
+      )
+    }
+
+    const id = correlationId("order-assign")
+    await deps.audit(actor, {
+      entity: "order",
+      entityId: orderId,
+      action: DELIVERY_ASSIGNED_ACTION,
+      context: { serviceName, ovhOrderId: order.ovhOrderId },
+      correlationId: id,
+    })
+    await deps.events.retryProvision({ orderId, correlationId: id })
+    deps.cache.revalidate(`/admin/pedidos/${orderId}`)
+    deps.cache.revalidate("/admin/pedidos")
+
+    return ok(`Asignado ${serviceName}. El aprovisionamiento continúa con ese servidor.`)
   })
 }
 

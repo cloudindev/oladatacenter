@@ -15,6 +15,7 @@ export type ErrorCode =
   | "action_not_allowed"
   | "service_not_found"
   | "conflict"
+  | "delivery_review"
   | "internal"
 
 const CUSTOMER_MESSAGES: Record<ErrorCode, string> = {
@@ -33,6 +34,8 @@ const CUSTOMER_MESSAGES: Record<ErrorCode, string> = {
   action_not_allowed: "Esta acción no está disponible con el estado actual del servidor.",
   service_not_found: "No encontramos este servidor.",
   conflict: "Hay otra operación en curso sobre este servidor. Espera a que termine.",
+  delivery_review:
+    "Tu servidor ya está creado y lo estamos revisando antes de entregártelo. Te avisaremos por email en cuanto esté listo.",
   internal: "Algo ha ido mal por nuestra parte. Nuestro equipo ya está avisado.",
 }
 

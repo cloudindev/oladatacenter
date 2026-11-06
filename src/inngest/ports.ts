@@ -398,6 +398,16 @@ export interface JobDb {
    * checkout POST, so a later run can tell that the call may already have gone through.
    */
   countAuditActions(entity: string, entityId: string, action: string): Promise<number>
+  /**
+   * The `diff` of the newest audit row for one action on one entity, or null. The
+   * provisioning job reads its own checkout marker (the VPS inventory before checkout)
+   * and an admin's manual VPS assignment back through it.
+   */
+  latestAuditDiff(
+    entity: string,
+    entityId: string,
+    action: string,
+  ): Promise<Record<string, unknown> | null>
 
   // webhooks
   /** `duplicate` when `(provider, eventId)` already exists: the caller returns 200 and stops. */

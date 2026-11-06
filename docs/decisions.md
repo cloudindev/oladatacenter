@@ -263,3 +263,18 @@ terms of service should say who is responsible for that choice.
 
 Also corrected: the OVH `DE` site is in Limburg (was labelled Frankfurt); its URL slug is
 now `limburgo`.
+
+## 2026-11-06 — Email is real whenever a Resend key exists, even with mocked providers
+
+**Decision.** `emailSender()` uses Resend whenever `RESEND_API_KEY` is set, regardless of
+`USE_MOCK_PROVIDERS`. The mock sender remains only when no key is set or under the test
+runner.
+
+**Why.** Production runs with `USE_MOCK_PROVIDERS=true` until the OVH and WHMCS
+credentials exist. That flag also silenced email, so sign-ups received no verification
+link (`outbound_emails.provider_id = mock-0001`) and could not finish onboarding. Email
+has no money at stake, so it does not need the same gate as OVH orders.
+
+**Consequence.** Local dev with a key in `.env.local` sends real email to whatever address
+you register with; leave the key blank there to keep the old behaviour (links are then
+logged to the console).

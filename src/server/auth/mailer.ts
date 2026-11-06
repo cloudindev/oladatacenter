@@ -10,7 +10,7 @@ import {
   type OutboundEmail,
 } from "@ola/email"
 import { db, outboundEmails } from "@ola/db"
-import { clientEnv, env, mocksEnabled } from "@/lib/env"
+import { clientEnv, env } from "@/lib/env"
 import { emailSender } from "@/server/providers"
 // `tokens.ts` owns the reset lifetime; the email must quote the same number.
 import { PASSWORD_RESET_TTL_MINUTES } from "./tokens"
@@ -66,7 +66,7 @@ export async function sendTemplateEmail<K extends EmailTemplateName>(
         .set({ sentAt: new Date(), providerId: result.id })
         .where(eqOutboundEmail(rowId))
     }
-    if (mocksEnabled()) {
+    if (sentEmails()) {
       // Local testing needs the verification and reset links, which otherwise only exist
       // inside an email nobody receives. Only `*Url` props are printed: never the whole
       // props object, which for some templates carries a one-time root password.

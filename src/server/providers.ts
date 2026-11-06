@@ -91,15 +91,17 @@ let emailClient: EmailSender | null = null
 /**
  * The shared outbound email sender.
  *
- * Falls back to the in-memory mock whenever the providers are mocked OR no Resend key is
- * configured, so a missing key degrades to "nothing was sent" rather than throwing inside
- * a paid order.
+ * Real whenever a Resend key is configured, even with `USE_MOCK_PROVIDERS` on: that flag
+ * stands in for OVH and WHMCS until their credentials exist, and a sign-up whose
+ * verification email never leaves is a dead end. Falls back to the in-memory mock when no
+ * key is set (a missing key degrades to "nothing was sent" rather than throwing inside a
+ * paid order) and always under the test runner, so tests never send mail.
  */
 export function emailSender(): EmailSender {
   if (emailClient) return emailClient
 
   const config = env()
-  if (mocksEnabled() || !config.RESEND_API_KEY) {
+  if (config.NODE_ENV === "test" || !config.RESEND_API_KEY) {
     emailClient = new MockEmailSender()
     return emailClient
   }

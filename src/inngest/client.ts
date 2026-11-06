@@ -1,5 +1,5 @@
 import { EventSchemas, Inngest } from "inngest"
-import type { DunningStage, ProvisionStep, Term } from "@ola/core"
+import type { DunningStage, DunningStep, ProvisionStep, Term } from "@ola/core"
 
 /**
  * The Inngest client and the full event contract of the platform.
@@ -16,7 +16,7 @@ import type { DunningStage, ProvisionStep, Term } from "@ola/core"
 export type AlertSeverity = "info" | "warning" | "critical"
 
 /** What one dunning step must do. Mirrors `DunningStep["action"]` in `@ola/core`. */
-export type DunningAction = "issue_invoice" | "charge" | "retry_charge" | "suspend" | "terminate"
+export type DunningAction = DunningStep["action"]
 
 export interface OrderPaidData {
   orderId: string

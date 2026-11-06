@@ -85,6 +85,8 @@ export { type OrderFailedProps, OrderFailedEmail } from "./templates/order-faile
 export { type OrderReceivedProps, OrderReceivedEmail } from "./templates/order-received"
 export { type PasswordResetProps, PasswordResetEmail } from "./templates/password-reset"
 export { type PaymentFailedProps, PaymentFailedEmail } from "./templates/payment-failed"
+export { type PaymentReminderProps, PaymentReminderEmail } from "./templates/payment-reminder"
+export { type DeletionWarningProps, DeletionWarningEmail } from "./templates/deletion-warning"
 export { type PhoneOtpProps, PhoneOtpEmail } from "./templates/phone-otp"
 export { type RenewalUpcomingProps, RenewalUpcomingEmail } from "./templates/renewal-upcoming"
 export { type ServerReadyProps, ServerReadyEmail } from "./templates/server-ready"

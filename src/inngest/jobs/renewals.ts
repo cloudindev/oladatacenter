@@ -192,8 +192,18 @@ export async function runDunningStep(
           requestCharge(deps, service, customer, input, scheduled?.email ?? null),
         )
         break
+      case "remind_payment":
+        await step.run(`remind-payment-${input.stage}`, () =>
+          remindPayment(deps, service, customer, input),
+        )
+        break
       case "suspend":
         await step.run(`suspend-${input.stage}`, () => suspendService(deps, service, customer, input))
+        break
+      case "warn_deletion":
+        await step.run(`warn-deletion-${input.stage}`, () =>
+          warnDeletion(deps, service, customer, input),
+        )
         break
       case "terminate":
         await step.run(`terminate-${input.stage}`, () =>
@@ -435,6 +445,74 @@ async function suspendService(
     entityId: service.id,
     detail: `stage=${input.stage} amount=${cycleAmount(service)}`,
     correlationId: input.correlationId,
+  })
+  return null
+}
+
+/* -------------------------------------------------------------------------- */
+/* T-3 — payment reminder (notice)                                            */
+/* -------------------------------------------------------------------------- */
+
+async function remindPayment(
+  deps: JobDeps,
+  service: ServiceRecord,
+  customer: CustomerRecord,
+  input: DunningStepInput,
+): Promise<null> {
+  const invoice = await deps.db.findLatestUnpaidInvoiceForService(service.id)
+  // Paid early, or no invoice to pay: there is nothing to remind.
+  if (!invoice) return null
+  const dueAt = service.nextDueAt ?? new Date(input.dueAt)
+  await deps.email.send({
+    to: customer.email,
+    customerId: customer.id,
+    correlationId: input.correlationId,
+    message: {
+      template: "payment-reminder",
+      props: {
+        name: customer.legalName ?? undefined,
+        serviceName: serverLabel(service),
+        invoiceRef: invoiceRef(invoice),
+        amountCents: invoice.total,
+        chargeDate: calendarOf(dueAt).chargeDate,
+        invoiceUrl: `${deps.customerAreaUrl}/facturas/${invoice.id}`,
+        updateCardUrl: `${deps.customerAreaUrl}/facturacion/metodos-de-pago`,
+        customerAreaUrl: deps.customerAreaUrl,
+      },
+    },
+  })
+  return null
+}
+
+/* -------------------------------------------------------------------------- */
+/* T+7 — deletion warning (notice)                                            */
+/* -------------------------------------------------------------------------- */
+
+async function warnDeletion(
+  deps: JobDeps,
+  service: ServiceRecord,
+  customer: CustomerRecord,
+  input: DunningStepInput,
+): Promise<null> {
+  // Only a server still stopped for non-payment is at risk.
+  if (service.status !== "suspended") return null
+  const pending = await deps.db.findLatestUnpaidInvoiceForService(service.id)
+  await deps.email.send({
+    to: customer.email,
+    customerId: customer.id,
+    correlationId: input.correlationId,
+    message: {
+      template: "deletion-warning",
+      props: {
+        name: customer.legalName ?? undefined,
+        serviceName: serverLabel(service),
+        invoiceRef: pending ? invoiceRef(pending) : undefined,
+        amountCents: pending?.total,
+        deletionDate: calendarOf(service.nextDueAt ?? new Date(input.dueAt)).deletionDate,
+        payUrl: `${deps.customerAreaUrl}/facturas`,
+        customerAreaUrl: deps.customerAreaUrl,
+      },
+    },
   })
   return null
 }

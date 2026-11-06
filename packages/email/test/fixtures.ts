@@ -197,6 +197,33 @@ export const CASES: readonly TemplateCase[] = [
     ["12,99 €", "17 de marzo de 2026", "24 de marzo de 2026"],
   ),
   testCase(
+    "payment-reminder",
+    "recordatorio a tres días",
+    {
+      serviceName: "web-01",
+      invoiceRef: "FAC-2026-0101",
+      amountCents: 1299,
+      chargeDate: MARCH_14,
+      cardBrand: "Visa",
+      cardLast4: "4242",
+      invoiceUrl: INVOICE_URL,
+      updateCardUrl: INVOICE_URL,
+    },
+    ["12,99 €", "14 de marzo de 2026", "····4242"],
+  ),
+  testCase(
+    "deletion-warning",
+    "aviso de baja a tres días",
+    {
+      serviceName: "web-01",
+      invoiceRef: "FAC-2026-0101",
+      amountCents: 1299,
+      deletionDate: MARCH_24,
+      payUrl: INVOICE_URL,
+    },
+    ["12,99 €", "24 de marzo de 2026"],
+  ),
+  testCase(
     "service-terminating",
     "aviso final de eliminación",
     {
@@ -298,6 +325,19 @@ export const MINIMAL_CASES: readonly TemplateCase[] = [
     invoiceRef: "FAC-1",
     amountCents: 500,
     suspendedAt: MARCH_17,
+    deletionDate: MARCH_24,
+    payUrl: INVOICE_URL,
+  }),
+  testCase("payment-reminder", "mínimo", {
+    serviceName: "web-01",
+    invoiceRef: "FAC-1",
+    amountCents: 500,
+    chargeDate: MARCH_14,
+    invoiceUrl: INVOICE_URL,
+    updateCardUrl: INVOICE_URL,
+  }),
+  testCase("deletion-warning", "mínimo", {
+    serviceName: "web-01",
     deletionDate: MARCH_24,
     payUrl: INVOICE_URL,
   }),

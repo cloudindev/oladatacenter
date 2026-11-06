@@ -9,11 +9,13 @@ import { render } from "@react-email/components"
 import * as accountVerified from "./templates/account-verified"
 import * as adminAlert from "./templates/admin-alert"
 import * as creditExpiring from "./templates/credit-expiring"
+import * as deletionWarning from "./templates/deletion-warning"
 import * as orderDelayed from "./templates/order-delayed"
 import * as orderFailed from "./templates/order-failed"
 import * as orderReceived from "./templates/order-received"
 import * as passwordReset from "./templates/password-reset"
 import * as paymentFailed from "./templates/payment-failed"
+import * as paymentReminder from "./templates/payment-reminder"
 import * as phoneOtp from "./templates/phone-otp"
 import * as renewalUpcoming from "./templates/renewal-upcoming"
 import * as serverReady from "./templates/server-ready"
@@ -33,8 +35,10 @@ export interface EmailPropsMap {
   "order-delayed": orderDelayed.OrderDelayedProps
   "order-failed": orderFailed.OrderFailedProps
   "renewal-upcoming": renewalUpcoming.RenewalUpcomingProps
+  "payment-reminder": paymentReminder.PaymentReminderProps
   "payment-failed": paymentFailed.PaymentFailedProps
   "service-suspended": serviceSuspended.ServiceSuspendedProps
+  "deletion-warning": deletionWarning.DeletionWarningProps
   "service-terminating": serviceTerminating.ServiceTerminatingProps
   "upgrade-complete": upgradeComplete.UpgradeCompleteProps
   "credit-expiring": creditExpiring.CreditExpiringProps
@@ -108,6 +112,11 @@ const TEMPLATES: TemplateRegistry = {
     subject: renewalUpcoming.subject,
     text: renewalUpcoming.text,
   },
+  "payment-reminder": {
+    Component: paymentReminder.PaymentReminderEmail,
+    subject: paymentReminder.subject,
+    text: paymentReminder.text,
+  },
   "payment-failed": {
     Component: paymentFailed.PaymentFailedEmail,
     subject: paymentFailed.subject,
@@ -117,6 +126,11 @@ const TEMPLATES: TemplateRegistry = {
     Component: serviceSuspended.ServiceSuspendedEmail,
     subject: serviceSuspended.subject,
     text: serviceSuspended.text,
+  },
+  "deletion-warning": {
+    Component: deletionWarning.DeletionWarningEmail,
+    subject: deletionWarning.subject,
+    text: deletionWarning.text,
   },
   "service-terminating": {
     Component: serviceTerminating.ServiceTerminatingEmail,

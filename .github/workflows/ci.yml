@@ -1,0 +1,176 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A newer push to the same ref makes the previous run pointless: cancel it.
+# Combined with independent jobs this is what "fail fast" means here — nothing
+# waits in line behind a check that has already failed.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+  # The Node version lives here once. Keep it in sync with the local dev
+  # requirement documented in README.md (Node 22).
+  NODE_VERSION: "22"
+
+jobs:
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+
+  typecheck:
+    name: typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      # Next 16 generates `next-env.d.ts` and the typed-route definitions during
+      # `next dev` / `next build`. `next-env.d.ts` is gitignored, so a bare
+      # `tsc --noEmit` in CI would fail on missing Next types. `next typegen`
+      # produces them without a full build.
+      # Needs the Next config to load, which is why the dummy env is here too.
+      - name: Generate Next.js types
+        run: npx next typegen
+        env:
+          NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      - run: npm run typecheck
+
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      # `test:coverage` is the gate, not plain `test`: the thresholds in
+      # vitest.config.ts (90 % lines/functions/statements, 85 % branches over
+      # packages/core/src) fail the run when domain logic arrives untested.
+      - run: npm run test:coverage
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Every value below is a deliberate fake. The build must never need a real
+    # secret: mocks are on, both kill switches are off, so even a code path that
+    # slipped past review cannot reach OVH, WHMCS or Stripe from CI.
+    env:
+      USE_MOCK_PROVIDERS: "true"
+      OVH_ORDERS_ENABLED: "false"
+      WHMCS_WRITE_ENABLED: "false"
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci?sslmode=disable
+      AUTH_SECRET: ci-build-only-secret-not-used-anywhere-32plus
+      AUTH_URL: http://localhost:3000
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      STRIPE_SECRET_KEY: sk_test_ci_dummy
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_ci_dummy
+      STRIPE_WEBHOOK_SECRET: whsec_ci_dummy
+      WHMCS_API_URL: https://whmcs.invalid/includes/api.php
+      WHMCS_API_IDENTIFIER: ci-dummy
+      WHMCS_API_SECRET: ci-dummy
+      WHMCS_WEBHOOK_SECRET: ci-dummy
+      OVH_ENDPOINT: ovh-eu
+      OVH_SUBSIDIARY: ES
+      RESEND_API_KEY: re_ci_dummy
+      EMAIL_FROM: OLA <cloud@oladc.com>
+      INNGEST_EVENT_KEY: ci-dummy
+      INNGEST_SIGNING_KEY: signkey-ci-dummy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      # Next.js keeps its build cache in .next/cache; persisting it between runs
+      # is the documented way to keep CI builds fast.
+      - name: Restore Next.js build cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'packages/**/*.ts', 'packages/**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+      - run: npm run build
+
+  migrations:
+    name: migrations in sync
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # drizzle-kit generate only reads the schema file, but the config still
+      # wants a URL to parse. Never a real one.
+      DATABASE_URL: postgresql://ci:ci@127.0.0.1:5432/ci?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+      - run: npm ci
+      # Someone editing packages/db/src/schema.ts without running db:generate
+      # leaves production without a migration. Generating here and diffing is
+      # the cheapest way to catch it. `< /dev/null` so an interactive drizzle
+      # prompt (column rename ambiguity) fails instead of hanging the runner.
+      - name: Generate migrations
+        run: npm run db:generate < /dev/null
+      - name: Fail if the generated migration is not committed
+        run: |
+          if [ -n "$(git status --porcelain -- packages/db/migrations)" ]; then
+            echo "::error title=Missing migration::packages/db/src/schema.ts changed but the migration was not committed. Run 'npm run db:generate' and commit packages/db/migrations."
+            git status --porcelain -- packages/db/migrations
+            git --no-pager diff -- packages/db/migrations
+            exit 1
+          fi
+          echo "Migrations are in sync with the schema."
+
+  # Single job to point branch protection at, so adding a check later does not
+  # mean reconfiguring the repository settings.
+  ci:
+    name: ci
+    if: always()
+    needs: [lint, typecheck, test, build, migrations]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check results
+        run: |
+          echo "lint=${{ needs.lint.result }}"
+          echo "typecheck=${{ needs.typecheck.result }}"
+          echo "test=${{ needs.test.result }}"
+          echo "build=${{ needs.build.result }}"
+          echo "migrations=${{ needs.migrations.result }}"
+          test "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" = "false"

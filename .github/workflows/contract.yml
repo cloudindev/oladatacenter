@@ -1,0 +1,66 @@
+name: OVH catalog contract
+
+# Early-warning system. OVH changes plan codes and prices without telling
+# anyone; when that happens we want to find out from this job, not from a
+# customer who was quoted a price we can no longer buy at.
+#
+# It hits the LIVE public OVH catalog (no credentials, no money) and compares it
+# with the committed fixture at packages/core/test/fixtures/ovh-catalog-vps-es.json.
+on:
+  schedule:
+    # 06:17 UTC daily. Off the hour on purpose: scheduled runs bunch up at :00.
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+  # Also run when the fixture or the contract test itself changes, so a fixture
+  # refresh is validated in the pull request that proposes it.
+  pull_request:
+    paths:
+      - "packages/core/test/fixtures/ovh-catalog-vps-es.json"
+      - "e2e/contract-ovh.spec.ts"
+      - "e2e/fixtures/ovh-catalog.ts"
+      - ".github/workflows/contract.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  catalog:
+    name: live catalog vs committed fixture
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      # No app, no database, no browser: the contract spec uses Playwright's
+      # `request` fixture only. This flag stops playwright.config.ts from
+      # starting a web server it would not use.
+      PLAYWRIGHT_SKIP_WEBSERVER: "1"
+      ALERTS_SLACK_WEBHOOK: ${{ secrets.ALERTS_SLACK_WEBHOOK }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci
+      # No `playwright install`: the contract project never opens a browser.
+      - name: Run the OVH catalog contract test
+        run: npx playwright test --project=contract --reporter=list,html
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contract-report
+          path: playwright-report/
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # Optional. Configure the ALERTS_SLACK_WEBHOOK repository secret to get
+      # pinged; without it the job still fails visibly in the Actions tab and
+      # GitHub emails the repository watchers for failed scheduled runs.
+      - name: Notify Slack on drift
+        if: failure() && env.ALERTS_SLACK_WEBHOOK != ''
+        run: |
+          curl -fsS -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\":rotating_light: OLA VPS: el catálogo de OVH ha cambiado. Revisa ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} y el runbook docs/runbooks/ovh-caido.md\"}" \
+            "$ALERTS_SLACK_WEBHOOK"

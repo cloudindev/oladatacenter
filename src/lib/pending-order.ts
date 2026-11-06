@@ -1,14 +1,15 @@
 /**
- * The server a visitor configured before they had an account.
+ * The last server a visitor configured and did not buy.
  *
- * The configurator hands off to `/app/servers/new?…`. When there is no session the proxy
- * remembers that URL in a cookie, so the choice survives sign-up, email verification and
- * onboarding — flows that cross several requests and an inbox — and the panel can offer
- * to pick it up again. Holds no personal data: only the public configuration.
+ * The configurator hands off to `/app/servers/new?…`. The proxy remembers that URL in a
+ * cookie on every visit, signed in or not, so the choice survives sign-up, email
+ * verification, onboarding and simply leaving. The panel keeps offering it until the
+ * customer discards it or an order is actually created. Holds no personal data: only the
+ * public configuration.
  */
 
 export const PENDING_ORDER_COOKIE = "ola_pending_order"
-export const PENDING_ORDER_MAX_AGE_SECONDS = 60 * 60 * 24 * 7
+export const PENDING_ORDER_MAX_AGE_SECONDS = 60 * 60 * 24 * 30
 
 const ORDER_PATH = "/app/servers/new"
 

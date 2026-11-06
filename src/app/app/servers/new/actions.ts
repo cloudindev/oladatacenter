@@ -10,6 +10,7 @@ import {
 } from "@/server/billing"
 import { confirmPendingPayment } from "@/server/billing/checkout"
 import { orderProgress, type OrderProgressView } from "@/server/billing/progress"
+import { clearPendingOrder } from "@/server/pending-order"
 
 /**
  * Server Actions for the checkout.
@@ -40,6 +41,8 @@ export async function startCheckout(configuration: unknown): Promise<CheckoutAct
       { user: { id: session.user.id, email: session.user.email }, customer: session.customer },
       configuration,
     )
+    // The order exists now: the "a medio contratar" reminder has done its job.
+    await clearPendingOrder()
     const result = await payOrder(order.id)
 
     if (result.status === "paid") return { ok: true, status: "paid", orderId: order.id }

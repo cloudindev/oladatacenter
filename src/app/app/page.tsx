@@ -17,6 +17,8 @@ import { creditSummary } from "@/server/billing/credit"
 import { customerContext } from "@/server/services/customer"
 import { load } from "@/server/services/load"
 import { pendingOrderHref } from "@/server/pending-order"
+import { pendingOrderSummary } from "@/server/pending-order-summary"
+import { discardPendingOrder } from "./pending-order-actions"
 import { listServicesForCustomer } from "@/server/services/repository"
 import type { ServiceListItem } from "@/server/services/types"
 
@@ -49,6 +51,7 @@ export default async function ServersPage() {
     load("creditSummary", () => creditSummary(context.customerId)),
     pendingOrderHref(),
   ])
+  const pendingSummary = pendingOrder ? await pendingOrderSummary(pendingOrder) : null
 
   return (
     <>
@@ -69,12 +72,22 @@ export default async function ServersPage() {
             tone="ok"
             title="Tienes un servidor a medio contratar"
             action={
-              <ButtonLink href={pendingOrder} withArrow>
-                Continuar con tu pedido
-              </ButtonLink>
+              <div className="flex flex-wrap items-center gap-3">
+                <form action={discardPendingOrder}>
+                  <button
+                    type="submit"
+                    className="label-mono text-text-muted underline-offset-4 hover:text-text-base hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
+                  >
+                    Descartar
+                  </button>
+                </form>
+                <ButtonLink href={pendingOrder} withArrow>
+                  Continuar con tu pedido
+                </ButtonLink>
+              </div>
             }
           >
-            Guardamos la configuración que elegiste antes de crear tu cuenta.
+            {pendingSummary ?? "Guardamos la configuración que elegiste."}
           </Notice>
         </div>
       ) : null}

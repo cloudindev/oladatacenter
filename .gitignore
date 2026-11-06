@@ -44,3 +44,6 @@ next-env.d.ts
 
 /playwright-report
 /test-results
+
+# Local copies of deploy files that carry a secret
+*.local.php

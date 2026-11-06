@@ -72,6 +72,8 @@ export interface HttpWhmcsClientOptions {
   secret: string
   /** Optional fixed-IP forwarder. When set, requests go here with `X-Target-Url: apiUrl`. */
   proxyUrl?: string
+  /** Shared secret the proxy requires in `X-Proxy-Token`, so nobody else can use it. */
+  proxyToken?: string
   /** Mirrors WHMCS_WRITE_ENABLED. When false every mutating method throws without calling. */
   writeEnabled: boolean
   fetchImpl?: typeof fetch
@@ -98,6 +100,7 @@ export class HttpWhmcsClient implements WhmcsClient {
   private readonly identifier: string
   private readonly secret: string
   private readonly proxyUrl?: string
+  private readonly proxyToken?: string
   private readonly writeEnabled: boolean
   private readonly fetchImpl: typeof fetch
   private readonly logger?: WhmcsLogger
@@ -112,6 +115,7 @@ export class HttpWhmcsClient implements WhmcsClient {
     this.identifier = options.identifier
     this.secret = options.secret
     this.proxyUrl = options.proxyUrl
+    this.proxyToken = options.proxyToken
     this.writeEnabled = options.writeEnabled
     this.fetchImpl = options.fetchImpl ?? globalThis.fetch.bind(globalThis)
     this.logger = options.logger
@@ -424,7 +428,10 @@ export class HttpWhmcsClient implements WhmcsClient {
       "x-ola-correlation-id": correlationId,
     }
     // The proxy only ever forwards; it must be told where. Documented in docs/whmcs-setup.md.
-    if (this.proxyUrl) headers["x-target-url"] = this.apiUrl
+    if (this.proxyUrl) {
+      headers["x-target-url"] = this.apiUrl
+      if (this.proxyToken) headers["x-proxy-token"] = this.proxyToken
+    }
 
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), this.timeoutMs)

@@ -121,7 +121,7 @@ describe("HttpWhmcsClient request shape", () => {
   it("routes through the proxy with X-Target-Url when proxyUrl is set", async () => {
     const { instance, calls } = client(
       [() => jsonResponse({ result: "success", clients: {} })],
-      { proxyUrl: "https://whmcs-proxy.internal/forward" },
+      { proxyUrl: "https://whmcs-proxy.internal/forward", proxyToken: "proxy-token-1" },
     )
 
     await instance.findClientByEmail("nobody@oladc.com")
@@ -130,6 +130,7 @@ describe("HttpWhmcsClient request shape", () => {
     if (!call) throw new Error("expected a call")
     expect(call.url).toBe("https://whmcs-proxy.internal/forward")
     expect(call.headers["x-target-url"]).toBe(CREDENTIALS.apiUrl)
+    expect(call.headers["x-proxy-token"]).toBe("proxy-token-1")
   })
 
   it("never logs the identifier or the secret", async () => {

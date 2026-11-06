@@ -72,6 +72,10 @@ export function whmcs(): WhmcsClient {
   }
 
   const config = env()
+  // An open proxy would let anyone reach WHMCS from an allowlisted IP.
+  if (config.WHMCS_PROXY_URL && !config.WHMCS_PROXY_TOKEN) {
+    throw new Error("WHMCS_PROXY_URL is set without WHMCS_PROXY_TOKEN; refusing an unauthenticated proxy")
+  }
   // A simulated Stripe charge recorded in the real WHMCS would be a fake payment in the
   // books. Refuse the combination instead of trusting the operator to notice.
   if (config.WHMCS_WRITE_ENABLED && providerMocked("stripe")) {
@@ -88,6 +92,7 @@ export function whmcs(): WhmcsClient {
     identifier: config.WHMCS_API_IDENTIFIER,
     secret: config.WHMCS_API_SECRET,
     proxyUrl: config.WHMCS_PROXY_URL,
+    proxyToken: config.WHMCS_PROXY_TOKEN,
     writeEnabled: config.WHMCS_WRITE_ENABLED,
   })
   return whmcsClient

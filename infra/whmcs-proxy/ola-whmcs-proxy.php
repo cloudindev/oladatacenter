@@ -15,7 +15,8 @@
  *  5. Returns WHMCS's HTTP status and body unchanged.
  *
  * Install: copy to a vhost with HTTPS on the fixed-IP server and set PROXY_TOKEN below to
- * the same value as WHMCS_PROXY_TOKEN in the platform (32+ characters).
+ * the same value as WHMCS_PROXY_TOKEN in the platform (32+ characters), or leave it and
+ * set WHMCS_PROXY_TOKEN as an environment variable of the vhost.
  */
 declare(strict_types=1);
 
@@ -37,11 +38,31 @@ $started = microtime(true);
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     refuse(405, 'method not allowed');
 }
-if (strlen(PROXY_TOKEN) < 32 || PROXY_TOKEN === 'REPLACE_WITH_WHMCS_PROXY_TOKEN') {
+// The token comes from the constant above or, if that is left as is, from the
+// WHMCS_PROXY_TOKEN environment variable of the vhost.
+$expected = PROXY_TOKEN !== 'REPLACE_WITH_WHMCS_PROXY_TOKEN'
+    ? PROXY_TOKEN
+    : (string) (getenv('WHMCS_PROXY_TOKEN') ?: '');
+if (strlen($expected) < 32) {
     refuse(500, 'not configured');
 }
-if (!hash_equals(PROXY_TOKEN, (string) ($_SERVER['HTTP_X_PROXY_TOKEN'] ?? ''))) {
-    refuse(401, 'unauthorized');
+
+// Some front-ends hand custom headers to PHP only through getallheaders().
+$received = (string) ($_SERVER['HTTP_X_PROXY_TOKEN'] ?? '');
+if ($received === '' && function_exists('getallheaders')) {
+    foreach (getallheaders() as $name => $value) {
+        if (strtolower((string) $name) === 'x-proxy-token') {
+            $received = (string) $value;
+        }
+    }
+}
+// The two reasons are told apart (never the token itself) so a misconfigured
+// front-end that drops the header can be diagnosed from outside.
+if ($received === '') {
+    refuse(401, 'unauthorized (no token received)');
+}
+if (!hash_equals($expected, trim($received))) {
+    refuse(401, 'unauthorized (token mismatch)');
 }
 if (($_SERVER['HTTP_X_TARGET_URL'] ?? '') !== TARGET) {
     refuse(400, 'target not allowed');

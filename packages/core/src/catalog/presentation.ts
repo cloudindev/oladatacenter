@@ -275,6 +275,9 @@ const OS_FAMILY_RULES: readonly OsFamilyRule[] = [
   { family: "fedora", label: "Fedora", test: /^Fedora/i },
   { family: "freebsd", label: "FreeBSD", test: /^FreeBSD/i },
   { family: "windows", label: "Windows Server", test: /^Windows/i },
+  // Images with an application preinstalled ("Debian 12 - Docker"), shown last and kept
+  // apart from the plain versions of their base distribution, as OVH does.
+  { family: "apps", label: "Con aplicación", test: / - (docker|n8n)\b/i },
 ]
 
 /** Images that carry a third-party licence we do not resell yet. */
@@ -292,7 +295,10 @@ export function groupOperatingSystems(plan: PlanCost): readonly OsGroup[] {
 
   for (const name of plan.operatingSystems) {
     if (LICENSED_IMAGE.test(name)) continue
-    const rule = OS_FAMILY_RULES.find((candidate) => candidate.test.test(name))
+    // An app image matches its base distribution too: the app rule wins.
+    const rule =
+      OS_FAMILY_RULES.find((candidate) => candidate.family === "apps" && candidate.test.test(name)) ??
+      OS_FAMILY_RULES.find((candidate) => candidate.test.test(name))
     if (!rule) continue
     const isWindows = rule.family === "windows"
     const option: OsOption = {

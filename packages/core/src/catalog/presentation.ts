@@ -187,6 +187,11 @@ export interface PublicDatacenter {
   country: string
   /** "Gravelines, Francia" — the only thing a customer ever reads. */
   label: string
+  /**
+   * OVH has stock here for this plan right now. `true` until live stock is applied with
+   * `applyDatacenterStock`, and kept `true` when the stock source cannot be reached.
+   */
+  available: boolean
 }
 
 const DATACENTER_BY_SLUG = new Map(
@@ -214,7 +219,25 @@ export function datacentersFor(plan: PlanCost): readonly PublicDatacenter[] {
     city: dc.city,
     country: dc.country,
     label: `${dc.city}, ${dc.country}`,
+    available: true,
   }))
+}
+
+/**
+ * Marks each datacenter of a plan as in or out of stock, from the OVH codes that have
+ * Linux stock. `null` means the stock could not be read: everything stays available, so
+ * an OVH hiccup never empties the shop; the order path re-checks before buying.
+ */
+export function applyDatacenterStock(
+  plan: SellablePlan,
+  inStockCodes: ReadonlySet<string> | null,
+): SellablePlan {
+  if (inStockCodes === null) return plan
+  const datacenters = plan.datacenters.map((dc) => {
+    const code = DATACENTER_BY_SLUG.get(dc.slug)
+    return { ...dc, available: code !== undefined && inStockCodes.has(code) }
+  })
+  return { ...plan, datacenters, available: datacenters.some((dc) => dc.available) }
 }
 
 // ─── operating systems ───────────────────────────────────────────────────────
@@ -381,6 +404,8 @@ export interface SellablePlan {
   addons: readonly AddonGroup[]
   included: readonly string[]
   sort: number
+  /** At least one sellable datacenter has stock for this plan. */
+  available: boolean
 }
 
 /** Percent of the monthly price saved by committing to 12 months. 0 when there is none. */
@@ -519,6 +544,7 @@ export function toPlanViewModel(
     addons: groupAddonsByFamily(addonOptionsFor(plan, catalog, overrides, baseline)),
     included: INCLUDED_FEATURES,
     sort: sort < 0 ? MVP_PLAN_CODES.length : sort,
+    available: true,
   }
 }
 
@@ -555,10 +581,16 @@ export function parseTermParam(value: string | undefined): Term | null {
 export function resolveConfig(plans: readonly SellablePlan[], raw: RawParams): PublicConfig {
   if (plans.length === 0) throw new PresentationError("no sellable plans")
   const requested = firstValue(raw.plan)
-  const plan = plans.find((candidate) => candidate.slug === requested) ?? plans[0]
+  const plan =
+    plans.find((candidate) => candidate.slug === requested) ??
+    plans.find((candidate) => candidate.available) ??
+    plans[0]
 
+  // A datacenter without stock is never kept: fall back to the first one that has it.
   const dcSlug = firstValue(raw.dc)
-  const dc = plan.datacenters.find((candidate) => candidate.slug === dcSlug) ?? plan.datacenters[0]
+  const inStock = plan.datacenters.filter((candidate) => candidate.available)
+  const dc =
+    inStock.find((candidate) => candidate.slug === dcSlug) ?? inStock[0] ?? plan.datacenters[0]
 
   const osSlugWanted = firstValue(raw.os)
   const osOptions = plan.osGroups.flatMap((group) => group.options).filter((o) => !o.disabled)

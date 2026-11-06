@@ -36,6 +36,33 @@ export function ovh(): OvhClient {
   return ovhClient
 }
 
+/** The OVH routes that need no account: public catalog and live stock. */
+export type OvhPublic = Pick<OvhClient, "getDatacenterStock" | "fetchPublicCatalog">
+
+let ovhPublicClient: OvhPublic | null = null
+
+/**
+ * OVH's unauthenticated, read-only routes. Real even when `USE_MOCK_PROVIDERS` is on:
+ * they cannot order or change anything, and mocked stock would sell servers OVH does not
+ * have. Only the test runner gets the mock, so tests never touch the network.
+ */
+export function ovhPublic(): OvhPublic {
+  if (ovhPublicClient) return ovhPublicClient
+  const config = env()
+  ovhPublicClient =
+    config.NODE_ENV === "test"
+      ? new MockOvhClient()
+      : new HttpOvhClient({
+          endpoint: config.OVH_ENDPOINT,
+          applicationKey: "",
+          applicationSecret: "",
+          consumerKey: "",
+          subsidiary: config.OVH_SUBSIDIARY,
+          maxAttempts: 2,
+        })
+  return ovhPublicClient
+}
+
 export function whmcs(): WhmcsClient {
   if (whmcsClient) return whmcsClient
 
@@ -96,5 +123,6 @@ export function assertOvhOrdersEnabled(): void {
 export function resetProviders(): void {
   emailClient = null
   ovhClient = null
+  ovhPublicClient = null
   whmcsClient = null
 }

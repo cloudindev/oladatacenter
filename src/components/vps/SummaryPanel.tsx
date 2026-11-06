@@ -22,12 +22,15 @@ export function SummaryPanel({
   pending,
   error,
   continueHref,
+  outOfStock = false,
 }: {
   quote: PublicQuote
   pending: boolean
   error: string | null
   /** Checkout owned by another agent: the configuration travels in the query string. */
   continueHref: string
+  /** No datacenter has stock for this plan: the customer cannot continue. */
+  outOfStock?: boolean
 }) {
   const billed = quote.lines.filter((line) => line.monthlyPrice > 0)
   const annual = quote.months > 1
@@ -102,13 +105,22 @@ export function SummaryPanel({
         </p>
       ) : null}
 
-      <Link
-        href={continueHref}
-        className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-bg-dark font-mono text-[11px] uppercase tracking-[0.06em] text-text-dark transition-colors hover:bg-surface-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
-      >
-        Continuar
-        <span aria-hidden>→</span>
-      </Link>
+      {outOfStock ? (
+        <span
+          aria-disabled="true"
+          className="mt-6 inline-flex h-12 w-full cursor-not-allowed items-center justify-center rounded-lg border border-dashed border-bg-dark/25 font-mono text-[11px] uppercase tracking-[0.06em] text-text-muted"
+        >
+          Sin stock ahora mismo
+        </span>
+      ) : (
+        <Link
+          href={continueHref}
+          className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-bg-dark font-mono text-[11px] uppercase tracking-[0.06em] text-text-dark transition-colors hover:bg-surface-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
+        >
+          Continuar
+          <span aria-hidden>→</span>
+        </Link>
+      )}
       <p className="mt-3 text-[12px] leading-relaxed text-text-muted">
         En el siguiente paso confirmas los datos de facturación y el IVA antes de pagar.
       </p>

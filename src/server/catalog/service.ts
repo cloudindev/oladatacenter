@@ -22,6 +22,7 @@ import {
   DEFAULT_PLAN_MARGIN,
   TERMS,
   addonSlug,
+  applyDatacenterStock,
   buildQuote,
   parseCatalog,
   priceFromCost,
@@ -41,6 +42,7 @@ import {
 import { addons as addonsTable, db, ovhCatalogSnapshots, plans as plansTable } from "@ola/db"
 import { env } from "@/lib/env"
 import { logger } from "@/lib/logger"
+import { ovhPublic } from "@/server/providers"
 // Committed fixture of the real ES catalog (verified 2026-11-05). Last-resort fallback only.
 import fallbackCatalogRaw from "../../../packages/core/test/fixtures/ovh-catalog-vps-es.json"
 
@@ -262,6 +264,41 @@ function withoutInactiveAddons(
     .filter((group) => group.options.length > 0)
 }
 
+// ─── live stock ──────────────────────────────────────────────────────────────
+
+/** OVH stock moves during the day; five minutes keeps the shop honest without hammering it. */
+const STOCK_TTL_MS = 5 * 60 * 1000
+const stockCache = new Map<string, { at: number; codes: ReadonlySet<string> }>()
+
+/**
+ * OVH datacenter codes with Linux stock for a plan, or `null` when OVH cannot be asked.
+ * Fails open on purpose: the public pages keep selling, and the order step calls
+ * `assertInStock` with a fresh read before anything is charged.
+ */
+export async function inStockDatacenters(
+  planCode: string,
+  options: { fresh?: boolean } = {},
+): Promise<ReadonlySet<string> | null> {
+  const cached = stockCache.get(planCode)
+  if (!options.fresh && cached && Date.now() - cached.at < STOCK_TTL_MS) return cached.codes
+  try {
+    const stock = await ovhPublic().getDatacenterStock(planCode, env().OVH_SUBSIDIARY)
+    const codes = new Set(stock.filter((entry) => entry.linux).map((entry) => entry.datacenter))
+    stockCache.set(planCode, { at: Date.now(), codes })
+    return codes
+  } catch (error) {
+    log.warn(
+      {
+        event: "catalog.stock.unreachable",
+        planCode,
+        error: error instanceof Error ? error.message : String(error),
+      },
+      "could not read datacenter stock, showing every datacenter",
+    )
+    return cached?.codes ?? null
+  }
+}
+
 // ─── the public contract ─────────────────────────────────────────────────────
 
 /**
@@ -279,11 +316,17 @@ export const listSellablePlans = cache(async (): Promise<SellablePlan[]> => {
     const override = overrides.plans.get(plan.planCode)
     if (override && !override.active) continue
     const view = toPlanViewModel(plan, catalog, pricingFor(plan.planCode, overrides))
-    plans.push({
-      ...view,
-      addons: withoutInactiveAddons(view.addons, hidden),
-      sort: override?.sort ?? view.sort,
-    })
+    const stock = await inStockDatacenters(plan.planCode)
+    plans.push(
+      applyDatacenterStock(
+        {
+          ...view,
+          addons: withoutInactiveAddons(view.addons, hidden),
+          sort: override?.sort ?? view.sort,
+        },
+        stock,
+      ),
+    )
   }
 
   return plans.sort((a, b) => a.sort - b.sort || a.slug.localeCompare(b.slug))

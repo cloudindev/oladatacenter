@@ -4,6 +4,7 @@
  */
 export type ErrorCode =
   | "catalog_out_of_sync"
+  | "out_of_stock"
   | "price_mismatch"
   | "provider_unavailable"
   | "provider_rejected"
@@ -18,6 +19,8 @@ export type ErrorCode =
 
 const CUSTOMER_MESSAGES: Record<ErrorCode, string> = {
   catalog_out_of_sync: "Este plan no está disponible ahora mismo. Inténtalo en unos minutos.",
+  out_of_stock:
+    "Ahora mismo no queda stock de este plan en ese centro de datos. Elige otro centro o vuelve a intentarlo más tarde.",
   price_mismatch:
     "El precio ha cambiado mientras preparábamos tu pedido. Vuelve a cargar la página para ver el importe actualizado.",
   provider_unavailable:

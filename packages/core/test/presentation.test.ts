@@ -5,6 +5,7 @@ import {
   addonLabel,
   addonSlug,
   annualSavingPercent,
+  applyDatacenterStock,
   baselineRequest,
   buildQuote,
   datacenterCodeForSlug,
@@ -475,5 +476,37 @@ describe("toPublicQuote", () => {
     expect(() => toPublicQuote({ ...quote, planCode: "vps-unknown" }, catalog, config)).toThrow(
       PresentationError,
     )
+  })
+})
+
+describe("applyDatacenterStock", () => {
+  const plan = plans.find((candidate) => candidate.slug === "s")
+  if (!plan) throw new Error("fixture has no S plan")
+
+  it("keeps everything available when stock is unknown", () => {
+    const result = applyDatacenterStock(plan, null)
+    expect(result.available).toBe(true)
+    expect(result.datacenters.every((dc) => dc.available)).toBe(true)
+  })
+
+  it("marks only the datacenters with stock and the plan as available", () => {
+    const result = applyDatacenterStock(plan, new Set(["GRA"]))
+    expect(result.available).toBe(true)
+    expect(result.datacenters.filter((dc) => dc.available).map((dc) => dc.slug)).toEqual([
+      "gravelines",
+    ])
+  })
+
+  it("marks the plan sold out when no sellable datacenter has stock", () => {
+    const result = applyDatacenterStock(plan, new Set(["BHS"]))
+    expect(result.available).toBe(false)
+  })
+
+  it("never resolves a configuration to a datacenter without stock", () => {
+    const stocked = plans.map((candidate) =>
+      applyDatacenterStock(candidate, new Set(["SBG"])),
+    )
+    const config = resolveConfig(stocked, { plan: "s", dc: "gravelines" })
+    expect(config.dc).toBe("estrasburgo")
   })
 })

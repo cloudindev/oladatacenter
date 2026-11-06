@@ -772,3 +772,30 @@ export interface Mitigation {
   ipBlock: string
   mitigatedIps: readonly string[]
 }
+
+/* ------------------------------------------------------- order rules (stock) */
+
+/**
+ * `vps.order.rule.Datacenters` from `GET /vps/order/rule/datacenter` (unauthenticated).
+ * Verified against the live API on 2026-11-06. Status values seen: `available`,
+ * `out-of-stock`; anything unknown is kept as a string and treated as unavailable.
+ */
+export const datacenterStockSchema = z.object({
+  datacenters: z.array(
+    z.object({
+      datacenter: z.string(),
+      status: z.string(),
+      linuxStatus: z.string().optional(),
+      windowsStatus: z.string().optional(),
+      daysBeforeDelivery: z.number().optional(),
+    }),
+  ),
+})
+
+export interface DatacenterStock {
+  /** OVH datacenter code as the catalog uses it: `GRA`, `SBG`, `EU-WEST-RBX`, … */
+  datacenter: string
+  linux: boolean
+  windows: boolean
+  daysBeforeDelivery: number
+}

@@ -19,7 +19,6 @@ import {
   type PublicQuote,
   type RawParams,
   type SellablePlan,
-  type Term,
 } from "@ola/core"
 import { quoteAction } from "@/app/vps/configurar/actions"
 import { AddonList } from "./AddonList"
@@ -27,7 +26,6 @@ import { ChoiceRadio, StepHeading } from "./Choice"
 import { DatacenterPicker } from "./DatacenterPicker"
 import { OsPicker } from "./OsPicker"
 import { SummaryPanel } from "./SummaryPanel"
-import { TermToggle } from "./TermToggle"
 
 const DEBOUNCE_MS = 250
 
@@ -110,7 +108,12 @@ export function Configurator({
                 value={candidate.slug}
                 checked={candidate.slug === config.plan}
                 onSelect={(value) => patch({ plan: value })}
-                caption={`${formatCents(candidate.price[config.term].monthly)} / mes`}
+                disabled={!candidate.available}
+                caption={
+                  candidate.available
+                    ? `${formatCents(candidate.price[config.term].monthly)} / mes`
+                    : "Sin stock ahora mismo"
+                }
                 title={candidate.name}
                 note={`${candidate.specs.vcores} vCores · ${candidate.specs.ramGb} GB RAM · ${candidate.specs.nvmeGb} GB NVMe`}
               />
@@ -151,20 +154,42 @@ export function Configurator({
           />
         </StepHeading>
 
-        <StepHeading
-          index="05 · Término"
-          title="Cómo quieres pagarlo"
-          hint="El plan anual se factura de una vez y sale más barato por mes"
-        >
-          <TermToggle
-            term={config.term}
-            onChange={(term: Term) => patch({ term: TERM_PARAMS[term] })}
-            savingPercent={plan.savingPercent}
-          />
-          <p className="mt-4 text-[13px] text-text-muted">
-            Mensual: {formatCents(plan.price.P1M.monthly)} al mes · Anual:{" "}
-            {formatCents(plan.price.P12M.monthly)} al mes, {formatCents(plan.price.P12M.cycle)} por
-            doce meses. Precios del plan sin opciones y sin IVA.
+        <StepHeading index="05 · Compromiso" title="Período de compromiso">
+          <p className="mb-5 max-w-2xl text-[13.5px] leading-relaxed text-text-muted">
+            Según la duración del compromiso que elijas, el precio mensual de tu servidor baja.
+            Al terminar el periodo se renueva por la misma duración para que mantengas el
+            descuento; puedes desactivar la renovación desde tu panel antes del vencimiento.
+          </p>
+          <div
+            role="radiogroup"
+            aria-label="Período de compromiso"
+            className="grid grid-cols-1 gap-3 sm:grid-cols-2"
+          >
+            <ChoiceRadio
+              name="term"
+              value="P1M"
+              checked={config.term === "P1M"}
+              onSelect={() => patch({ term: TERM_PARAMS.P1M })}
+              caption={`${formatCents(plan.price.P1M.monthly)} / mes`}
+              title="Sin compromiso"
+              note="Pago mensual. Cancelas cuando quieras."
+            />
+            <ChoiceRadio
+              name="term"
+              value="P12M"
+              checked={config.term === "P12M"}
+              onSelect={() => patch({ term: TERM_PARAMS.P12M })}
+              caption={`${formatCents(plan.price.P12M.monthly)} / mes`}
+              title="Compromiso 12 meses"
+              note={
+                plan.savingPercent > 0
+                  ? `Ahorra un ${plan.savingPercent} % al mes · ${formatCents(plan.price.P12M.cycle)} en un pago anual`
+                  : `${formatCents(plan.price.P12M.cycle)} en un pago anual`
+              }
+            />
+          </div>
+          <p className="mt-4 text-[12.5px] text-text-muted">
+            Precios del plan sin opciones y sin IVA.
           </p>
         </StepHeading>
       </div>
@@ -180,6 +205,7 @@ export function Configurator({
         pending={pending}
         error={error}
         continueHref={`/app/servers/new?${search}`}
+        outOfStock={!plan.available}
       />
     </div>
   )

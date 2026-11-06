@@ -196,3 +196,33 @@ tables (see "Sessions in the database"). Turn off the Data API in the project, o
 enabled with no policies on every table, so nothing is reachable through the anon key.
 
 **Reversible?** Yes — swap the driver back in `packages/db/src/index.ts`; nothing else depends on it.
+
+---
+
+## 2026-11-06 — DECIDED: the mandatory backup is charged on top (option A)
+
+The operator chose option A of the open entry above: the 1-day backup stays its own line at
+0.99 € (cost 0.35 € × the 1.5 addon margin, rounded to ,99). VPS S is advertised and charged
+at **8.98 €/month** net, or 7.98 €/month on the 12-month commitment. Plans keep the 1.75
+margin (`PRICING_DEFAULT_MARGIN=0.75`), addons 1.5 (`ADDON_DEFAULT_MARGIN=0.5`).
+
+---
+
+## 2026-11-06 — Datacenters are offered only where OVH has stock right now
+
+**Decision.** Every plan's datacenters are filtered by `GET /vps/order/rule/datacenter`
+(cached 5 minutes). The configurator only lists datacenters with Linux stock; a plan with
+none in a sellable European datacenter is shown as "Sin stock ahora mismo" and cannot
+continue. The checkout re-reads stock without cache before charging and refuses with
+`out_of_stock`.
+
+**Why.** Selling a datacenter OVH cannot deliver means charging a customer and then
+refunding when the OVH checkout fails.
+
+**Real even with mocks on.** The stock route is public and read-only, so `ovhPublic()` in
+`providers.ts` always uses the real API (except under the test runner). Mocked stock would
+show everything in stock, which is the bug this fixes.
+
+**Fails open.** If OVH cannot be reached the public pages show every datacenter; the fresh
+read at checkout still protects the charge, and if that also fails the order proceeds as it
+did before and provisioning's own error handling applies.

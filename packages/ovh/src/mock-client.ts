@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { PLAN_BRANDING, type OvhTaskState } from "@ola/core"
 import catalogFixture from "../../core/test/fixtures/ovh-catalog-vps-es.json"
+import type { DatacenterStock } from "./types"
 import type {
   AddFirewallRuleInput,
   AddOptionInput,
@@ -305,6 +306,11 @@ export interface MockOvhClientOptions {
  * Time is injected, never real: `deliveryMs: 0` and `taskMs: 0` make everything finish
  * immediately, and `advanceTime(ms)` walks the clock forward by hand.
  */
+/** Datacenter codes the live rule endpoint returned for the 2027 models on 2026-11-06. */
+const MOCK_STOCK_DATACENTERS = [
+  "GRA", "SBG", "EU-WEST-RBX", "DE", "UK", "WAW", "EU-SOUTH-MIL", "BHS", "SGP", "SYD",
+] as const
+
 export class MockOvhClient implements OvhClient {
   private readonly clock: () => number
   private readonly subsidiary: string
@@ -755,6 +761,34 @@ export class MockOvhClient implements OvhClient {
   }
 
   /* -------------------------------------------------------------- catalog */
+
+  /** Stock the mock reports per plan; every datacenter is in stock for Linux unless set. */
+  private readonly stockOverrides = new Map<string, DatacenterStock[]>()
+
+  /** Test seam: make the mock report specific stock for a plan. */
+  setDatacenterStock(planCode: string, stock: DatacenterStock[]): void {
+    this.stockOverrides.set(planCode, stock)
+  }
+
+  async getDatacenterStock(planCode: string, subsidiary: string): Promise<DatacenterStock[]> {
+    this.guard()
+    if (!(OVH_SUBSIDIARIES as readonly string[]).includes(subsidiary)) {
+      throw this.rejected(
+        "GET",
+        "/vps/order/rule/datacenter",
+        "INVALID_SUBSIDIARY",
+        `${subsidiary} is not an OVH subsidiary`,
+      )
+    }
+    const override = this.stockOverrides.get(planCode)
+    if (override) return override.map((entry) => ({ ...entry }))
+    return MOCK_STOCK_DATACENTERS.map((datacenter) => ({
+      datacenter,
+      linux: true,
+      windows: false,
+      daysBeforeDelivery: 0,
+    }))
+  }
 
   async fetchPublicCatalog(subsidiary: string): Promise<unknown> {
     this.guard()

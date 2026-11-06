@@ -210,7 +210,7 @@ export function liveNotifier(siteUrl: string): NotifierPort {
           amountCents: input.amountCents,
           days: daysUntil(new Date(), input.expiresAt),
           expiresAt: input.expiresAt,
-          shopUrl: `${siteUrl}/cloud/vps`,
+          shopUrl: `${siteUrl}/vps`,
           customerAreaUrl: `${siteUrl}/app`,
         },
       })

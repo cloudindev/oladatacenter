@@ -54,7 +54,7 @@ export default async function ServersPage() {
       <PageTitle
         description="Todo lo que tienes contratado con nosotros, con su estado y su próxima renovación."
         action={
-          <ButtonLink href="/cloud/vps/configurar" withArrow>
+          <ButtonLink href="/vps/configurar" withArrow>
             Crear servidor
           </ButtonLink>
         }
@@ -94,7 +94,7 @@ export default async function ServersPage() {
       ) : services.data.length === 0 ? (
         <EmptyState
           action={
-            <ButtonLink href="/cloud/vps/configurar" withArrow>
+            <ButtonLink href="/vps/configurar" withArrow>
               Crear servidor
             </ButtonLink>
           }

@@ -1,6 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      { source: "/cloud/vps", destination: "/vps", permanent: true },
+      { source: "/cloud/vps/:path*", destination: "/vps/:path*", permanent: true },
+    ];
+  },
   images: {
     localPatterns: [
       // Default: any local image without query string

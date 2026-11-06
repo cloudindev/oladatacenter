@@ -21,7 +21,7 @@ import {
   type SellablePlan,
   type Term,
 } from "@ola/core"
-import { quoteAction } from "@/app/cloud/vps/configurar/actions"
+import { quoteAction } from "@/app/vps/configurar/actions"
 import { AddonList } from "./AddonList"
 import { ChoiceRadio, StepHeading } from "./Choice"
 import { DatacenterPicker } from "./DatacenterPicker"

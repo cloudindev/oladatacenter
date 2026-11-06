@@ -21,7 +21,7 @@ import {
  * mocks. See playwright.config.ts.
  */
 
-// DEPENDS ON: nothing missing — /cloud/vps exists. Still fixme because no Playwright browser is
+// DEPENDS ON: nothing missing — /vps exists. Still fixme because no Playwright browser is
 // installed on the dev machine, so the selectors have never been run against the real markup.
 test.fixme("the public plans page quotes net prices and says so", async ({ page }) => {
   await page.goto(routes.plans)
@@ -37,7 +37,7 @@ test.fixme("the public plans page quotes net prices and says so", async ({ page 
   await expect(page.getByText(/coste|margen/i)).toHaveCount(0)
 })
 
-// DEPENDS ON: /cloud/vps/configurar exists, but the quote-total test id it asserts on does not.
+// DEPENDS ON: /vps/configurar exists, but the quote-total test id it asserts on does not.
 test.fixme("the configurator prices the mandatory backup into the total", async ({ page }) => {
   await choosePlan(page)
 

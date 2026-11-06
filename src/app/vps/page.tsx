@@ -1,5 +1,5 @@
 /**
- * `/cloud/vps` — the public OLA VPS Cloud plans page.
+ * `/vps` — the public OLA VPS Cloud plans page.
  *
  * Server Component: every price comes from `listSellablePlans()`, which prices through
  * `buildQuote`. The only client islands are the term switch and the cards it drives.
@@ -25,18 +25,22 @@ export const metadata: Metadata = {
   title: `${TITLE} — OLA VPS Cloud`,
   description: DESCRIPTION,
   alternates: {
-    canonical: new URL("/cloud/vps", clientEnv.NEXT_PUBLIC_SITE_URL).toString(),
+    canonical: new URL("/vps", clientEnv.NEXT_PUBLIC_SITE_URL).toString(),
   },
   openGraph: {
     title: `${TITLE} — OLA VPS Cloud`,
     description: DESCRIPTION,
-    url: new URL("/cloud/vps", clientEnv.NEXT_PUBLIC_SITE_URL).toString(),
+    url: new URL("/vps", clientEnv.NEXT_PUBLIC_SITE_URL).toString(),
     type: "website",
     locale: "es_ES",
   },
 }
 
-const CONTAINER = "w-full max-w-[1600px] mx-auto px-6 md:px-[44px]"
+// Statically rendered at build time; refreshed every 5 minutes so admin changes to
+// prices or plan order reach the page without a redeploy.
+export const revalidate = 300
+
+const CONTAINER ="w-full max-w-[1600px] mx-auto px-6 md:px-[44px]"
 
 export default async function VpsPlansPage() {
   const plans = await listSellablePlans()
@@ -49,7 +53,7 @@ export default async function VpsPlansPage() {
       {/* ── Hero ───────────────────────────────────────────────────────────── */}
       <section className={`${CONTAINER} pt-[96px] md:pt-[148px] pb-12 md:pb-16`}>
         <SectionLabel>03 / Cloud · Servidores VPS</SectionLabel>
-        <h1 className="max-w-[20ch] text-[clamp(2.35rem,calc(2.35rem+0.055*(100vw-23rem)),5.5rem)] font-normal leading-[1.02] tracking-[-0.03em]">
+        <h1 className="text-[clamp(2.35rem,4.6vw,4.75rem)] font-normal leading-[1.02] tracking-[-0.03em] md:whitespace-nowrap">
           Servidores VPS <span className="text-text-sage">listos en minutos.</span>
         </h1>
         <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-text-muted">

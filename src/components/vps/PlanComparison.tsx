@@ -93,7 +93,7 @@ export function PlanComparison({ plans }: { plans: readonly SellablePlan[] }) {
           {plans.map((plan) => (
             <td key={plan.slug} className="py-5 pr-4">
               <Link
-                href={`/cloud/vps/configurar?plan=${plan.slug}`}
+                href={`/vps/configurar?plan=${plan.slug}`}
                 className="inline-flex h-10 items-center gap-2 rounded-lg border border-bg-dark/20 px-4 font-mono text-[11px] uppercase tracking-[0.06em] transition-colors hover:bg-surface-beige focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
               >
                 Configurar

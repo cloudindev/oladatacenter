@@ -1,5 +1,5 @@
 /**
- * `/cloud/vps/configurar` — the configurator.
+ * `/vps/configurar` — the configurator.
  *
  * The page resolves the shared query string server side, prices it once with
  * `publicQuoteFor` and hands both to the client island. Every later recalculation goes
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   title: `${TITLE} — OLA VPS Cloud`,
   description: DESCRIPTION,
   alternates: {
-    canonical: new URL("/cloud/vps/configurar", clientEnv.NEXT_PUBLIC_SITE_URL).toString(),
+    canonical: new URL("/vps/configurar", clientEnv.NEXT_PUBLIC_SITE_URL).toString(),
   },
   // The configuration lives in the query string: only the clean URL should be indexed.
   robots: { index: true, follow: true },
@@ -53,7 +53,7 @@ export default async function VpsConfiguratorPage({
           añade en el paso de pago.
         </p>
         <Link
-          href="/cloud/vps"
+          href="/vps"
           className="mt-6 inline-block font-mono text-[11px] uppercase tracking-[0.06em] text-text-muted underline underline-offset-4 hover:text-text-base"
         >
           ← Volver a los planes

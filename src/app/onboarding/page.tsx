@@ -383,7 +383,7 @@ function StepDone({ pendingOrder }: { pendingOrder: string | null }) {
             Continuar con tu pedido
           </ButtonLink>
         ) : (
-          <ButtonLink href="/cloud/vps" withArrow>
+          <ButtonLink href="/vps" withArrow>
             Configurar un servidor
           </ButtonLink>
         )}

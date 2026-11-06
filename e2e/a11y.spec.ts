@@ -132,7 +132,7 @@ async function expectFullyKeyboardOperable(page: Page): Promise<void> {
   ).toEqual([])
 }
 
-// DEPENDS ON: /cloud/vps exists, but the skip link this asserts on does not. Also never run:
+// DEPENDS ON: /vps exists, but the skip link this asserts on does not. Also never run:
 // no Playwright browser is installed on the dev machine.
 test.fixme("the public plans page is fully operable with the keyboard", async ({ page }) => {
   await page.goto(routes.plans)
@@ -147,7 +147,7 @@ test.fixme("the public plans page is fully operable with the keyboard", async ({
   expect(firstStop?.label ?? "").toMatch(/contenido|saltar/i)
 })
 
-// DEPENDS ON: nothing missing — /cloud/vps and /cloud/vps/configurar exist. Still fixme because
+// DEPENDS ON: nothing missing — /vps and /vps/configurar exist. Still fixme because
 // no Playwright browser is installed on the dev machine, so it has never been run.
 test.fixme("the plans page can be used end to end from the keyboard alone", async ({ page }) => {
   await page.goto(routes.plans)

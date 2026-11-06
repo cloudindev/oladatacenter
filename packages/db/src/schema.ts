@@ -101,6 +101,12 @@ export const sessions = pgTable(
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
     ip: varchar("ip", { length: 45 }),
     userAgent: text("user_agent"),
+    /**
+     * Set when this session passed a TOTP challenge. Server-authoritative on purpose:
+     * `requireAdmin` gates money-moving operations on it, so revoking the session row
+     * must revoke the second factor with it, and the fact is auditable afterwards.
+     */
+    totpVerifiedAt: timestamp("totp_verified_at", { withTimezone: true }),
     revokedAt: timestamp("revoked_at", { withTimezone: true }),
     ...timestamps,
   },

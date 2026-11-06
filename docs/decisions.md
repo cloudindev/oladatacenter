@@ -82,6 +82,44 @@ server detail page shows those instead of inventing graphs.
 
 ---
 
+## 2026-11-06 — The root password cannot be set through the API (operator decision needed)
+
+**Finding.** The brief (§6.2) says to "fijar contraseña root por API" and show it once.
+`POST /vps/{serviceName}/setPassword` takes **no password parameter** — verified in the schema,
+its description is "Trigger the process to reset/set the root password and return an
+asynchronous task", and OVH mails the password it generates to the account holder (us, not the
+customer). `vps.rebuild.post` has no password field either.
+
+**What is implemented.** On reinstall, when the customer picks no SSH key, the platform
+generates the password itself and applies it through `rebuild`'s `postInstallScript` with
+`doNotSendPassword: true`, then shows it exactly once. It is never written to the database,
+not even to `actions.payload`. Windows images have no shell for that script, so there the
+flow falls back to OVH's own email and the UI says so.
+
+**Residual risk the operator must accept or reject.** The generated password travels inside
+the `postInstallScript` string to OVH's API, so it exists in OVH's request/task records in
+clear. That is no worse than OVH mailing it in clear, which is the only alternative, but it
+is worth a conscious decision. Options:
+
+1. **Keep it** — best customer experience, password shown once in our panel.
+2. **SSH keys only** — strictly safer, and the panel already prefers a key when one exists;
+   it would mean refusing to reinstall without a key.
+3. **Let OVH mail it** — no password in our system at all, but it reaches our mailbox, not
+   the customer's, so support has to forward it.
+
+Recommendation: keep (1), and make the SSH key the default path in the UI, which it is.
+
+---
+
+## 2026-11-06 — Firewall rules need the IP enabled first
+
+`POST /ip/{ip}/firewall` ("Create a firewalled IP", body `ipOnFirewall`) must be called before
+any rule can be attached to an IP. Without it a customer's first rule is rejected by OVH.
+The method was missing from the port and has been added; the network tab enables the IP as
+part of adding the first rule.
+
+---
+
 ## 2026-11-05 — Prices are quoted net, VAT is added at checkout
 
 **Decision.** Public pages and the configurator show prices **sin IVA**, clearly labelled; VAT is

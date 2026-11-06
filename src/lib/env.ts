@@ -42,6 +42,12 @@ const serverSchema = z.object({
 
   PRICING_DEFAULT_MARGIN: z.coerce.number().default(0.75),
   ADDON_DEFAULT_MARGIN: z.coerce.number().default(0.5),
+  /**
+   * Alert threshold for the daily catalog sync: when an OVH cost rise would push a plan's
+   * margin below this, the operator is told. Compared against the TRUE cost (plan plus the
+   * mandatory addons), never the bare plan cost.
+   */
+  CATALOG_MARGIN_FLOOR: z.coerce.number().default(0.35),
   WELCOME_CREDIT_CENTS: z.coerce.number().int().default(1000),
   WELCOME_CREDIT_DAYS: z.coerce.number().int().default(30),
 
@@ -82,8 +88,13 @@ export const clientEnv: ClientEnv = clientSchema.parse({
   NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
 })
 
-/** True when the providers should be mocked (local dev and tests). */
-export function useMocks(): boolean {
+/**
+ * True when the providers should be mocked (local dev and tests).
+ *
+ * Deliberately NOT called `useMocks`: eslint's react-hooks plugin treats any `use*()` call
+ * as a hook, which made every call site outside a component a lint error.
+ */
+export function mocksEnabled(): boolean {
   const current = env()
   return current.USE_MOCK_PROVIDERS || current.NODE_ENV === "test"
 }

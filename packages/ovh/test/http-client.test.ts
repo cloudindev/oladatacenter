@@ -317,6 +317,30 @@ describe("authentication", () => {
   })
 })
 
+describe("datacenter stock", () => {
+  it("reads the public stock rule without auth and keeps only Linux availability", async () => {
+    const { client, calls } = harness(() =>
+      json({
+        datacenters: [
+          { datacenter: "GRA", code: "eu-west-gra", status: "available", daysBeforeDelivery: 0, linuxStatus: "available", windowsStatus: "out-of-stock" },
+          { datacenter: "SBG", code: "eu-west-sbg", status: "out-of-stock", daysBeforeDelivery: 0, linuxStatus: "out-of-stock", windowsStatus: "out-of-stock" },
+        ],
+      }),
+    )
+
+    const stock = await client.getDatacenterStock("vps-2027-model1", "ES")
+
+    expect(stock).toEqual([
+      { datacenter: "GRA", linux: true, windows: false, daysBeforeDelivery: 0 },
+      { datacenter: "SBG", linux: false, windows: false, daysBeforeDelivery: 0 },
+    ])
+    expect(calls[0]?.url).toBe(
+      `${BASE}/vps/order/rule/datacenter?ovhSubsidiary=ES&planCode=vps-2027-model1`,
+    )
+    expect(calls[0]?.headers.get("X-Ovh-Signature")).toBeNull()
+  })
+})
+
 describe("response validation", () => {
   it("throws a schema error on a malformed payload and does not retry it", async () => {
     const { client, calls } = harness(() => json({ ...VPS_PAYLOAD, state: "exploded" }))

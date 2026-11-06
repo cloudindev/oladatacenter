@@ -1,5 +1,6 @@
 import { ulid } from "ulid"
 import { z } from "zod"
+import type { DatacenterStock } from "./types"
 import type {
   AddFirewallRuleInput,
   AddOptionInput,
@@ -19,6 +20,7 @@ import { OvhApiError } from "./errors"
 import { resolveEndpoint, signingTimestamp, signedHeaders, type FetchLike } from "./signer"
 import {
   automatedBackupSchema,
+  datacenterStockSchema,
   cartConfigurationItemSchema,
   cartItemSchema,
   cartSchema,
@@ -429,6 +431,22 @@ export class HttpOvhClient implements OvhClient {
       schema: z.unknown(),
       auth: false,
     })
+  }
+
+  async getDatacenterStock(planCode: string, subsidiary: string): Promise<DatacenterStock[]> {
+    const result = await this.request({
+      method: "GET",
+      path: "/vps/order/rule/datacenter",
+      query: { ovhSubsidiary: subsidiary, planCode },
+      schema: datacenterStockSchema,
+      auth: false,
+    })
+    return result.datacenters.map((entry) => ({
+      datacenter: entry.datacenter,
+      linux: (entry.linuxStatus ?? entry.status) === "available",
+      windows: entry.windowsStatus === "available",
+      daysBeforeDelivery: entry.daysBeforeDelivery ?? 0,
+    }))
   }
 
   /* ------------------------------------------------------------- ordering */

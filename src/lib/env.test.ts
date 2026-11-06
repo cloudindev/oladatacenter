@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest"
-import { envFlag } from "./env"
+import { envFlag, withoutEmptyValues } from "./env"
+
+describe("withoutEmptyValues", () => {
+  it("treats blank entries from a .env template as unset", () => {
+    expect(withoutEmptyValues({ A: "x", B: "", C: "  ", D: undefined })).toEqual({ A: "x" })
+  })
+})
 
 describe("envFlag", () => {
   it("only enables on true or 1", () => {

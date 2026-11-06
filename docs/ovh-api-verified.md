@@ -179,3 +179,18 @@ Options for real CPU/RAM/network graphs, for the operator to decide:
 Signed with `X-Ovh-Application-Key`, `X-Ovh-Timestamp`, `X-Ovh-Consumer`, `X-Ovh-Signature`
 where `signature = "$1$" + sha1(appSecret + "+" + consumerKey + "+" + method + "+" + url + "+" + body + "+" + timestamp)`.
 Clock skew is corrected from `GET /auth/time` (unauthenticated) — see `packages/ovh/src/signer.ts`.
+
+## 5. Live stock per datacenter — verified 2026-11-06
+
+`GET /vps/order/rule/datacenter?ovhSubsidiary=ES&planCode={planCode}` — **unauthenticated**
+(`noAuthentication` in `vps.json`), returns `vps.order.rule.Datacenters`:
+`{ datacenters: [{ datacenter, code, status, daysBeforeDelivery, linuxStatus, windowsStatus }] }`.
+Optional `os` query parameter. Status values observed: `available`, `out-of-stock`.
+
+`GET /vps/order/rule/datacenter/aggregated?ovhSubsidiary=ES&planCodes=a,b` gives the same per
+model (comma-separated list, a JSON array returns nothing) and adds `remoteStorage`; on
+2026-11-06 both routes agreed entry for entry.
+
+Stock moves within minutes. Snapshot taken while building this: VPS-1 had Gravelines only,
+then nothing in Europe a few minutes later; VPS-2/3/4 had stock only in Beauharnois (BHS,
+Canada), which is not sold. Used through `getDatacenterStock` in `packages/ovh`.

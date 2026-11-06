@@ -1,5 +1,6 @@
 import type {
   AutomatedBackup,
+  DatacenterStock,
   Cart,
   CartConfigurationItem,
   CartItem,
@@ -154,6 +155,12 @@ export interface OvhClient {
    * Returned raw on purpose: `parseCatalog` in `@ola/core` owns its schema.
    */
   fetchPublicCatalog(subsidiary: string): Promise<unknown>
+
+  /**
+   * `GET /vps/order/rule/datacenter?ovhSubsidiary=…&planCode=…` — unauthenticated.
+   * Live stock per datacenter for one plan: what OVH will actually deliver right now.
+   */
+  getDatacenterStock(planCode: string, subsidiary: string): Promise<DatacenterStock[]>
 
   /* --------------------------------------------------------------- ordering */
 

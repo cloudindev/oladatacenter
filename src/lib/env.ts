@@ -79,12 +79,26 @@ export type ClientEnv = z.infer<typeof clientSchema>
 let cachedServer: ServerEnv | null = null
 
 /**
+ * `KEY=` in a .env file means "not set". Without this, a copy of `.env.example` fails
+ * validation on every optional URL left blank (e.g. `WHMCS_PROXY_URL=`).
+ */
+export function withoutEmptyValues(
+  source: Record<string, string | undefined>,
+): Record<string, string> {
+  const result: Record<string, string> = {}
+  for (const [key, value] of Object.entries(source)) {
+    if (value !== undefined && value.trim() !== "") result[key] = value
+  }
+  return result
+}
+
+/**
  * Validated server environment. Throws on first use if something required is missing,
  * which fails the request loudly instead of half-working.
  */
 export function env(): ServerEnv {
   if (cachedServer) return cachedServer
-  const parsed = serverSchema.safeParse(process.env)
+  const parsed = serverSchema.safeParse(withoutEmptyValues(process.env))
   if (!parsed.success) {
     const missing = parsed.error.issues.map((issue) => issue.path.join(".")).join(", ")
     throw new Error(`Invalid server environment: ${missing}`)

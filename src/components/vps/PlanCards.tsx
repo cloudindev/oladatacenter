@@ -61,7 +61,11 @@ export function PlanCards({ plans }: { plans: readonly SellablePlan[] }) {
             >
               <header className="mb-5 flex items-start justify-between gap-3">
                 <h3 className="text-[22px] font-normal tracking-[-0.02em]">{plan.name}</h3>
-                {featured ? (
+                {!plan.available ? (
+                  <span className="rounded-full border border-bg-dark/20 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-text-muted">
+                    Sin stock ahora
+                  </span>
+                ) : featured ? (
                   <span className="rounded-full bg-primary px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.06em] text-bg-dark">
                     El más elegido
                   </span>

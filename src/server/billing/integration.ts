@@ -77,6 +77,16 @@ export function liveCatalog(): CatalogPort {
         })
       }
 
+      // Fresh stock read right before money moves: the cached view can be minutes old.
+      const presentation = await import("@ola/core/catalog/presentation")
+      const dcCode = presentation.datacenterCodeForSlug(configuration.dc)
+      const inStock = await service.inStockDatacenters(quote.planCode, { fresh: true })
+      if (inStock !== null && (dcCode === null || !inStock.has(dcCode))) {
+        throw new DomainError("out_of_stock", {
+          detail: `${quote.planCode} has no stock in ${dcCode ?? configuration.dc}`,
+        })
+      }
+
       return {
         configuration,
         quote,

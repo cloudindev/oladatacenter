@@ -19,6 +19,13 @@ const VISIBLE_FAMILIES: readonly string[] = [
 
 const NONE = "ninguno"
 
+/** What each Plesk edition allows, as Plesk licenses them. */
+const PLESK_NOTES: Readonly<Record<string, string>> = {
+  "plesk-web-admin": "Hasta 10 dominios",
+  "plesk-web-pro": "Hasta 30 dominios",
+  "plesk-web-host": "Dominios ilimitados",
+}
+
 /**
  * What the option adds to the price already shown. For a mandatory family the cheapest
  * option is inside the plan price, so the upgrade is quoted as the difference.
@@ -105,6 +112,7 @@ export function AddonList({
                     onSelect={() => replaceInFamily(group, option.included ? null : option.slug)}
                     caption={priceCaption(option.monthlyPrice[term], baseline, option.included)}
                     title={option.label}
+                    {...(PLESK_NOTES[option.slug] ? { note: PLESK_NOTES[option.slug] } : {})}
                   />
                 ))}
               </div>

@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
 const SURFACE = cn(
   "flex h-full flex-col gap-1 rounded-[14px] border border-bg-dark/12 bg-surface-light p-4",
   "transition-colors hover:border-bg-dark/35",
-  "peer-checked:border-bg-dark peer-checked:bg-bg-dark peer-checked:text-text-dark",
+  "peer-checked:border-primary-hover peer-checked:bg-primary peer-checked:text-bg-dark",
   "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2",
   "peer-focus-visible:outline-accent-ink",
   "peer-disabled:cursor-not-allowed peer-disabled:border-dashed peer-disabled:opacity-50",

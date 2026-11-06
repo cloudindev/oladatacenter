@@ -10,6 +10,25 @@
 import { useState } from "react"
 import type { OsGroup, OsOption } from "@ola/core"
 import { cn } from "@/lib/utils"
+import { OS_LOGOS } from "./os-logos"
+
+/** Small brand mark for a distribution; a neutral server glyph when there is none. */
+function OsLogo({ family }: { family: string }) {
+  const logo = OS_LOGOS[family]
+  if (!logo) {
+    return (
+      <svg viewBox="0 0 24 24" className="size-5 shrink-0" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.6">
+        <rect x="3" y="4" width="18" height="12" rx="1.5" />
+        <path d="M8 20h8M12 16v4" />
+      </svg>
+    )
+  }
+  return (
+    <svg viewBox="0 0 24 24" className="size-5 shrink-0" aria-hidden fill={logo.hex}>
+      <path d={logo.path} />
+    </svg>
+  )
+}
 
 /** "Ubuntu 26.04" → "26.04"; falls back to the full name when there is no prefix. */
 function versionLabel(option: OsOption, group: OsGroup): string {
@@ -74,6 +93,7 @@ export function OsPicker({
                 onChange={() => onChange(current.slug)}
                 className="size-4 accent-bg-dark focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
               />
+              <OsLogo family={group.family} />
               <span className="text-[15px] leading-snug">{group.label}</span>
             </label>
 

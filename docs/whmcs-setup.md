@@ -80,7 +80,7 @@ En la plataforma: dejar `WHMCS_PROXY_URL` vacío.
 
 **Implementación (2026-11-07):** `infra/whmcs-proxy/ola-whmcs-proxy.php`, desplegado en
 `srv008.cloudinhosting.com` (IP fija **54.37.17.20**, la que va en la lista blanca de WHMCS).
-Exige la cabecera `X-Proxy-Token` con el mismo valor que `WHMCS_PROXY_TOKEN` de la
+Exige la cabecera `X-Ola-Token` con el mismo valor que `WHMCS_PROXY_TOKEN` de la
 plataforma; la plataforma se niega a usar un proxy sin token. Sale siempre por IPv4.
 
 Poner en la lista blanca de WHMCS **solo la IP del proxy**, y en la plataforma

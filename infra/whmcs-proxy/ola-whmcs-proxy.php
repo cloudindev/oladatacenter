@@ -7,7 +7,7 @@
  * from the platform and forwards it byte for byte to WHMCS. Contract: docs/whmcs-setup.md §2.b.
  *
  * Rules it enforces:
- *  1. Only POST, only with the shared token in `X-Proxy-Token` (constant-time compare).
+ *  1. Only POST, only with the shared token in `X-Ola-Token` (constant-time compare).
  *  2. Only ever forwards to TARGET: any other `X-Target-Url` is refused (no open SSRF).
  *  3. Never logs or stores the body (it carries the WHMCS identifier and secret).
  *  4. Never retries, never follows redirects, 20 s timeout, IPv4 only so WHMCS sees the
@@ -47,14 +47,28 @@ if (strlen($expected) < 32) {
     refuse(500, 'not configured');
 }
 
-// Some front-ends hand custom headers to PHP only through getallheaders().
-$received = (string) ($_SERVER['HTTP_X_PROXY_TOKEN'] ?? '');
-if ($received === '' && function_exists('getallheaders')) {
-    foreach (getallheaders() as $name => $value) {
-        if (strtolower((string) $name) === 'x-proxy-token') {
-            $received = (string) $value;
+// Read a request header whatever way the front-end hands it to PHP.
+function header_value(string $name): string
+{
+    $key = 'HTTP_' . strtoupper(str_replace('-', '_', $name));
+    if (isset($_SERVER[$key]) && $_SERVER[$key] !== '') {
+        return (string) $_SERVER[$key];
+    }
+    if (function_exists('getallheaders')) {
+        foreach (getallheaders() as $header => $value) {
+            if (strcasecmp((string) $header, $name) === 0) {
+                return (string) $value;
+            }
         }
     }
+    return '';
+}
+
+// X-Ola-Token first: some Plesk/Apache setups strip any header containing "Proxy"
+// (httpoxy hardening), which silently dropped the original X-Proxy-Token.
+$received = header_value('X-Ola-Token');
+if ($received === '') {
+    $received = header_value('X-Proxy-Token');
 }
 // The two reasons are told apart (never the token itself) so a misconfigured
 // front-end that drops the header can be diagnosed from outside.
@@ -64,7 +78,9 @@ if ($received === '') {
 if (!hash_equals($expected, trim($received))) {
     refuse(401, 'unauthorized (token mismatch)');
 }
-if (($_SERVER['HTTP_X_TARGET_URL'] ?? '') !== TARGET) {
+// The target is pinned. An absent header means "the only one"; any other value is refused.
+$target = header_value('X-Target-Url');
+if ($target !== '' && $target !== TARGET) {
     refuse(400, 'target not allowed');
 }
 
@@ -99,7 +115,7 @@ error_log(sprintf(
     'ola-whmcs-proxy status=%d ms=%d correlation=%s',
     $response === false ? 502 : $status,
     (int) ((microtime(true) - $started) * 1000),
-    preg_replace('/[^A-Za-z0-9_.:-]/', '', (string) ($_SERVER['HTTP_X_OLA_CORRELATION_ID'] ?? ''))
+    preg_replace('/[^A-Za-z0-9_.:-]/', '', header_value('X-Ola-Correlation-Id'))
 ));
 
 if ($response === false) {

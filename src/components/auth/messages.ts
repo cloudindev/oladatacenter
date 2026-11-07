@@ -27,6 +27,7 @@ export const AUTH_ERRORS: Record<string, string> = {
   "2fa_invalido": "El código de verificación en dos pasos no es correcto",
   sesion_expirada: "Tu sesión ha caducado. Vuelve a entrar",
   nif_invalido: "El NIF, CIF o NIE no tiene un formato válido",
+  nif_obligatorio: "Para empresas de la Unión Europea el NIF o número de IVA es obligatorio",
   nif_tipo: "El identificador fiscal no corresponde al tipo de cliente elegido",
   telefono_invalido: "Introduce un número de teléfono válido, con prefijo del país",
   pais_invalido: "Selecciona un país",

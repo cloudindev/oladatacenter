@@ -5,6 +5,7 @@ import { and, desc, eq, gt, isNull } from "drizzle-orm"
 import { customers, db, sessions, users } from "@ola/db"
 import { env } from "@/lib/env"
 import { randomToken, readSignedCookieValue, sha256, signCookieValue } from "@/lib/crypto"
+import { adoptPendingOrder } from "@/server/pending-order"
 
 /**
  * Sessions are rows in `sessions`, not JWTs, so a session can be revoked the moment
@@ -190,6 +191,8 @@ export async function createSession(
   const cookieStore = await cookies()
   cookieStore.set(SESSION_COOKIE, token, { ...baseCookieOptions(), expires: expiresAt })
   await ensureDeviceCookie()
+  // A pending order in this browser follows its owner, never the next account.
+  await adoptPendingOrder(userId, sha256(token))
   return { sessionId }
 }
 

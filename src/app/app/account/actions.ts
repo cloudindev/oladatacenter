@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation"
 import { and, eq } from "drizzle-orm"
 import { z } from "zod"
+import { taxIdRequiredFor } from "@ola/core"
 import { taxIdMatchesCustomerKind } from "@ola/core/identity/index"
 import { customers, db, sshKeys, users } from "@ola/db"
 import { diffOf, recordAudit } from "@/server/audit"
@@ -60,7 +61,8 @@ const raw = fieldRaw
 const billingSchema = z.object({
   kind: z.enum(["company", "individual"]),
   legalName: z.string().trim().min(2).max(200),
-  taxId: z.string().trim().min(5).max(32),
+  // Mandatory inside the EU only; checked after parsing, once the country is known.
+  taxId: z.string().trim().max(32).optional(),
   addressLine1: z.string().trim().min(3).max(200),
   addressLine2: z.string().trim().max(200).optional(),
   postalCode: z.string().trim().min(3).max(20),
@@ -78,7 +80,7 @@ export async function updateBillingAction(form: FormData): Promise<never> {
   const parsed = billingSchema.safeParse({
     kind: text(form, "kind"),
     legalName: text(form, "legalName"),
-    taxId: text(form, "taxId"),
+    taxId: text(form, "taxId") || undefined,
     addressLine1: text(form, "addressLine1"),
     addressLine2: text(form, "addressLine2") || undefined,
     postalCode: text(form, "postalCode"),
@@ -89,7 +91,11 @@ export async function updateBillingAction(form: FormData): Promise<never> {
   const data = parsed.data
 
   if (!isKnownCountry(data.country)) redirect("/app/account?error=pais_invalido")
-  if (data.country === "ES" && !taxIdMatchesCustomerKind(data.taxId, data.kind)) {
+  const taxId = data.taxId ? data.taxId.toUpperCase() : null
+  if (taxIdRequiredFor(data.country) && (taxId === null || taxId.length < 5)) {
+    redirect("/app/account?error=nif_obligatorio")
+  }
+  if (data.country === "ES" && taxId !== null && !taxIdMatchesCustomerKind(taxId, data.kind)) {
     redirect("/app/account?error=nif_tipo")
   }
 
@@ -103,14 +109,14 @@ export async function updateBillingAction(form: FormData): Promise<never> {
     city: customer.city,
     country: customer.country,
   }
-  const taxIdChanged = (customer.taxId ?? "") !== data.taxId.toUpperCase()
+  const taxIdChanged = (customer.taxId ?? "") !== (taxId ?? "")
 
   await db()
     .update(customers)
     .set({
       kind: data.kind,
       legalName: data.legalName,
-      taxId: data.taxId.toUpperCase(),
+      taxId,
       addressLine1: data.addressLine1,
       addressLine2: data.addressLine2 ?? null,
       postalCode: data.postalCode,
@@ -126,19 +132,19 @@ export async function updateBillingAction(form: FormData): Promise<never> {
     entity: "customer",
     entityId: customer.id,
     action: "billing_details_updated",
-    diff: diffOf(before, { ...data, taxId: data.taxId.toUpperCase() }),
+    diff: diffOf(before, { ...data, taxId }),
     ip: meta.ip,
     userAgent: meta.userAgent,
   })
 
   let notice = "datos_guardados"
-  if (taxIdChanged || !customer.taxIdValidated) {
+  if (taxId !== null && (taxIdChanged || !customer.taxIdValidated)) {
     const outcome = await validateTaxIdWithVies({
       customerId: customer.id,
       actorId: session.user.id,
       kind: data.kind,
       country: data.country,
-      taxId: data.taxId,
+      taxId,
     })
     notice = taxIdNotice(outcome)
   }

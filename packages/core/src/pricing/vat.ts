@@ -8,6 +8,19 @@ const EU_COUNTRIES = new Set([
   "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK",
 ])
 
+export function isEuCountry(country: string): boolean {
+  return EU_COUNTRIES.has(country.toUpperCase())
+}
+
+/**
+ * A tax id is mandatory inside the EU (Spanish NIF/CIF/NIE, EU VAT number). Companies
+ * elsewhere often have none that matters to us (no VAT is charged outside the EU), so
+ * for them it is optional.
+ */
+export function taxIdRequiredFor(country: string | null | undefined): boolean {
+  return country ? isEuCountry(country) : true
+}
+
 export type CustomerKind = "company" | "individual"
 
 export interface VatContext {

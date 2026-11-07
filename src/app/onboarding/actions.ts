@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation"
 import { eq } from "drizzle-orm"
 import { z } from "zod"
+import { taxIdRequiredFor } from "@ola/core"
 import { parsePhone, taxIdMatchesCustomerKind } from "@ola/core/identity/index"
 import { customers, db } from "@ola/db"
 import { diffOf, recordAudit } from "@/server/audit"
@@ -29,7 +30,8 @@ import {
 const billingSchema = z.object({
   kind: z.enum(["company", "individual"]),
   legalName: z.string().trim().min(2).max(200),
-  taxId: z.string().trim().min(5).max(32),
+  // Mandatory inside the EU only; checked after parsing, once the country is known.
+  taxId: z.string().trim().max(32).optional(),
   addressLine1: z.string().trim().min(3).max(200),
   addressLine2: z.string().trim().max(200).optional(),
   postalCode: z.string().trim().min(3).max(20),
@@ -56,7 +58,7 @@ export async function saveBillingAction(form: FormData): Promise<never> {
   const parsed = billingSchema.safeParse({
     kind: text(form, "kind"),
     legalName: text(form, "legalName"),
-    taxId: text(form, "taxId"),
+    taxId: text(form, "taxId") || undefined,
     addressLine1: text(form, "addressLine1"),
     addressLine2: text(form, "addressLine2") || undefined,
     postalCode: text(form, "postalCode"),
@@ -70,7 +72,11 @@ export async function saveBillingAction(form: FormData): Promise<never> {
 
   // Spanish identifiers are checked by checksum; other countries only by VAT shape,
   // which VIES then confirms or denies.
-  if (data.country === "ES" && !taxIdMatchesCustomerKind(data.taxId, data.kind)) {
+  const taxId = data.taxId ? data.taxId.toUpperCase() : null
+  if (taxIdRequiredFor(data.country) && (taxId === null || taxId.length < 5)) {
+    redirect("/onboarding?paso=2&error=nif_obligatorio")
+  }
+  if (data.country === "ES" && taxId !== null && !taxIdMatchesCustomerKind(taxId, data.kind)) {
     redirect("/onboarding?paso=2&error=nif_tipo")
   }
 
@@ -89,7 +95,7 @@ export async function saveBillingAction(form: FormData): Promise<never> {
     .set({
       kind: data.kind,
       legalName: data.legalName,
-      taxId: data.taxId.toUpperCase(),
+      taxId,
       addressLine1: data.addressLine1,
       addressLine2: data.addressLine2 ?? null,
       postalCode: data.postalCode,
@@ -107,18 +113,22 @@ export async function saveBillingAction(form: FormData): Promise<never> {
     entity: "customer",
     entityId: customer.id,
     action: "billing_details_updated",
-    diff: diffOf(before, { ...data, taxId: data.taxId.toUpperCase() }),
+    diff: diffOf(before, { ...data, taxId }),
     ip: meta.ip,
     userAgent: meta.userAgent,
   })
 
-  const outcome = await validateTaxIdWithVies({
-    customerId: customer.id,
-    actorId: session.user.id,
-    kind: data.kind,
-    country: data.country,
-    taxId: data.taxId,
-  })
+  // No tax id (allowed outside the EU): nothing for VIES to check.
+  const outcome =
+    taxId === null
+      ? "not_applicable"
+      : await validateTaxIdWithVies({
+          customerId: customer.id,
+          actorId: session.user.id,
+          kind: data.kind,
+          country: data.country,
+          taxId,
+        })
 
   await ensureDeviceCookie()
   await maybeCompleteVerification(session.user.id)

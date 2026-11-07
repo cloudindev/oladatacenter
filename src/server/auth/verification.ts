@@ -4,6 +4,7 @@ import {
   type FraudSignals,
   isAccountVerified,
   isPhoneStepDone,
+  taxIdRequiredFor,
   type VerificationState,
 } from "@ola/core"
 import { env } from "@/lib/env"
@@ -61,9 +62,10 @@ export interface VerificationSnapshot {
 /** Billing details are complete when an invoice could legally be issued. */
 export function isBillingComplete(customer: CustomerRow | null): boolean {
   if (!customer) return false
+  const taxIdOk = Boolean(customer.taxId) || !taxIdRequiredFor(customer.country)
   return Boolean(
     customer.legalName &&
-      customer.taxId &&
+      taxIdOk &&
       customer.addressLine1 &&
       customer.city &&
       customer.postalCode &&

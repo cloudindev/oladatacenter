@@ -72,6 +72,12 @@ export function whmcs(): WhmcsClient {
   }
 
   const config = env()
+  // Stripe test keys move no money: their "payments" must never reach the real books.
+  if (config.WHMCS_WRITE_ENABLED && config.STRIPE_SECRET_KEY?.startsWith("sk_test_")) {
+    throw new Error(
+      "WHMCS_WRITE_ENABLED is true with a Stripe test key; refusing to book test payments in the real WHMCS",
+    )
+  }
   // An open proxy would let anyone reach WHMCS from an allowlisted IP.
   if (config.WHMCS_PROXY_URL && !config.WHMCS_PROXY_TOKEN) {
     throw new Error("WHMCS_PROXY_URL is set without WHMCS_PROXY_TOKEN; refusing an unauthenticated proxy")

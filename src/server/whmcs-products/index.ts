@@ -4,11 +4,15 @@ import { eq, isNotNull, and } from "drizzle-orm"
 import { customers, db, services } from "@ola/db"
 import type { StatusTone } from "@/components/app/ui"
 import { whmcsReader } from "@/server/providers"
+import { nameserversOf } from "./nameservers"
 import {
   byRelevance,
   cycleLabel,
+  perYearsLabel,
   stillVisible,
+  withGracePeriod,
   domainStatusUi,
+  invoiceStatusUi,
   kindOfProduct,
   parseWhmcsDate,
   productStatusUi,
@@ -48,9 +52,11 @@ export interface WhmcsDomainView {
   expiresAt: Date | null
   nextDueAt: Date | null
   amountCents: number
-  /** "1 año", "2 años"… */
+  /** "año", "2 años"… for "15,43 €/año". */
   periodLabel: string
   autoRenew: boolean
+  /** Nameservers as published in public DNS; null when the lookup failed. */
+  nameservers: readonly string[] | null
 }
 
 export type WhmcsRead<T> =
@@ -101,9 +107,9 @@ export const whmcsProductsFor = cache(
       for (const row of rows) {
         const kind = kindOfProduct(row.pid)
         if (kind === null || olaIds.has(row.serviceId)) continue
-        const ui = productStatusUi(row.status)
         const registeredAt = parseWhmcsDate(row.registrationDate)
         const nextDueAt = parseWhmcsDate(row.nextDueDate)
+        const ui = withGracePeriod(productStatusUi(row.status), row.status, nextDueAt, now)
         if (!stillVisible({ live: ui.live, end: nextDueAt ?? registeredAt }, now)) continue
         items.push({
           id: row.serviceId,
@@ -145,8 +151,10 @@ export const whmcsDomainsFor = cache(
       const rows = await whmcsReader().listDomains(clientId)
       const now = new Date()
       const items = rows.map((row): WhmcsDomainView => {
-        const ui = domainStatusUi(row.status)
-        const years = row.registrationPeriod ?? 1
+        // Most domains in WHMCS have no expiry date (no registrar module): the next due
+        // date is when they have to be renewed, so it stands in.
+        const expiresAt = parseWhmcsDate(row.expiryDate) ?? parseWhmcsDate(row.nextDueDate)
+        const ui = withGracePeriod(domainStatusUi(row.status), row.status, expiresAt, now)
         return {
           id: row.domainId,
           domain: row.domain,
@@ -154,15 +162,22 @@ export const whmcsDomainsFor = cache(
           tone: ui.tone,
           live: ui.live,
           registeredAt: parseWhmcsDate(row.registrationDate),
-          expiresAt: parseWhmcsDate(row.expiryDate),
+          expiresAt,
           nextDueAt: parseWhmcsDate(row.nextDueDate),
           amountCents: row.recurringAmountCents,
-          periodLabel: years === 1 ? "1 año" : `${years} años`,
+          periodLabel: perYearsLabel(row.registrationPeriod),
           autoRenew: !row.doNotRenew,
+          nameservers: null,
         }
       })
       const visible = items.filter((item) =>
         stillVisible({ live: item.live, end: item.expiresAt ?? item.nextDueAt ?? item.registeredAt }, now),
+      )
+      // Nameservers only for the live ones: the inactive ones may not resolve at all.
+      await Promise.all(
+        visible.map(async (item) => {
+          if (item.live) item.nameservers = await nameserversOf(item.domain)
+        }),
       )
       return { state: "ok", items: visible.sort(byRelevance) }
     } catch (error) {
@@ -170,3 +185,71 @@ export const whmcsDomainsFor = cache(
     }
   },
 )
+
+// ─── invoices ────────────────────────────────────────────────────────────────
+
+export interface WhmcsInvoiceView {
+  /** WHMCS invoice id: what the PDF link needs. */
+  id: number
+  reference: string
+  issuedAt: Date | null
+  dueAt: Date | null
+  paidAt: Date | null
+  statusLabel: string
+  tone: StatusTone
+  owed: boolean
+  totalCents: number
+  /** Still to pay; equals the total unless part of it was paid. */
+  balanceCents: number
+}
+
+const INVOICE_PAGES = 5
+const INVOICE_PAGE_SIZE = 100
+
+/** Every invoice of the customer in WHMCS, newest first (drafts left out). */
+export const whmcsInvoicesFor = cache(
+  async (customerId: string): Promise<WhmcsRead<WhmcsInvoiceView>> => {
+    const clientId = await linkedClient(customerId)
+    if (clientId === null) return { state: "not_linked" }
+    try {
+      const now = new Date()
+      const rows = []
+      for (let page = 0; page < INVOICE_PAGES; page += 1) {
+        const batch = await whmcsReader().listInvoices({
+          clientId,
+          limit: INVOICE_PAGE_SIZE,
+          offset: page * INVOICE_PAGE_SIZE,
+        })
+        rows.push(...batch)
+        if (batch.length < INVOICE_PAGE_SIZE) break
+      }
+      const items = rows
+        .filter((row) => row.status !== "Draft")
+        .map((row): WhmcsInvoiceView => {
+          const dueAt = parseWhmcsDate(row.dueDate)
+          const ui = invoiceStatusUi(row.status, dueAt, now)
+          return {
+            id: row.invoiceId,
+            reference: row.invoiceNumber ?? String(row.invoiceId),
+            issuedAt: parseWhmcsDate(row.date),
+            dueAt,
+            paidAt: parseWhmcsDate(row.datePaid),
+            statusLabel: ui.label,
+            tone: ui.tone,
+            owed: ui.owed,
+            totalCents: row.totalCents,
+            balanceCents: row.balanceCents > 0 ? row.balanceCents : ui.owed ? row.totalCents : 0,
+          }
+        })
+        .sort((a, b) => (b.issuedAt?.getTime() ?? 0) - (a.issuedAt?.getTime() ?? 0))
+      return { state: "ok", items }
+    } catch (error) {
+      return failure(error)
+    }
+  },
+)
+
+/** Whether a WHMCS invoice belongs to this customer, for the PDF link. */
+export async function customerWhmcsClientId(customerId: string): Promise<number | null> {
+  return linkedClient(customerId)
+}

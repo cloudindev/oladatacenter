@@ -84,6 +84,11 @@ export interface HttpWhmcsClientOptions {
   proxyToken?: string
   /** Mirrors WHMCS_WRITE_ENABLED. When false every mutating method throws without calling. */
   writeEnabled: boolean
+  /**
+   * Allows single sign-on tokens even with writes off: a token lets the customer into their
+   * own WHMCS client area and changes nothing in the books. Defaults to `writeEnabled`.
+   */
+  ssoEnabled?: boolean
   fetchImpl?: typeof fetch
   logger?: WhmcsLogger
   /** Correlation id for the whole job; a per-request id is generated when absent. */
@@ -110,6 +115,7 @@ export class HttpWhmcsClient implements WhmcsClient {
   private readonly proxyUrl?: string
   private readonly proxyToken?: string
   private readonly writeEnabled: boolean
+  private readonly ssoEnabled: boolean
   private readonly fetchImpl: typeof fetch
   private readonly logger?: WhmcsLogger
   private readonly correlationId?: string
@@ -125,6 +131,7 @@ export class HttpWhmcsClient implements WhmcsClient {
     this.proxyUrl = options.proxyUrl
     this.proxyToken = options.proxyToken
     this.writeEnabled = options.writeEnabled
+    this.ssoEnabled = options.ssoEnabled ?? options.writeEnabled
     this.fetchImpl = options.fetchImpl ?? globalThis.fetch.bind(globalThis)
     this.logger = options.logger
     this.correlationId = options.correlationId
@@ -369,8 +376,8 @@ export class HttpWhmcsClient implements WhmcsClient {
     destination: WhmcsSsoDestination,
     options: CreateSsoTokenOptions = {},
   ): Promise<{ redirectUrl: string }> {
-    // Gated like any other write: CreateSsoToken issues a credential inside WHMCS.
-    this.assertWriteEnabled("CreateSsoToken")
+    // CreateSsoToken issues a short-lived credential inside WHMCS: gated on its own switch.
+    if (!this.ssoEnabled) this.assertWriteEnabled("CreateSsoToken")
     const response = await this.request(
       "CreateSsoToken",
       {

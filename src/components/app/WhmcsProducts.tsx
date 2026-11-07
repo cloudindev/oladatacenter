@@ -28,7 +28,7 @@ export function WhmcsReadNotice<T>({
 
 function money(cents: number, cycle: string): string {
   if (cents === 0) return cycle === "gratuito" ? "Gratuito" : "—"
-  return `${formatCents(cents)} ${cycle}`.trim()
+  return cycle.startsWith("/") ? `${formatCents(cents)}${cycle}` : `${formatCents(cents)} ${cycle}`.trim()
 }
 
 function Rows({ items, showIps }: { items: readonly WhmcsProductView[]; showIps: boolean }) {

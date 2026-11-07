@@ -27,8 +27,24 @@ function DomainRows({ items }: { items: readonly WhmcsDomainView[] }) {
         </thead>
         <tbody>
           {items.map((item) => (
-            <tr key={item.id} className="border-b border-border-base last:border-b-0">
-              <td className="px-5 py-4 font-mono text-text-base">{item.domain}</td>
+            <tr key={item.id} className="border-b border-border-base last:border-b-0 align-top">
+              <td className="px-5 py-4">
+                <p className="font-mono text-text-base">{item.domain}</p>
+                {item.live ? (
+                  <div className="mt-1.5 flex gap-2 text-xs text-text-muted">
+                    <span className="label-mono pt-px">DNS</span>
+                    {item.nameservers && item.nameservers.length > 0 ? (
+                      <ul className="font-mono leading-relaxed">
+                        {item.nameservers.map((server) => (
+                          <li key={server}>{server}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <span>sin servidores DNS publicados</span>
+                    )}
+                  </div>
+                ) : null}
+              </td>
               <td className="px-5 py-4 text-text-muted whitespace-nowrap">{formatDate(item.registeredAt)}</td>
               <td className="px-5 py-4 text-text-muted whitespace-nowrap">{formatDate(item.expiresAt)}</td>
               <td className="px-5 py-4 whitespace-nowrap">
@@ -43,7 +59,7 @@ function DomainRows({ items }: { items: readonly WhmcsDomainView[] }) {
                 )}
               </td>
               <td className="px-5 py-4 text-text-base whitespace-nowrap">
-                {item.amountCents > 0 ? `${formatCents(item.amountCents)} / ${item.periodLabel}` : "—"}
+                {item.amountCents > 0 ? `${formatCents(item.amountCents)}/${item.periodLabel}` : "—"}
               </td>
               <td className="px-5 py-4">
                 <StatusBadge tone={item.tone}>{item.statusLabel}</StatusBadge>

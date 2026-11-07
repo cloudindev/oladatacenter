@@ -3,10 +3,14 @@ import {
   byRelevance,
   cycleLabel,
   domainStatusUi,
+  invoiceStatusUi,
   kindOfProduct,
+  pendingBalance,
   parseWhmcsDate,
   productStatusUi,
+  perYearsLabel,
   stillVisible,
+  withGracePeriod,
 } from "./model"
 
 describe("WHMCS product classification", () => {
@@ -31,7 +35,8 @@ describe("WHMCS labels", () => {
   })
 
   it("translates billing cycles and reads WHMCS dates", () => {
-    expect(cycleLabel("Annually")).toBe("al año")
+    expect(cycleLabel("Annually")).toBe("/año")
+    expect(cycleLabel("Monthly")).toBe("/mes")
     expect(cycleLabel("One Time")).toBe("pago único")
     expect(parseWhmcsDate("2026-02-06")?.toISOString()).toBe("2026-02-06T00:00:00.000Z")
     expect(parseWhmcsDate(null)).toBeNull()
@@ -64,5 +69,52 @@ describe("inactive items fade out after a month", () => {
 
   it("drops an inactive item with no date at all", () => {
     expect(stillVisible(ended(null), now)).toBe(false)
+  })
+})
+
+describe("grace period", () => {
+  const now = new Date("2026-11-08T12:00:00Z")
+  const active = productStatusUi("Active")
+
+  it("marks an active service whose due date has passed", () => {
+    expect(withGracePeriod(active, "Active", new Date("2026-06-30"), now)).toMatchObject({
+      label: "Periodo de gracia",
+      tone: "warn",
+      live: true,
+    })
+  })
+
+  it("leaves services due today or later, and other statuses, alone", () => {
+    expect(withGracePeriod(active, "Active", new Date("2026-11-08"), now).label).toBe("Activo")
+    expect(withGracePeriod(active, "Active", null, now).label).toBe("Activo")
+    const suspended = productStatusUi("Suspended")
+    expect(withGracePeriod(suspended, "Suspended", new Date("2026-01-01"), now).label).toBe("Suspendido")
+  })
+
+  it("prints the renewal period", () => {
+    expect(perYearsLabel(1)).toBe("año")
+    expect(perYearsLabel(null)).toBe("año")
+    expect(perYearsLabel(2)).toBe("2 años")
+  })
+})
+
+describe("invoices", () => {
+  const now = new Date("2026-11-08T12:00:00Z")
+
+  it("labels WHMCS invoices and tells overdue from pending", () => {
+    expect(invoiceStatusUi("Paid", null, now)).toMatchObject({ label: "Pagada", owed: false })
+    expect(invoiceStatusUi("Unpaid", new Date("2026-11-20"), now)).toMatchObject({ label: "Pendiente", owed: true })
+    expect(invoiceStatusUi("Unpaid", new Date("2026-10-01"), now)).toMatchObject({ label: "Vencida", tone: "danger" })
+    expect(invoiceStatusUi("Cancelled", null, now).owed).toBe(false)
+  })
+
+  it("sums what is owed up to today, not invoices issued ahead", () => {
+    const invoices = [
+      { owed: true, issuedAt: new Date("2026-01-18"), balanceCents: 12_190 },
+      { owed: true, issuedAt: new Date("2026-02-06"), balanceCents: 12_190 },
+      { owed: false, issuedAt: new Date("2026-03-01"), balanceCents: 0 },
+      { owed: true, issuedAt: new Date("2026-12-01"), balanceCents: 5_000 },
+    ]
+    expect(pendingBalance(invoices, now)).toEqual({ cents: 24_380, count: 2 })
   })
 })

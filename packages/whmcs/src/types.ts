@@ -304,6 +304,8 @@ export const whmcsServiceRowSchema = z.object({
   groupname: optionalText.optional().default(null),
   domain: optionalText.optional().default(null),
   dedicatedip: optionalText.optional().default(null),
+  /** Extra IPs, one per line. */
+  assignedips: optionalText.optional().default(null),
   status: z.string(),
   regdate: whmcsDate.optional().default(null),
   nextduedate: whmcsDate.optional().default(null),
@@ -319,6 +321,31 @@ export const getClientsProductsResponseSchema = z.object({
   result: whmcsResultSchema,
   totalresults: whmcsOptionalInt.optional().default(null),
   products: whmcsList("product", whmcsServiceRowSchema).optional().default([]),
+})
+
+// ─── domains ─────────────────────────────────────────────────────────────────
+
+/**
+ * One row of `GetClientsDomains`. Only the fields the customer area shows: the response
+ * also carries registrar and EPP data that must never leave the server.
+ */
+export const whmcsDomainRowSchema = z.object({
+  id: whmcsInt,
+  domainname: z.string(),
+  status: z.string(),
+  regdate: whmcsDate.optional().default(null),
+  expirydate: whmcsDate.optional().default(null),
+  nextduedate: whmcsDate.optional().default(null),
+  recurringamount: whmcsCents.optional().default(0),
+  registrationperiod: whmcsOptionalInt.optional().default(null),
+  donotrenew: whmcsBoolean.optional().default(false),
+})
+export type WhmcsDomainRecord = z.infer<typeof whmcsDomainRowSchema>
+
+export const getClientsDomainsResponseSchema = z.object({
+  result: whmcsResultSchema,
+  totalresults: whmcsOptionalInt.optional().default(null),
+  domains: whmcsList("domain", whmcsDomainRowSchema).optional().default([]),
 })
 
 export const updateClientProductResponseSchema = z.object({

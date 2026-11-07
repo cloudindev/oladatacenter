@@ -104,6 +104,41 @@ export function whmcs(): WhmcsClient {
   return whmcsClient
 }
 
+/** The WHMCS reads the customer area needs. Never writes. */
+export type WhmcsReader = Pick<WhmcsClient, "listServices" | "listDomains">
+
+let whmcsReaderClient: WhmcsReader | null = null
+
+/**
+ * WHMCS for reading a customer's existing products and domains. Real whenever the API
+ * credentials exist, with writes forced off, so a customer sees what they really have even
+ * while WHMCS writes stay simulated. The mock only under the test runner or without
+ * credentials.
+ */
+export function whmcsReader(): WhmcsReader {
+  if (whmcsReaderClient) return whmcsReaderClient
+  const config = env()
+  if (
+    config.NODE_ENV === "test" ||
+    !config.WHMCS_API_URL ||
+    !config.WHMCS_API_IDENTIFIER ||
+    !config.WHMCS_API_SECRET
+  ) {
+    whmcsReaderClient = new MockWhmcsClient()
+    return whmcsReaderClient
+  }
+  whmcsReaderClient = new HttpWhmcsClient({
+    apiUrl: config.WHMCS_API_URL,
+    identifier: config.WHMCS_API_IDENTIFIER,
+    secret: config.WHMCS_API_SECRET,
+    proxyUrl: config.WHMCS_PROXY_URL,
+    proxyToken: config.WHMCS_PROXY_TOKEN,
+    writeEnabled: false,
+    maxRetries: 1,
+  })
+  return whmcsReaderClient
+}
+
 let emailClient: EmailSender | null = null
 
 /**
@@ -149,4 +184,5 @@ export function resetProviders(): void {
   ovhClient = null
   ovhPublicClient = null
   whmcsClient = null
+  whmcsReaderClient = null
 }

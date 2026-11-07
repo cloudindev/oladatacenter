@@ -10,6 +10,7 @@ import {
   KeyRound,
   LifeBuoy,
   Mail,
+  Network,
   Receipt,
   Server,
   ShoppingCart,
@@ -33,6 +34,7 @@ const ICONS: Record<NavItem["icon"], LucideIcon> = {
   globe: Globe,
   mail: Mail,
   "hard-drive": HardDrive,
+  network: Network,
 }
 
 const FOCUS =

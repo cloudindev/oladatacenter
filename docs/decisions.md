@@ -382,3 +382,26 @@ Comprobado de punta a punta con dos cuentas en el mismo navegador.
 `taxIdRequiredFor(country)`: obligatorio en la UE (incluida España), opcional fuera, donde no
 repercutimos IVA y muchas empresas no tienen un identificador que nos sirva (p. ej. una LLC
 de EE. UU.). Sin NIF no se consulta VIES.
+
+## 2026-11-07 — El panel muestra los productos y dominios que el cliente ya tiene en WHMCS
+
+**Decisión.** El área de cliente lee de WHMCS, en solo lectura y a través del reenviador, los
+productos del cliente enlazado y los clasifica por id de producto (catálogo del operador):
+
+| Tipo | Ids de WHMCS | Dónde se ve |
+|---|---|---|
+| Alojamiento web | 1, 2, 3, 284, 4, 125, 8, 9, 10 | Web Cloud → Alojamiento web |
+| VPS | 85, 14, 15, 5, 41, 42, 63 | Bare Metal → VPS («Otros VPS de tu cuenta») |
+| Licencia Plesk | 88 | Bare Metal → Licencias |
+| IP | 64 | Bare Metal → IP |
+
+Los dominios salen de `GetClientsDomains` (Web Cloud → Dominios). El resto de productos
+(diseño web, SEO, snapshots…) no se muestran. Todos cuentan en el panel de inicio.
+
+**Por qué solo lectura.** Los gestiona el equipo de Cloudin fuera de OLA; aquí no hay
+acciones. `whmcsReader()` es real siempre que haya credenciales, con escrituras desactivadas,
+aunque `MOCK_WHMCS` esté activo. WHMCS devuelve en cada producto su contraseña y usuario: el
+esquema de zod los descarta y nunca salen del servidor (hay un test).
+
+**Requiere** `GetClientsDomains` en el rol de API (pestaña Client). Sin él, Dominios lo dice y
+el resto funciona.

@@ -13,6 +13,7 @@ import {
   addOrderResponseSchema,
   createInvoiceResponseSchema,
   createSsoTokenResponseSchema,
+  getClientsDomainsResponseSchema,
   getClientsProductsResponseSchema,
   getClientsResponseSchema,
   getInvoiceResponseSchema,
@@ -22,6 +23,7 @@ import {
   whmcsEnvelopeSchema,
   whmcsInvoiceStatusToDomain,
   type WhmcsClientRecord,
+  type WhmcsDomainRecord,
   type WhmcsInvoiceRow,
   type WhmcsServiceRecord,
 } from "./types"
@@ -36,6 +38,7 @@ import type {
   UpdateServiceInput,
   WhmcsClient,
   WhmcsClientAccount,
+  WhmcsDomain,
   WhmcsInvoiceDetail,
   WhmcsInvoiceSummary,
   WhmcsLogger,
@@ -64,6 +67,9 @@ import type {
 const DEFAULT_TIMEOUT_MS = 20_000
 const DEFAULT_MAX_RETRIES = 3
 const DEFAULT_BACKOFF_MS = 250
+/** Listing pages: 100 rows each, at most 10 pages (1000 rows) per client. */
+const PAGE_SIZE = 100
+const MAX_PAGES = 10
 /** Form field carrying the proxy token; stripped by the proxy before forwarding. */
 export const PROXY_TOKEN_FIELD = "ola_proxy_token"
 
@@ -327,13 +333,33 @@ export class HttpWhmcsClient implements WhmcsClient {
   }
 
   async listServices(clientId: number): Promise<WhmcsService[]> {
-    const response = await this.request(
-      "GetClientsProducts",
-      { clientid: clientId, limitnum: 100, stats: false },
-      getClientsProductsResponseSchema,
-      { retry: true },
-    )
-    return response.products.map(toService)
+    const rows: WhmcsServiceRecord[] = []
+    for (let page = 0; page < MAX_PAGES; page += 1) {
+      const response = await this.request(
+        "GetClientsProducts",
+        { clientid: clientId, limitstart: page * PAGE_SIZE, limitnum: PAGE_SIZE, stats: false },
+        getClientsProductsResponseSchema,
+        { retry: true },
+      )
+      rows.push(...response.products)
+      if (response.products.length < PAGE_SIZE || rows.length >= (response.totalresults ?? 0)) break
+    }
+    return rows.map(toService)
+  }
+
+  async listDomains(clientId: number): Promise<WhmcsDomain[]> {
+    const rows: WhmcsDomainRecord[] = []
+    for (let page = 0; page < MAX_PAGES; page += 1) {
+      const response = await this.request(
+        "GetClientsDomains",
+        { clientid: clientId, limitstart: page * PAGE_SIZE, limitnum: PAGE_SIZE },
+        getClientsDomainsResponseSchema,
+        { retry: true },
+      )
+      rows.push(...response.domains)
+      if (response.domains.length < PAGE_SIZE || rows.length >= (response.totalresults ?? 0)) break
+    }
+    return rows.map(toDomain)
   }
 
   // ── single sign-on ────────────────────────────────────────────────────────
@@ -588,6 +614,10 @@ function toService(row: WhmcsServiceRecord): WhmcsService {
     orderId: row.orderid,
     pid: row.pid,
     productName: row.name,
+    groupName: row.groupname,
+    ips: [row.dedicatedip, ...(row.assignedips ?? "").split(/[\s,]+/)].filter(
+      (ip): ip is string => typeof ip === "string" && ip.length > 0,
+    ),
     domain: row.domain,
     status: row.status,
     registrationDate: row.regdate,
@@ -595,6 +625,20 @@ function toService(row: WhmcsServiceRecord): WhmcsService {
     billingCycle: row.billingcycle,
     recurringAmountCents: row.recurringamount,
     paymentMethod: row.paymentmethod,
+  }
+}
+
+function toDomain(row: WhmcsDomainRecord): WhmcsDomain {
+  return {
+    domainId: row.id,
+    domain: row.domainname,
+    status: row.status,
+    registrationDate: row.regdate,
+    expiryDate: row.expirydate,
+    nextDueDate: row.nextduedate,
+    recurringAmountCents: row.recurringamount,
+    registrationPeriod: row.registrationperiod,
+    doNotRenew: row.donotrenew,
   }
 }
 

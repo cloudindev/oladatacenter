@@ -1,6 +1,15 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { ArrowRight, CreditCard, KeyRound, Network, Server, Wallet } from "lucide-react"
+import {
+  ArrowRight,
+  CreditCard,
+  Globe,
+  HardDrive,
+  KeyRound,
+  Network,
+  Server,
+  Wallet,
+} from "lucide-react"
 import { formatCents } from "@ola/core"
 import {
   ButtonLink,
@@ -31,6 +40,28 @@ import {
   listServicesForCustomer,
 } from "@/server/services/repository"
 import { discardPendingOrder } from "./pending-order-actions"
+import { whmcsDomainsFor, whmcsProductsFor, type WhmcsProductView } from "@/server/whmcs-products"
+import type { StatusTone } from "@/components/app/ui"
+
+/** One line of the "payment state" card, whatever it comes from. */
+interface PaymentRow {
+  key: string
+  href: string
+  name: string
+  subtitle: string
+  icon: typeof Server
+  label: string
+  tone: StatusTone
+  date: Date | null
+  datePrefix: string
+}
+
+const WHMCS_KIND_UI: Record<WhmcsProductView["kind"], { title: string; href: string; icon: typeof Server }> = {
+  web_hosting: { title: "Alojamiento web", href: "/app/web-cloud/alojamiento", icon: HardDrive },
+  vps: { title: "Servidor privado virtual", href: "/app/bare-metal/vps", icon: Server },
+  plesk_licence: { title: "Licencia Plesk", href: "/app/bare-metal/licencias", icon: KeyRound },
+  ip: { title: "IP adicional", href: "/app/bare-metal/ip", icon: Network },
+}
 
 /**
  * Inicio: the dashboard, OVHcloud style. Every card reads our own database only, so the
@@ -73,11 +104,68 @@ export default async function DashboardPage(props: {
       load("verificationSnapshot", () => verificationSnapshot(context.session.user.id)),
       pendingOrderHref(),
     ])
+  const [whmcsProducts, whmcsDomains] = await Promise.all([
+    whmcsProductsFor(customerId),
+    whmcsDomainsFor(customerId),
+  ])
+  const otherProducts = whmcsProducts.state === "ok" ? whmcsProducts.items.filter((p) => p.live) : []
+  const otherDomains = whmcsDomains.state === "ok" ? whmcsDomains.items.filter((d) => d.live) : []
+  const countOf = (kind: WhmcsProductView["kind"]) => otherProducts.filter((p) => p.kind === kind).length
   const pendingSummary = pendingOrder ? await pendingOrderSummary(pendingOrder) : null
 
   const liveServices = services.ok ? services.data.filter((s) => s.status !== "terminated") : []
-  const ipCount = liveServices.reduce((sum, s) => sum + (s.ipv4 ? 1 : 0) + (s.ipv6 ? 1 : 0), 0)
-  const activeLicences = licences.ok ? licences.data.filter((l) => l.status !== "removed").length : 0
+  const ipCount =
+    liveServices.reduce((sum, s) => sum + (s.ipv4 ? 1 : 0) + (s.ipv6 ? 1 : 0), 0) + countOf("ip")
+  const activeLicences =
+    (licences.ok ? licences.data.filter((l) => l.status !== "removed").length : 0) +
+    countOf("plesk_licence")
+
+  // OLA servers, then the customer's other products and domains, soonest renewal first.
+  const paymentRows: PaymentRow[] = [
+    ...liveServices.map((service): PaymentRow => {
+      const state = renewalState(service)
+      return {
+        key: `ola-${service.id}`,
+        href: `/app/servers/${service.id}`,
+        name: service.name,
+        subtitle: `Servidor privado virtual · ${service.planName}`,
+        icon: Server,
+        label: state.label,
+        tone: state.tone,
+        date: state.date,
+        datePrefix: state.datePrefix,
+      }
+    }),
+    ...otherProducts.map((product): PaymentRow => {
+      const ui = WHMCS_KIND_UI[product.kind]
+      return {
+        key: `whmcs-${product.id}`,
+        href: ui.href,
+        name: product.label ?? product.name,
+        subtitle: `${ui.title} · ${product.name}`,
+        icon: ui.icon,
+        label: product.statusLabel,
+        tone: product.tone,
+        date: product.nextDueAt,
+        // WHMCS keeps the date of the last cycle when nothing was renewed: say so.
+        datePrefix: product.nextDueAt && product.nextDueAt.getTime() < now.getTime() ? "venció el" : "renueva el",
+      }
+    }),
+    ...otherDomains.map((domain): PaymentRow => ({
+      key: `domain-${domain.id}`,
+      href: "/app/web-cloud/dominios",
+      name: domain.domain,
+      subtitle: "Dominio",
+      icon: Globe,
+      label: domain.autoRenew ? domain.statusLabel : "No se renueva",
+      tone: domain.autoRenew ? domain.tone : "warn",
+      date: domain.expiresAt,
+      datePrefix: domain.expiresAt && domain.expiresAt.getTime() < now.getTime() ? "caducó el" : "caduca el",
+    })),
+  ].sort(
+    (a, b) =>
+      (a.date?.getTime() ?? Number.POSITIVE_INFINITY) - (b.date?.getTime() ?? Number.POSITIVE_INFINITY),
+  )
   const totals = invoices.ok ? invoiceTotals(invoices.data, period, now) : null
   const lastOrder = orders.ok ? (orders.data[0] ?? null) : null
   const defaultCard = cards.ok ? (cards.data.find((c) => c.isDefault) ?? cards.data[0] ?? null) : null
@@ -143,12 +231,12 @@ export default async function DashboardPage(props: {
         <Card
           className="xl:col-span-2 xl:row-span-2"
           title="Estado de pago de tus servicios"
-          count={services.ok ? liveServices.length : undefined}
+          count={services.ok ? paymentRows.length : undefined}
           link={{ href: "/app/bare-metal/vps", label: "Ver todo" }}
         >
           {!services.ok ? (
             <p className="text-sm text-text-muted">{services.message}</p>
-          ) : liveServices.length === 0 ? (
+          ) : paymentRows.length === 0 ? (
             <div className="py-6 text-center">
               <p className="text-text-muted mb-5">Todavía no tienes ningún servicio.</p>
               <ButtonLink href="/vps/configurar" withArrow>
@@ -157,35 +245,30 @@ export default async function DashboardPage(props: {
             </div>
           ) : (
             <ul className="divide-y divide-border-base">
-              {liveServices.slice(0, 6).map((service) => {
-                const state = renewalState(service)
+              {paymentRows.slice(0, 8).map((row) => {
+                const Icon = row.icon
                 return (
                   <li
-                    key={service.id}
+                    key={row.key}
                     className="flex flex-col gap-2 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-surface-beige">
-                        <Server aria-hidden className="h-4 w-4 text-text-muted" strokeWidth={1.7} />
+                        <Icon aria-hidden className="h-4 w-4 text-text-muted" strokeWidth={1.7} />
                       </span>
                       <div className="min-w-0">
-                        <Link
-                          href={`/app/servers/${service.id}`}
-                          className="block truncate text-text-base hover:text-accent-ink"
-                        >
-                          {service.name}
+                        <Link href={row.href} className="block truncate text-text-base hover:text-accent-ink">
+                          {row.name}
                         </Link>
-                        <p className="text-xs text-text-muted truncate">
-                          Servidor privado virtual · {service.planName}
-                        </p>
+                        <p className="text-xs text-text-muted truncate">{row.subtitle}</p>
                       </div>
                     </div>
                     <div className="pl-[52px] sm:pl-0 sm:shrink-0 sm:text-right">
-                      <StatusBadge tone={state.tone}>{state.label}</StatusBadge>
-                      {state.date ? (
+                      <StatusBadge tone={row.tone}>{row.label}</StatusBadge>
+                      {row.date ? (
                         <p className="mt-1 text-xs text-text-muted">
-                          {state.datePrefix ? `${state.datePrefix} ` : ""}
-                          {formatDate(state.date)}
+                          {row.datePrefix ? `${row.datePrefix} ` : ""}
+                          {formatDate(row.date)}
                         </p>
                       ) : null}
                     </div>
@@ -277,9 +360,11 @@ export default async function DashboardPage(props: {
             Mis soluciones y servicios
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <Tile href="/app/bare-metal/vps" icon={Server} label="Servidores privados virtuales" value={liveServices.length} />
+            <Tile href="/app/bare-metal/vps" icon={Server} label="Servidores privados virtuales" value={liveServices.length + countOf("vps")} />
             <Tile href="/app/bare-metal/licencias" icon={KeyRound} label="Licencias Plesk" value={activeLicences} />
-            <Tile href="/app/bare-metal/vps" icon={Network} label="Direcciones IP" value={ipCount} />
+            <Tile href="/app/bare-metal/ip" icon={Network} label="Direcciones IP" value={ipCount} />
+            <Tile href="/app/web-cloud/alojamiento" icon={HardDrive} label="Alojamiento web" value={countOf("web_hosting")} />
+            <Tile href="/app/web-cloud/dominios" icon={Globe} label="Dominios" value={otherDomains.length} />
           </div>
         </Panel>
       </section>

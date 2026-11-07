@@ -23,6 +23,7 @@ export interface NavItem {
     | "globe"
     | "mail"
     | "hard-drive"
+    | "network"
   /** Other path prefixes that also mark this item as current. */
   alsoActiveOn?: readonly string[]
   /** Shown but not clickable yet. */
@@ -58,15 +59,16 @@ export const UNIVERSES: readonly Universe[] = [
     items: [
       { href: "/app/bare-metal/vps", label: "VPS", icon: "server", alsoActiveOn: ["/app/servers/"] },
       { href: "/app/bare-metal/licencias", label: "Licencias", icon: "key" },
+      { href: "/app/bare-metal/ip", label: "IP", icon: "network" },
     ],
   },
   {
     key: "web-cloud",
     label: "Web Cloud",
-    href: "/app/web-cloud",
+    href: "/app/web-cloud/alojamiento",
     items: [
-      { href: "/app/web-cloud", label: "Alojamiento web", icon: "hard-drive", soon: true },
-      { href: "/app/web-cloud", label: "Dominios", icon: "globe", soon: true },
+      { href: "/app/web-cloud/alojamiento", label: "Alojamiento web", icon: "hard-drive" },
+      { href: "/app/web-cloud/dominios", label: "Dominios", icon: "globe" },
       { href: "/app/web-cloud", label: "Correo", icon: "mail", soon: true },
     ],
   },

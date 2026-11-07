@@ -105,7 +105,10 @@ export function whmcs(): WhmcsClient {
 }
 
 /** The WHMCS reads the customer area needs. Never writes. */
-export type WhmcsReader = Pick<WhmcsClient, "listServices" | "listDomains">
+export type WhmcsReader = Pick<
+  WhmcsClient,
+  "listServices" | "listDomains" | "listInvoices" | "createSsoToken"
+>
 
 let whmcsReaderClient: WhmcsReader | null = null
 
@@ -134,6 +137,8 @@ export function whmcsReader(): WhmcsReader {
     proxyUrl: config.WHMCS_PROXY_URL,
     proxyToken: config.WHMCS_PROXY_TOKEN,
     writeEnabled: false,
+    // The invoice PDF link: a one-time login into the customer's own client area.
+    ssoEnabled: true,
     maxRetries: 1,
   })
   return whmcsReaderClient

@@ -405,3 +405,19 @@ esquema de zod los descarta y nunca salen del servidor (hay un test).
 
 **Requiere** `GetClientsDomains` en el rol de API (pestaña Client). Sin él, Dominios lo dice y
 el resto funciona.
+
+## 2026-11-08 — Facturas de WHMCS en el panel, saldo pendiente y periodo de gracia
+
+- **Facturas.** Para un cliente enlazado a WHMCS, «Mis facturas» y la tarjeta de facturación
+  del inicio muestran **todas** sus facturas de WHMCS (es el libro contable), no solo las de
+  servicios OLA: sustituye a la decisión 5 del 2026-11-06. Cada PDF se abre en WHMCS con un
+  acceso de un solo uso creado al pulsar (`/app/billing/factura/[id]`), tras comprobar que la
+  factura es del cliente. `CreateSsoToken` deja de ir atado a `WHMCS_WRITE_ENABLED`
+  (`ssoEnabled`): no toca la contabilidad.
+- **Mi saldo.** Muestra en negativo lo pendiente: suma del importe por pagar de las facturas
+  Unpaid o en reclamación emitidas hasta hoy (`pendingBalance`).
+- **Periodo de gracia.** Un servicio o dominio «Active» cuyo vencimiento ya pasó se muestra
+  como «Periodo de gracia» en naranja (`withGracePeriod`).
+- **Dominios.** Como en WHMCS casi ninguno tiene fecha de caducidad (no hay módulo de
+  registrador), se usa el próximo vencimiento. Los DNS se leen del DNS público (registros NS,
+  2 s de límite, 10 min de caché), porque WHMCS no puede darlos.

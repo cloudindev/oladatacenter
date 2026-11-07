@@ -40,7 +40,13 @@ import {
   listServicesForCustomer,
 } from "@/server/services/repository"
 import { discardPendingOrder } from "./pending-order-actions"
-import { whmcsDomainsFor, whmcsProductsFor, type WhmcsProductView } from "@/server/whmcs-products"
+import {
+  whmcsDomainsFor,
+  whmcsInvoicesFor,
+  whmcsProductsFor,
+  type WhmcsProductView,
+} from "@/server/whmcs-products"
+import { pendingBalance } from "@/server/whmcs-products/model"
 import type { StatusTone } from "@/components/app/ui"
 
 /** One line of the "payment state" card, whatever it comes from. */
@@ -104,10 +110,12 @@ export default async function DashboardPage(props: {
       load("verificationSnapshot", () => verificationSnapshot(context.session.user.id)),
       pendingOrderHref(),
     ])
-  const [whmcsProducts, whmcsDomains] = await Promise.all([
+  const [whmcsProducts, whmcsDomains, whmcsInvoices] = await Promise.all([
     whmcsProductsFor(customerId),
     whmcsDomainsFor(customerId),
+    whmcsInvoicesFor(customerId),
   ])
+  const pending = whmcsInvoices.state === "ok" ? pendingBalance(whmcsInvoices.items, now) : null
   const otherProducts = whmcsProducts.state === "ok" ? whmcsProducts.items.filter((p) => p.live) : []
   const otherDomains = whmcsDomains.state === "ok" ? whmcsDomains.items.filter((d) => d.live) : []
   const countOf = (kind: WhmcsProductView["kind"]) => otherProducts.filter((p) => p.kind === kind).length
@@ -166,7 +174,25 @@ export default async function DashboardPage(props: {
     (a, b) =>
       (a.date?.getTime() ?? Number.POSITIVE_INFINITY) - (b.date?.getTime() ?? Number.POSITIVE_INFINITY),
   )
-  const totals = invoices.ok ? invoiceTotals(invoices.data, period, now) : null
+  // A customer linked to WHMCS: its invoices are the book of record. Otherwise, OLA's own.
+  const totals =
+    whmcsInvoices.state === "ok"
+      ? invoiceTotals(
+          whmcsInvoices.items.map((invoice) => ({
+            issuedAt: invoice.issuedAt ?? new Date(0),
+            status: invoice.owed
+              ? ("unpaid" as const)
+              : invoice.statusLabel === "Anulada" || invoice.statusLabel === "Reembolsada"
+                ? ("cancelled" as const)
+                : ("paid" as const),
+            total: invoice.totalCents,
+          })),
+          period,
+          now,
+        )
+      : invoices.ok
+        ? invoiceTotals(invoices.data, period, now)
+        : null
   const lastOrder = orders.ok ? (orders.data[0] ?? null) : null
   const defaultCard = cards.ok ? (cards.data.find((c) => c.isDefault) ?? cards.data[0] ?? null) : null
   const needsAttention = liveServices.filter((s) =>
@@ -380,14 +406,29 @@ export default async function DashboardPage(props: {
                 <Wallet aria-hidden className="h-4 w-4 text-text-muted" strokeWidth={1.7} />
               </span>
               <div>
-                <p className="text-2xl font-light text-text-base">{formatCents(credit.data.balance)}</p>
-                <p className="text-xs text-text-muted">
-                  {credit.data.balance === 0
-                    ? "Sin saldo disponible"
-                    : credit.data.expiresAt
-                      ? `Caduca el ${formatDate(credit.data.expiresAt)}`
-                      : "Se aplica solo en tu próxima factura"}
-                </p>
+                {pending && pending.cents > 0 ? (
+                  <>
+                    <p className="text-2xl font-light text-[#8a2d26]">−{formatCents(pending.cents)}</p>
+                    <p className="text-xs text-text-muted">
+                      Pendiente de pago en {pending.count}{" "}
+                      {pending.count === 1 ? "factura" : "facturas"}
+                      {credit.data.balance > 0
+                        ? ` · ${formatCents(credit.data.balance)} de crédito a tu favor`
+                        : ""}
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-2xl font-light text-text-base">{formatCents(credit.data.balance)}</p>
+                    <p className="text-xs text-text-muted">
+                      {credit.data.balance === 0
+                        ? "Estás al día: nada pendiente de pago"
+                        : credit.data.expiresAt
+                          ? `Crédito a tu favor, caduca el ${formatDate(credit.data.expiresAt)}`
+                          : "Crédito a tu favor, se aplica solo en tu próxima factura"}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           )}

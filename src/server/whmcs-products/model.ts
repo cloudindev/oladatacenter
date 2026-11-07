@@ -25,7 +25,7 @@ export function kindOfProduct(pid: number): WhmcsProductKind | null {
   return KIND_BY_PID.get(pid) ?? null
 }
 
-interface StatusUi {
+export interface StatusUi {
   label: string
   tone: StatusTone
   /** Still a live service: shown first, counted on the dashboard. */
@@ -63,13 +63,14 @@ export function domainStatusUi(status: string): StatusUi {
   return DOMAIN_STATUS[status] ?? { label: status, tone: "neutral", live: false }
 }
 
+/** Suffix after the amount: "/mes" joins it ("72,00 €/mes"), words get a space. */
 const CYCLE_LABEL: Readonly<Record<string, string>> = {
-  Monthly: "al mes",
-  Quarterly: "al trimestre",
-  "Semi-Annually": "al semestre",
-  Annually: "al año",
-  Biennially: "cada 2 años",
-  Triennially: "cada 3 años",
+  Monthly: "/mes",
+  Quarterly: "/trimestre",
+  "Semi-Annually": "/semestre",
+  Annually: "/año",
+  Biennially: "/2 años",
+  Triennially: "/3 años",
   "One Time": "pago único",
   "Free Account": "gratuito",
   Free: "gratuito",
@@ -86,6 +87,27 @@ export function parseWhmcsDate(value: string | null): Date | null {
   if (!match) return null
   const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])))
   return Number.isNaN(date.getTime()) ? null : date
+}
+
+/**
+ * An active service or domain whose due date has already passed is still running but
+ * unpaid: WHMCS keeps it "Active" while it waits for the invoice. Shown as a grace period.
+ */
+export function withGracePeriod(
+  ui: StatusUi,
+  status: string,
+  dueAt: Date | null,
+  now: Date,
+): StatusUi {
+  if (status !== "Active" || dueAt === null) return ui
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+  return dueAt.getTime() < today ? { label: "Periodo de gracia", tone: "warn", live: true } : ui
+}
+
+/** "15,43 €/año", "30,00 €/2 años". */
+export function perYearsLabel(years: number | null): string {
+  const count = years ?? 1
+  return count === 1 ? "año" : `${count} años`
 }
 
 /** How long an inactive service or domain stays visible after it ended. */
@@ -114,4 +136,57 @@ export function byRelevance<T extends { live: boolean; nextDueAt: Date | null; r
   const dueB = b.nextDueAt?.getTime() ?? Number.POSITIVE_INFINITY
   if (dueA !== dueB) return dueA - dueB
   return (b.registeredAt?.getTime() ?? 0) - (a.registeredAt?.getTime() ?? 0)
+}
+
+// ─── invoices ────────────────────────────────────────────────────────────────
+
+export interface InvoiceStatusUi {
+  label: string
+  tone: StatusTone
+  /** Still owed: counts towards the pending balance. */
+  owed: boolean
+}
+
+/** Spanish label for a WHMCS invoice status; an unpaid one past its due date is "Vencida". */
+export function invoiceStatusUi(status: string, dueAt: Date | null, now: Date): InvoiceStatusUi {
+  switch (status) {
+    case "Paid":
+      return { label: "Pagada", tone: "ok", owed: false }
+    case "Unpaid": {
+      const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
+      const overdue = dueAt !== null && dueAt.getTime() < today
+      return overdue
+        ? { label: "Vencida", tone: "danger", owed: true }
+        : { label: "Pendiente", tone: "warn", owed: true }
+    }
+    case "Collections":
+      return { label: "En reclamación", tone: "danger", owed: true }
+    case "Payment Pending":
+      return { label: "Pago en curso", tone: "busy", owed: false }
+    case "Refunded":
+      return { label: "Reembolsada", tone: "neutral", owed: false }
+    case "Cancelled":
+      return { label: "Anulada", tone: "neutral", owed: false }
+    default:
+      return { label: status, tone: "neutral", owed: false }
+  }
+}
+
+/**
+ * What the customer owes today: the outstanding balance of every owed invoice issued up
+ * to now. A future-dated invoice (issued ahead of a renewal) does not count yet.
+ */
+export function pendingBalance(
+  invoices: readonly { owed: boolean; issuedAt: Date | null; balanceCents: number }[],
+  now: Date,
+): { cents: number; count: number } {
+  let cents = 0
+  let count = 0
+  for (const invoice of invoices) {
+    if (!invoice.owed) continue
+    if (invoice.issuedAt !== null && invoice.issuedAt.getTime() > now.getTime()) continue
+    cents += invoice.balanceCents
+    count += 1
+  }
+  return { cents, count }
 }

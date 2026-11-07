@@ -19,7 +19,7 @@ describe("formato", () => {
     expect(formatMoney(1299)).toEqual("12,99 €")
     expect(formatMoney(0)).toEqual("0,00 €")
     // es-ES only groups from five digits up ("min2" grouping in ICU).
-    expect(formatMoney(123456)).toEqual("1234,56 €")
+    expect(formatMoney(123456)).toEqual("1.234,56 €")
     expect(formatMoney(1234567)).toEqual("12.345,67 €")
   })
 

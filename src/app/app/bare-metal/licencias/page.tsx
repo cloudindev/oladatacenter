@@ -7,7 +7,7 @@ import { customerContext } from "@/server/services/customer"
 import { load } from "@/server/services/load"
 import { listPleskLicencesForCustomer } from "@/server/services/repository"
 import { whmcsProductsOfKind } from "@/server/whmcs-products"
-import { ManagedByCloudinNote, WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
+import { WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
 
 /**
  * Bare Metal Cloud → Licencias. Today only Plesk, which we sell as an option of a VPS:
@@ -125,7 +125,6 @@ export default async function LicencesPage() {
           {otherLicences.state === "ok" ? (
             <>
               <WhmcsProductTable items={otherLicences.items} />
-              <ManagedByCloudinNote />
             </>
           ) : null}
         </section>

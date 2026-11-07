@@ -21,7 +21,7 @@ import { pendingOrderSummary } from "@/server/pending-order-summary"
 import { discardPendingOrder } from "../../pending-order-actions"
 import { listServicesForCustomer } from "@/server/services/repository"
 import { whmcsProductsOfKind } from "@/server/whmcs-products"
-import { ManagedByCloudinNote, WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
+import { WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
 import { Eyebrow } from "@/components/app/ui"
 import type { ServiceListItem } from "@/server/services/types"
 
@@ -139,7 +139,6 @@ export default async function ServersPage() {
           {otherVps.state === "ok" ? (
             <>
               <WhmcsProductTable items={otherVps.items} showIps />
-              <ManagedByCloudinNote />
             </>
           ) : null}
         </section>

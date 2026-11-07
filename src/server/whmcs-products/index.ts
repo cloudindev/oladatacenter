@@ -7,6 +7,7 @@ import { whmcsReader } from "@/server/providers"
 import {
   byRelevance,
   cycleLabel,
+  stillVisible,
   domainStatusUi,
   kindOfProduct,
   parseWhmcsDate,
@@ -95,11 +96,15 @@ export const whmcsProductsFor = cache(
         whmcsReader().listServices(clientId),
         olaManagedServiceIds(customerId),
       ])
+      const now = new Date()
       const items: WhmcsProductView[] = []
       for (const row of rows) {
         const kind = kindOfProduct(row.pid)
         if (kind === null || olaIds.has(row.serviceId)) continue
         const ui = productStatusUi(row.status)
+        const registeredAt = parseWhmcsDate(row.registrationDate)
+        const nextDueAt = parseWhmcsDate(row.nextDueDate)
+        if (!stillVisible({ live: ui.live, end: nextDueAt ?? registeredAt }, now)) continue
         items.push({
           id: row.serviceId,
           kind,
@@ -110,8 +115,8 @@ export const whmcsProductsFor = cache(
           statusLabel: ui.label,
           tone: ui.tone,
           live: ui.live,
-          registeredAt: parseWhmcsDate(row.registrationDate),
-          nextDueAt: parseWhmcsDate(row.nextDueDate),
+          registeredAt,
+          nextDueAt,
           amountCents: row.recurringAmountCents,
           cycle: cycleLabel(row.billingCycle),
         })
@@ -138,6 +143,7 @@ export const whmcsDomainsFor = cache(
     if (clientId === null) return { state: "not_linked" }
     try {
       const rows = await whmcsReader().listDomains(clientId)
+      const now = new Date()
       const items = rows.map((row): WhmcsDomainView => {
         const ui = domainStatusUi(row.status)
         const years = row.registrationPeriod ?? 1
@@ -155,7 +161,10 @@ export const whmcsDomainsFor = cache(
           autoRenew: !row.doNotRenew,
         }
       })
-      return { state: "ok", items: items.sort(byRelevance) }
+      const visible = items.filter((item) =>
+        stillVisible({ live: item.live, end: item.expiresAt ?? item.nextDueAt ?? item.registeredAt }, now),
+      )
+      return { state: "ok", items: visible.sort(byRelevance) }
     } catch (error) {
       return failure(error)
     }

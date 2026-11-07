@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { EmptyState, Notice, PageTitle } from "@/components/app/ui"
-import { ManagedByCloudinNote, WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
+import { WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
 import { customerContext } from "@/server/services/customer"
 import { whmcsProductsOfKind } from "@/server/whmcs-products"
 
@@ -39,7 +39,6 @@ export default async function WebHostingPage() {
       {read.state === "ok" ? (
         <>
           <WhmcsProductTable items={read.items} empty={empty} />
-          {read.items.length > 0 ? <ManagedByCloudinNote /> : null}
         </>
       ) : read.state === "not_linked" ? (
         empty

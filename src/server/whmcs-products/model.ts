@@ -88,6 +88,22 @@ export function parseWhmcsDate(value: string | null): Date | null {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
+/** How long an inactive service or domain stays visible after it ended. */
+export const INACTIVE_VISIBLE_DAYS = 31
+
+/**
+ * Inactive items are shown for a month after they ended, then dropped. `end` is the last
+ * due date (or expiry for a domain); without one, the registration date stands in.
+ */
+export function stillVisible(
+  item: { live: boolean; end: Date | null },
+  now: Date,
+): boolean {
+  if (item.live) return true
+  if (item.end === null) return false
+  return now.getTime() - item.end.getTime() <= INACTIVE_VISIBLE_DAYS * 24 * 60 * 60 * 1000
+}
+
 /** Live first, then by next due date (soonest first), then newest. */
 export function byRelevance<T extends { live: boolean; nextDueAt: Date | null; registeredAt: Date | null }>(
   a: T,

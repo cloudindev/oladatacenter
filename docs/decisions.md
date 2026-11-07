@@ -354,3 +354,13 @@ verificada ya filtran.
 **Consecuencia.** El saldo de bienvenida sigue exigiendo teléfono verificado
 (`decideWelcomeCredit` usa la regla estricta por defecto), así que queda en pausa hasta que
 haya proveedor de SMS.
+
+## 2026-11-07 — Nunca escribir en WHMCS con claves de prueba de Stripe
+
+`whmcs()` se niega a arrancar con `WHMCS_WRITE_ENABLED=true` y una clave `sk_test_`: los
+cobros de prueba no mueven dinero y acabarían como facturas pagadas en la contabilidad real.
+Mientras se prueba con Stripe en modo test, WHMCS va simulado (`MOCK_WHMCS=true`).
+
+El reenviador de IP fija (`proxy.oladc.com`, 54.37.17.20) quedó verificado el 2026-11-07 con
+`GetClients` a través de él. El token viaja en `X-Ola-Token` y además en el cuerpo
+(`ola_proxy_token`), porque el Plesk de srv008 elimina las cabeceras personalizadas.

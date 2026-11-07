@@ -46,14 +46,34 @@ export function expiringSoon(
 export interface VerificationState {
   emailVerifiedAt: Date | null
   phoneVerifiedAt: Date | null
+  /** A contact phone is stored, verified or not. */
+  phoneOnFile?: boolean
   hasVerifiedCard: boolean
   billingComplete: boolean
 }
 
-export function isAccountVerified(state: VerificationState): boolean {
+export interface VerificationPolicy {
+  /**
+   * True: the phone must be confirmed with an SMS code. False: a contact phone on file is
+   * enough (no SMS provider yet). Defaults to true, so every caller that does not say
+   * otherwise, the welcome credit among them, keeps the strict rule.
+   */
+  requirePhoneCode?: boolean
+}
+
+/** Whether the phone step counts as done under the given policy. */
+export function isPhoneStepDone(state: VerificationState, policy: VerificationPolicy = {}): boolean {
+  if (state.phoneVerifiedAt !== null) return true
+  return policy.requirePhoneCode === false && state.phoneOnFile === true
+}
+
+export function isAccountVerified(
+  state: VerificationState,
+  policy: VerificationPolicy = {},
+): boolean {
   return (
     state.emailVerifiedAt !== null &&
-    state.phoneVerifiedAt !== null &&
+    isPhoneStepDone(state, policy) &&
     state.hasVerifiedCard &&
     state.billingComplete
   )

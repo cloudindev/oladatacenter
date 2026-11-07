@@ -50,6 +50,7 @@ export const AUTH_NOTICES: Record<string, string> = {
   sesiones_cerradas: "Hemos cerrado la sesión en todos los dispositivos",
   codigo_enviado: "Te hemos enviado un código por SMS",
   telefono_verificado: "Teléfono verificado",
+  telefono_guardado: "Teléfono guardado",
   datos_guardados: "Datos guardados",
   nif_validado: "Identificador fiscal validado en VIES",
   nif_sin_validar:

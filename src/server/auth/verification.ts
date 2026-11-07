@@ -1,6 +1,12 @@
 import "server-only"
 import { eq } from "drizzle-orm"
-import { type FraudSignals, isAccountVerified, type VerificationState } from "@ola/core"
+import {
+  type FraudSignals,
+  isAccountVerified,
+  isPhoneStepDone,
+  type VerificationState,
+} from "@ola/core"
+import { env } from "@/lib/env"
 import { customers, db, services, users } from "@ola/db"
 import { grantWelcomeCredit, listPaymentMethods } from "@/server/billing"
 import { recordAudit } from "@/server/audit"
@@ -48,6 +54,8 @@ export interface VerificationSnapshot {
   steps: { email: boolean; billing: boolean; phone: boolean; card: boolean }
   state: VerificationState
   complete: boolean
+  /** False while there is no SMS provider: the phone step only asks for a contact number. */
+  phoneCodeRequired: boolean
 }
 
 /** Billing details are complete when an invoice could legally be issued. */
@@ -100,9 +108,11 @@ export async function verificationSnapshot(userId: string): Promise<Verification
   const customer = await loadCustomer(userId)
   const cardOk = customer ? await customerHasVerifiedCard(customer.id) : false
 
+  const policy = { requirePhoneCode: env().REQUIRE_PHONE_VERIFICATION }
   const state: VerificationState = {
     emailVerifiedAt: user?.emailVerifiedAt ?? null,
     phoneVerifiedAt: customer?.phoneVerifiedAt ?? null,
+    phoneOnFile: Boolean(customer?.phone),
     hasVerifiedCard: cardOk,
     billingComplete: isBillingComplete(customer),
   }
@@ -116,11 +126,12 @@ export async function verificationSnapshot(userId: string): Promise<Verification
     steps: {
       email: state.emailVerifiedAt !== null,
       billing: state.billingComplete,
-      phone: state.phoneVerifiedAt !== null,
+      phone: isPhoneStepDone(state, policy),
       card: cardOk,
     },
     state,
-    complete: isAccountVerified(state),
+    complete: isAccountVerified(state, policy),
+    phoneCodeRequired: policy.requirePhoneCode,
   }
 }
 

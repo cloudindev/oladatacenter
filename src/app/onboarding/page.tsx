@@ -24,6 +24,7 @@ import { pendingOrderHref } from "@/server/pending-order"
 import { cn } from "@/lib/utils"
 import {
   refreshVerificationAction,
+  savePhoneContactAction,
   sendPhoneOtpAction,
   verifyPhoneOtpAction,
   saveBillingAction,
@@ -69,7 +70,8 @@ export default async function OnboardingPage({
   const step =
     Number.isInteger(asked) && asked >= 1 && asked <= naturalStep ? asked : naturalStep
 
-  const otpTarget = step === 3 ? await pendingOtpTarget(session.user.id) : null
+  const codeRequired = snapshot.phoneCodeRequired
+  const otpTarget = step === 3 && codeRequired ? await pendingOtpTarget(session.user.id) : null
   const customer = snapshot.customer
   const pendingOrder = await pendingOrderHref()
 
@@ -82,8 +84,12 @@ export default async function OnboardingPage({
         </h1>
         <p className="text-text-muted leading-relaxed mb-10 max-w-2xl">
           {naturalStep > 4
-            ? "Ya puedes contratar servidores con tu crédito de bienvenida."
-            : "Cuatro pasos. Al terminarlos podrás contratar servidores y recibirás el crédito de bienvenida."}
+            ? codeRequired
+              ? "Ya puedes contratar servidores con tu crédito de bienvenida."
+              : "Ya puedes contratar servidores."
+            : codeRequired
+              ? "Cuatro pasos. Al terminarlos podrás contratar servidores y recibirás el crédito de bienvenida."
+              : "Cuatro pasos. Al terminarlos podrás contratar servidores."}
         </p>
 
         {error ? (
@@ -125,7 +131,13 @@ export default async function OnboardingPage({
 
         {step === 1 ? <StepEmail email={session.user.email} /> : null}
         {step === 2 ? <StepBilling customer={customer} /> : null}
-        {step === 3 ? <StepPhone customer={customer} otpTarget={otpTarget} /> : null}
+        {step === 3 ? (
+          codeRequired ? (
+            <StepPhone customer={customer} otpTarget={otpTarget} />
+          ) : (
+            <StepPhoneContact customer={customer} />
+          )
+        ) : null}
         {step === 4 ? <StepCard /> : null}
         {step > 4 ? <StepDone pendingOrder={pendingOrder} /> : null}
 
@@ -335,6 +347,38 @@ function StepPhone({
   )
 }
 
+/** Step 3 without an SMS provider: the phone is a contact detail, no code. */
+function StepPhoneContact({ customer }: { customer: BillingCustomer }) {
+  return (
+    <Panel>
+      <h2 className="text-xl font-normal tracking-tight text-text-base mb-3">
+        Teléfono de contacto
+      </h2>
+      <p className="text-text-muted leading-relaxed mb-6">
+        Lo usamos solo para avisarte de incidencias graves con tus servidores.
+      </p>
+      <form action={savePhoneContactAction}>
+        <Field
+          label="Teléfono"
+          htmlFor="telefono"
+          hint="Con prefijo del país, por ejemplo +34 600 123 456"
+        >
+          <Input
+            id="telefono"
+            name="telefono"
+            type="tel"
+            inputMode="tel"
+            autoComplete="tel"
+            defaultValue={customer.phone ?? "+34"}
+            required
+          />
+        </Field>
+        <SubmitButton pendingLabel="Guardando">Guardar y continuar</SubmitButton>
+      </form>
+    </Panel>
+  )
+}
+
 // ─── step 4 ──────────────────────────────────────────────────────────────────
 /**
  * Card step. Stripe belongs to the billing module, so this is a hand-off: the customer
@@ -351,7 +395,7 @@ function StepCard() {
       </h2>
       <p className="text-text-muted leading-relaxed mb-6">
         Hacemos una verificación de un euro que se anula al momento. No cobramos nada hasta que
-        contratas un servidor, y el crédito de bienvenida se aplica solo.
+        contratas un servidor.
       </p>
       <div className="flex flex-wrap items-center gap-4">
         <ButtonLink href="/app/billing" withArrow>

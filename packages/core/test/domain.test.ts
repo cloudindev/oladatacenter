@@ -360,6 +360,39 @@ describe("credit ledger", () => {
       emailVerifiedAt: null, phoneVerifiedAt: now, hasVerifiedCard: true, billingComplete: true,
     })).toBe(false)
   })
+
+  it("accepts a contact phone without an SMS code only when the policy says so", () => {
+    const unverifiedPhone = {
+      emailVerifiedAt: now,
+      phoneVerifiedAt: null,
+      phoneOnFile: true,
+      hasVerifiedCard: true,
+      billingComplete: true,
+    }
+    expect(isAccountVerified(unverifiedPhone)).toBe(false)
+    expect(isAccountVerified(unverifiedPhone, { requirePhoneCode: true })).toBe(false)
+    expect(isAccountVerified(unverifiedPhone, { requirePhoneCode: false })).toBe(true)
+    expect(
+      isAccountVerified({ ...unverifiedPhone, phoneOnFile: false }, { requirePhoneCode: false }),
+    ).toBe(false)
+  })
+
+  it("never grants the welcome credit without a verified phone", () => {
+    const decision = decideWelcomeCredit({
+      verification: {
+        emailVerifiedAt: now,
+        phoneVerifiedAt: null,
+        phoneOnFile: true,
+        hasVerifiedCard: true,
+        billingComplete: true,
+      },
+      signals: { cardFingerprint: "fp", phoneNumber: "+34600000000", deviceFingerprint: null, ipAddress: null },
+      priorGrantsForCustomer: 0,
+      priorGrants: [],
+      now,
+    })
+    expect(decision).toEqual({ granted: false, reason: "not_verified" })
+  })
 })
 
 describe("trial limits", () => {

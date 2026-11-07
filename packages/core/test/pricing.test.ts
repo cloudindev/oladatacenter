@@ -301,7 +301,9 @@ describe("formatCents", () => {
   it("formats in Spanish", () => {
     expect(formatCents(799)).toBe("7,99 €")
     // Spanish typography groups from five digits up, not four.
-    expect(formatCents(123456, { withSymbol: false })).toBe("1234,56")
+    expect(formatCents(123456, { withSymbol: false })).toBe("1.234,56")
+    expect(formatCents(256171)).toBe("2.561,71 €")
+    expect(formatCents(-256171)).toBe("-2.561,71 €")
     expect(formatCents(1234567, { withSymbol: false })).toBe("12.345,67")
   })
 })

@@ -36,6 +36,9 @@ export function formatCents(value: Cents, opts: { withSymbol?: boolean } = {}): 
   const formatted = new Intl.NumberFormat("es-ES", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
+    // Spanish CLDR data skips the separator below 10 000 ("2561,71"); RAE style and
+    // invoices write "2.561,71".
+    useGrouping: "always",
   }).format(centsToEuros(value))
   return withSymbol ? `${formatted} €` : formatted
 }

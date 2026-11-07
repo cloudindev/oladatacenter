@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { formatCents } from "@ola/core"
 import { EmptyState, Notice, PageTitle, Panel, StatusBadge } from "@/components/app/ui"
-import { ManagedByCloudinNote, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
+import { WhmcsReadNotice } from "@/components/app/WhmcsProducts"
 import { formatDate } from "@/components/servers/labels"
 import { customerContext } from "@/server/services/customer"
 import { whmcsDomainsFor, type WhmcsDomainView } from "@/server/whmcs-products"
@@ -97,14 +97,13 @@ export default async function DomainsPage() {
           {past.length > 0 ? (
             <details>
               <summary className="label-mono cursor-pointer text-text-muted hover:text-text-base">
-                Ver también los caducados o transferidos ({past.length})
+                Ver inactivos ({past.length})
               </summary>
               <Panel className="mt-3 p-0 overflow-hidden opacity-80">
                 <DomainRows items={past} />
               </Panel>
             </details>
           ) : null}
-          <ManagedByCloudinNote />
         </div>
       ) : null}
     </>

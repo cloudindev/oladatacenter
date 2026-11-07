@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { EmptyState, Eyebrow, Notice, PageTitle, Panel } from "@/components/app/ui"
-import { ManagedByCloudinNote, WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
+import { WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
 import { CopyField } from "@/components/servers/CopyField"
 import { customerContext } from "@/server/services/customer"
 import { load } from "@/server/services/load"
@@ -37,7 +37,6 @@ export default async function IpPage() {
   const withIps = servers.ok
     ? servers.data.filter((service) => service.status !== "terminated" && (service.ipv4 || service.ipv6))
     : []
-  const hasExtra = extra.state === "ok" && extra.items.length > 0
 
   return (
     <>
@@ -104,7 +103,6 @@ export default async function IpPage() {
               empty={<EmptyState>No tienes IP adicionales contratadas.</EmptyState>}
             />
           ) : null}
-          {hasExtra ? <ManagedByCloudinNote /> : null}
         </section>
       ) : null}
     </>

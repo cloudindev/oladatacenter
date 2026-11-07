@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest"
-import { byRelevance, cycleLabel, domainStatusUi, kindOfProduct, parseWhmcsDate, productStatusUi } from "./model"
+import {
+  byRelevance,
+  cycleLabel,
+  domainStatusUi,
+  kindOfProduct,
+  parseWhmcsDate,
+  productStatusUi,
+  stillVisible,
+} from "./model"
 
 describe("WHMCS product classification", () => {
   it("knows the operator's product ids", () => {
@@ -37,5 +45,24 @@ describe("WHMCS labels", () => {
       { id: "soon", live: true, nextDueAt: at("2026-12-01"), registeredAt: null },
     ]
     expect([...items].sort(byRelevance).map((item) => item.id)).toEqual(["soon", "late", "old"])
+  })
+})
+
+describe("inactive items fade out after a month", () => {
+  const now = new Date("2026-11-08T12:00:00Z")
+  const ended = (iso: string | null) => ({ live: false, end: iso ? new Date(iso) : null })
+
+  it("always keeps live items", () => {
+    expect(stillVisible({ live: true, end: new Date("2020-01-01") }, now)).toBe(true)
+  })
+
+  it("keeps an inactive item for a month after it ended, then drops it", () => {
+    expect(stillVisible(ended("2026-10-20"), now)).toBe(true)
+    expect(stillVisible(ended("2026-10-01"), now)).toBe(false)
+    expect(stillVisible(ended("2025-04-03"), now)).toBe(false)
+  })
+
+  it("drops an inactive item with no date at all", () => {
+    expect(stillVisible(ended(null), now)).toBe(false)
   })
 })

@@ -4,9 +4,8 @@ import { formatDate } from "@/components/servers/labels"
 import type { WhmcsProductView, WhmcsRead } from "@/server/whmcs-products"
 
 /**
- * Read-only views of what a customer already has in WHMCS. Managed by Cloudin's team, not
- * from this panel yet, so there are no action buttons: the table says what it is, its
- * state and when it renews.
+ * Read-only views of what a customer already has in WHMCS: what it is, its state and when
+ * it renews. No action buttons yet.
  */
 
 /** The notice for a read that did not return items. Null when it did. */
@@ -105,7 +104,7 @@ export function WhmcsProductTable({
       {past.length > 0 ? (
         <details className="group">
           <summary className="label-mono cursor-pointer text-text-muted hover:text-text-base">
-            Ver también los dados de baja o finalizados ({past.length})
+            Ver inactivos ({past.length})
           </summary>
           <Panel className="mt-3 p-0 overflow-hidden opacity-80">
             <Rows items={past} showIps={showIps} />
@@ -113,15 +112,5 @@ export function WhmcsProductTable({
         </details>
       ) : null}
     </div>
-  )
-}
-
-/** Small caption under a section that lists WHMCS products. */
-export function ManagedByCloudinNote() {
-  return (
-    <p className="mt-3 text-xs text-text-muted">
-      Estos servicios los gestiona el equipo de Cloudin. Para cualquier cambio, escríbenos desde
-      Soporte.
-    </p>
   )
 }

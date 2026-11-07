@@ -12,8 +12,12 @@ import {
   stillVisible,
   withGracePeriod,
   domainStatusUi,
+  cycleMonths,
   invoiceStatusUi,
   kindOfProduct,
+  overdueLine,
+  pendingBalance,
+  type OverdueLine,
   parseWhmcsDate,
   productStatusUi,
   type WhmcsProductKind,
@@ -93,13 +97,17 @@ function failure(error: unknown): { state: "unavailable"; reason: "permission" |
  * Every classified product of the customer, live first. Cached per request, so the
  * dashboard and the pages that read several kinds hit WHMCS once.
  */
+/** Raw WHMCS rows, cached per request so every card and page asks WHMCS once. */
+const rawServices = cache((clientId: number) => whmcsReader().listServices(clientId))
+const rawDomains = cache((clientId: number) => whmcsReader().listDomains(clientId))
+
 export const whmcsProductsFor = cache(
   async (customerId: string): Promise<WhmcsRead<WhmcsProductView>> => {
     const clientId = await linkedClient(customerId)
     if (clientId === null) return { state: "not_linked" }
     try {
       const [rows, olaIds] = await Promise.all([
-        whmcsReader().listServices(clientId),
+        rawServices(clientId),
         olaManagedServiceIds(customerId),
       ])
       const now = new Date()
@@ -148,7 +156,7 @@ export const whmcsDomainsFor = cache(
     const clientId = await linkedClient(customerId)
     if (clientId === null) return { state: "not_linked" }
     try {
-      const rows = await whmcsReader().listDomains(clientId)
+      const rows = await rawDomains(clientId)
       const now = new Date()
       const items = rows.map((row): WhmcsDomainView => {
         // Most domains in WHMCS have no expiry date (no registrar module): the next due
@@ -201,6 +209,8 @@ export interface WhmcsInvoiceView {
   totalCents: number
   /** Still to pay; equals the total unless part of it was paid. */
   balanceCents: number
+  subtotalCents: number
+  taxCents: number
 }
 
 const INVOICE_PAGES = 5
@@ -238,6 +248,8 @@ export const whmcsInvoicesFor = cache(
             tone: ui.tone,
             owed: ui.owed,
             totalCents: row.totalCents,
+            subtotalCents: row.subtotalCents,
+            taxCents: row.taxCents,
             balanceCents: row.balanceCents > 0 ? row.balanceCents : ui.owed ? row.totalCents : 0,
           }
         })
@@ -253,3 +265,94 @@ export const whmcsInvoicesFor = cache(
 export async function customerWhmcsClientId(customerId: string): Promise<number | null> {
   return linkedClient(customerId)
 }
+
+// ─── balance ─────────────────────────────────────────────────────────────────
+
+export interface WhmcsBalance {
+  /** Unpaid invoices issued up to today, tax included. */
+  invoicesCents: number
+  invoicesCount: number
+  /** Overdue periods WHMCS has not invoiced, tax included (estimated with WHMCS's rate). */
+  uninvoicedCents: number
+  /** Everything owed to be up to date today. */
+  totalCents: number
+  /** Services and domains behind, for the breakdown. */
+  lines: readonly OverdueLine[]
+  /** Tax rate WHMCS applies to this customer, read from their latest invoice. */
+  taxRate: number
+}
+
+const RECURRING_STATUSES = new Set(["Active", "Suspended"])
+const RENEWING_DOMAIN_STATUSES = new Set(["Active", "Grace"])
+
+/** The tax rate WHMCS applied on the customer's latest invoice with a taxable base. */
+function taxRateOf(invoices: readonly WhmcsInvoiceView[]): number {
+  const latest = invoices.find((invoice) => invoice.subtotalCents > 0)
+  return latest ? latest.taxCents / latest.subtotalCents : 0
+}
+
+/**
+ * What the customer owes to be up to date: the unpaid invoices plus every renewal period
+ * that has passed since, which WHMCS does not invoice while the first one stays unpaid.
+ */
+export const whmcsBalanceFor = cache(
+  async (customerId: string): Promise<WhmcsRead<WhmcsBalance>> => {
+    const clientId = await linkedClient(customerId)
+    if (clientId === null) return { state: "not_linked" }
+    const invoices = await whmcsInvoicesFor(customerId)
+    if (invoices.state !== "ok") return invoices
+    try {
+      const now = new Date()
+      const [services, olaIds] = await Promise.all([rawServices(clientId), olaManagedServiceIds(customerId)])
+      // Domains need their own permission: without it, they simply do not add up.
+      const domains = await rawDomains(clientId).catch(() => [])
+
+      const lines: OverdueLine[] = []
+      for (const service of services) {
+        if (!RECURRING_STATUSES.has(service.status) || olaIds.has(service.serviceId)) continue
+        const line = overdueLine({
+          name: [service.productName, service.domain].filter(Boolean).join(" · ") || "Servicio",
+          dueAt: parseWhmcsDate(service.nextDueDate),
+          months: cycleMonths(service.billingCycle),
+          amountCents: service.recurringAmountCents,
+          now,
+        })
+        if (line) lines.push(line)
+      }
+      for (const domain of domains) {
+        if (!RENEWING_DOMAIN_STATUSES.has(domain.status) || domain.doNotRenew) continue
+        const line = overdueLine({
+          name: `Dominio ${domain.domain}`,
+          dueAt: parseWhmcsDate(domain.nextDueDate),
+          months: (domain.registrationPeriod ?? 1) * 12,
+          amountCents: domain.recurringAmountCents,
+          now,
+        })
+        if (line) lines.push(line)
+      }
+
+      const taxRate = taxRateOf(invoices.items)
+      const pending = pendingBalance(invoices.items, now)
+      const uninvoicedCents = lines.reduce(
+        (sum, line) => sum + Math.round(line.uninvoicedPeriods * line.amountCents * (1 + taxRate)),
+        0,
+      )
+      lines.sort((a, b) => a.since.getTime() - b.since.getTime())
+      return {
+        state: "ok",
+        items: [
+          {
+            invoicesCents: pending.cents,
+            invoicesCount: pending.count,
+            uninvoicedCents,
+            totalCents: pending.cents + uninvoicedCents,
+            lines,
+            taxRate,
+          },
+        ],
+      }
+    } catch (error) {
+      return failure(error)
+    }
+  },
+)

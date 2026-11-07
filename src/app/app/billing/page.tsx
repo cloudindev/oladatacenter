@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { formatCents } from "@ola/core"
 
 import { Notice, PageTitle, Panel } from "@/components/app/ui"
@@ -19,6 +20,32 @@ import { BillingIncomplete } from "./incomplete"
 export const metadata: Metadata = {
   title: "Mis facturas · OLA",
   description: "Tus facturas y su estado de pago.",
+}
+
+const PAGE_SIZE = 25
+
+function Pager({ page, pages }: { page: number; pages: number }) {
+  if (pages <= 1) return null
+  const link = (target: number, label: string, disabled: boolean) =>
+    disabled ? (
+      <span className="label-mono text-text-muted/50">{label}</span>
+    ) : (
+      <Link
+        href={target === 1 ? "/app/billing" : `/app/billing?pagina=${target}`}
+        className="label-mono text-text-base underline decoration-border-base underline-offset-4 hover:decoration-accent-ink"
+      >
+        {label}
+      </Link>
+    )
+  return (
+    <nav aria-label="Páginas de facturas" className="mt-4 flex items-center justify-between gap-4">
+      {link(page - 1, "← Más recientes", page <= 1)}
+      <span className="text-sm text-text-muted">
+        Página {page} de {pages}
+      </span>
+      {link(page + 1, "Más antiguas →", page >= pages)}
+    </nav>
+  )
 }
 
 export default async function InvoicesPage(props: {
@@ -56,6 +83,11 @@ export default async function InvoicesPage(props: {
   }
 
   const pending = whmcs.state === "ok" ? pendingBalance(whmcs.items, new Date()) : null
+  const all = whmcs.state === "ok" ? whmcs.items : []
+  const pages = Math.max(1, Math.ceil(all.length / PAGE_SIZE))
+  const asked = Number(params.pagina)
+  const page = Number.isInteger(asked) && asked >= 1 ? Math.min(asked, pages) : 1
+  const shown = all.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
 
   return (
     <>
@@ -71,9 +103,12 @@ export default async function InvoicesPage(props: {
         </div>
       ) : null}
       {whmcs.state === "ok" ? (
-        <Panel className="p-0 overflow-hidden">
-          <WhmcsInvoiceTable invoices={whmcs.items} />
-        </Panel>
+        <>
+          <Panel className="p-0 overflow-hidden">
+            <WhmcsInvoiceTable invoices={shown} />
+          </Panel>
+          <Pager page={page} pages={pages} />
+        </>
       ) : null}
     </>
   )

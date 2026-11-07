@@ -55,6 +55,7 @@ export default async function ServersPage() {
     pendingOrderHref(),
   ])
   const otherVps = await whmcsProductsOfKind(context.customerId, "vps")
+  const hasOtherVps = otherVps.state === "ok" && otherVps.items.length > 0
   const pendingSummary = pendingOrder ? await pendingOrderSummary(pendingOrder) : null
 
   return (
@@ -110,18 +111,20 @@ export default async function ServersPage() {
           {services.message} Vuelve a intentarlo en unos minutos.
         </Notice>
       ) : services.data.length === 0 ? (
-        <EmptyState
-          illustration={<EmptyServersIllustration className="h-auto w-full text-bg-dark" />}
-          action={
-            <ButtonLink href="/vps/configurar" withArrow>
-              Crear servidor
-            </ButtonLink>
-          }
-        >
-          {otherVps.state === "ok" && otherVps.items.some((item) => item.live)
-            ? "Todavía no has creado ningún servidor desde OLA. Abajo tienes los VPS que ya tenías con nosotros."
-            : "Todavía no tienes ningún servidor con nosotros."}
-        </EmptyState>
+        // With servers from before OLA there is nothing to "start": the list below and the
+        // button at the top are enough.
+        hasOtherVps ? null : (
+          <EmptyState
+            illustration={<EmptyServersIllustration className="h-auto w-full text-bg-dark" />}
+            action={
+              <ButtonLink href="/vps/configurar" withArrow>
+                Crear servidor
+              </ButtonLink>
+            }
+          >
+            Todavía no tienes ningún servidor con nosotros.
+          </EmptyState>
+        )
       ) : (
         <ul className="space-y-4">
           {services.data.map((service) => (
@@ -133,8 +136,8 @@ export default async function ServersPage() {
       )}
 
       {otherVps.state === "unavailable" || (otherVps.state === "ok" && otherVps.items.length > 0) ? (
-        <section className="mt-10">
-          <Eyebrow>Otros VPS de tu cuenta</Eyebrow>
+        <section className={services.ok && services.data.length > 0 ? "mt-10" : ""}>
+          {services.ok && services.data.length > 0 ? <Eyebrow>Otros VPS de tu cuenta</Eyebrow> : null}
           <WhmcsReadNotice read={otherVps} what="tus otros VPS" />
           {otherVps.state === "ok" ? (
             <>

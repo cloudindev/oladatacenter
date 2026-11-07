@@ -421,3 +421,17 @@ el resto funciona.
 - **Dominios.** Como en WHMCS casi ninguno tiene fecha de caducidad (no hay módulo de
   registrador), se usa el próximo vencimiento. Los DNS se leen del DNS público (registros NS,
   2 s de límite, 10 min de caché), porque WHMCS no puede darlos.
+
+## 2026-11-08 — «Mi saldo» es lo que hace falta para estar al día, no solo lo facturado
+
+WHMCS emite la factura del primer periodo impagado de cada servicio y no genera más mientras
+siga pendiente, aunque pasen meses. «Mi saldo» suma:
+
+1. el importe pendiente de las facturas impagadas o en reclamación emitidas hasta hoy, y
+2. los periodos vencidos posteriores, que WHMCS aún no ha facturado: por cada servicio activo o
+   suspendido (todos los recurrentes, no solo los que se ven en el panel) y cada dominio activo
+   o en gracia con renovación, las fechas de renovación alcanzadas desde su próximo vencimiento
+   menos la primera, por su precio, con el tipo de impuesto de la última factura del cliente.
+
+Se muestra en negativo con su desglose por servicio. Es una estimación: las facturas reales de
+esos periodos las emitirá WHMCS al ponerse al día.

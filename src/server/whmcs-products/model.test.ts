@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 import {
+  addMonthsUtc,
   byRelevance,
+  cycleMonths,
+  cyclesDue,
+  overdueLine,
   cycleLabel,
   domainStatusUi,
   invoiceStatusUi,
@@ -116,5 +120,35 @@ describe("invoices", () => {
       { owed: true, issuedAt: new Date("2026-12-01"), balanceCents: 5_000 },
     ]
     expect(pendingBalance(invoices, now)).toEqual({ cents: 24_380, count: 2 })
+  })
+})
+
+describe("periods owed to be up to date", () => {
+  const now = new Date("2026-11-08T12:00:00Z")
+
+  it("counts every renewal date reached, monthly and yearly", () => {
+    expect(cyclesDue(new Date("2026-01-18"), 1, now)).toBe(10) // 18 Jan … 18 Oct
+    expect(cyclesDue(new Date("2026-06-30"), 12, now)).toBe(1)
+    expect(cyclesDue(new Date("2026-12-01"), 1, now)).toBe(0)
+  })
+
+  it("keeps month ends sane", () => {
+    expect(addMonthsUtc(new Date("2026-01-31"), 1).toISOString()).toBe("2026-02-28T00:00:00.000Z")
+  })
+
+  it("leaves the first period to the unpaid invoice and counts the rest", () => {
+    const line = overdueLine({
+      name: "VPS KVM Starter Int.",
+      dueAt: new Date("2026-01-18"),
+      months: cycleMonths("Monthly"),
+      amountCents: 7_200,
+      now,
+    })
+    expect(line).toMatchObject({ periods: 10, uninvoicedPeriods: 9, amountCents: 7_200 })
+  })
+
+  it("ignores one-off products and services not yet due", () => {
+    expect(cycleMonths("One Time")).toBeNull()
+    expect(overdueLine({ name: "x", dueAt: new Date("2027-01-01"), months: 1, amountCents: 100, now })).toBeNull()
   })
 })

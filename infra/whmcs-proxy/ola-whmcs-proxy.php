@@ -64,20 +64,7 @@ function header_value(string $name): string
     return '';
 }
 
-// X-Ola-Token first: some Plesk/Apache setups strip any header containing "Proxy"
-// (httpoxy hardening), which silently dropped the original X-Proxy-Token.
-$received = header_value('X-Ola-Token');
-if ($received === '') {
-    $received = header_value('X-Proxy-Token');
-}
-// The two reasons are told apart (never the token itself) so a misconfigured
-// front-end that drops the header can be diagnosed from outside.
-if ($received === '') {
-    refuse(401, 'unauthorized (no token received)');
-}
-if (!hash_equals($expected, trim($received))) {
-    refuse(401, 'unauthorized (token mismatch)');
-}
+
 // The target is pinned. An absent header means "the only one"; any other value is refused.
 $target = header_value('X-Target-Url');
 if ($target !== '' && $target !== TARGET) {
@@ -87,6 +74,32 @@ if ($target !== '' && $target !== TARGET) {
 $body = file_get_contents('php://input', false, null, 0, MAX_BODY_BYTES + 1);
 if ($body === false || strlen($body) > MAX_BODY_BYTES) {
     refuse(413, 'body too large');
+}
+
+// The token may also travel in the form body (field `ola_proxy_token`), which no
+// front-end strips. It is removed before forwarding, so WHMCS never sees it.
+$bodyToken = '';
+if (preg_match('/(?:^|&)ola_proxy_token=([^&]*)/', $body, $match) === 1) {
+    $bodyToken = urldecode($match[1]);
+    $body = ltrim((string) preg_replace('/(?:^|&)ola_proxy_token=[^&]*/', '', $body), '&');
+}
+
+// X-Ola-Token first: some Plesk/Apache setups strip any header containing "Proxy"
+// (httpoxy hardening), which silently dropped the original X-Proxy-Token.
+$received = header_value('X-Ola-Token');
+if ($received === '') {
+    $received = header_value('X-Proxy-Token');
+}
+if ($received === '') {
+    $received = $bodyToken;
+}
+// The two reasons are told apart (never the token itself) so a misconfigured
+// front-end that drops the header can be diagnosed from outside.
+if ($received === '') {
+    refuse(401, 'unauthorized (no token received)');
+}
+if (!hash_equals($expected, trim($received))) {
+    refuse(401, 'unauthorized (token mismatch)');
 }
 
 $curl = curl_init(TARGET);
@@ -108,7 +121,6 @@ curl_setopt_array($curl, [
 $response = curl_exec($curl);
 $status = (int) curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
 $contentType = (string) curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
-curl_close($curl);
 
 // Method, status and duration only: never the body, never the headers.
 error_log(sprintf(

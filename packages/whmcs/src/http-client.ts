@@ -64,6 +64,8 @@ import type {
 const DEFAULT_TIMEOUT_MS = 20_000
 const DEFAULT_MAX_RETRIES = 3
 const DEFAULT_BACKOFF_MS = 250
+/** Form field carrying the proxy token; stripped by the proxy before forwarding. */
+export const PROXY_TOKEN_FIELD = "ola_proxy_token"
 
 export interface HttpWhmcsClientOptions {
   /** Full URL of `includes/api.php`, e.g. `https://panel.cloudin.pro/includes/api.php`. */
@@ -531,6 +533,9 @@ export class HttpWhmcsClient implements WhmcsClient {
       // WHMCS reads booleans with its own truthiness helper: "1"/"0" is always understood.
       params.set(key, typeof value === "boolean" ? (value ? "1" : "0") : String(value))
     }
+    // Also in the body: front-ends may strip custom headers, never the body. The proxy
+    // removes this field before forwarding, so WHMCS never sees it.
+    if (this.proxyUrl && this.proxyToken) params.set(PROXY_TOKEN_FIELD, this.proxyToken)
     return params.toString()
   }
 }

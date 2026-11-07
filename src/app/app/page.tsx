@@ -41,12 +41,12 @@ import {
 } from "@/server/services/repository"
 import { discardPendingOrder } from "./pending-order-actions"
 import {
+  whmcsBalanceFor,
   whmcsDomainsFor,
   whmcsInvoicesFor,
   whmcsProductsFor,
   type WhmcsProductView,
 } from "@/server/whmcs-products"
-import { pendingBalance } from "@/server/whmcs-products/model"
 import type { StatusTone } from "@/components/app/ui"
 
 /** One line of the "payment state" card, whatever it comes from. */
@@ -115,7 +115,8 @@ export default async function DashboardPage(props: {
     whmcsDomainsFor(customerId),
     whmcsInvoicesFor(customerId),
   ])
-  const pending = whmcsInvoices.state === "ok" ? pendingBalance(whmcsInvoices.items, now) : null
+  const balanceRead = await whmcsBalanceFor(customerId)
+  const owed = balanceRead.state === "ok" ? balanceRead.items[0] : undefined
   const otherProducts = whmcsProducts.state === "ok" ? whmcsProducts.items.filter((p) => p.live) : []
   const otherDomains = whmcsDomains.state === "ok" ? whmcsDomains.items.filter((d) => d.live) : []
   const countOf = (kind: WhmcsProductView["kind"]) => otherProducts.filter((p) => p.kind === kind).length
@@ -406,12 +407,11 @@ export default async function DashboardPage(props: {
                 <Wallet aria-hidden className="h-4 w-4 text-text-muted" strokeWidth={1.7} />
               </span>
               <div>
-                {pending && pending.cents > 0 ? (
+                {owed && owed.totalCents > 0 ? (
                   <>
-                    <p className="text-2xl font-light text-[#8a2d26]">−{formatCents(pending.cents)}</p>
+                    <p className="text-2xl font-light text-[#8a2d26]">−{formatCents(owed.totalCents)}</p>
                     <p className="text-xs text-text-muted">
-                      Pendiente de pago en {pending.count}{" "}
-                      {pending.count === 1 ? "factura" : "facturas"}
+                      Para estar al día hoy
                       {credit.data.balance > 0
                         ? ` · ${formatCents(credit.data.balance)} de crédito a tu favor`
                         : ""}

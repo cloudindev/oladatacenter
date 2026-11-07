@@ -190,3 +190,72 @@ export function pendingBalance(
   }
   return { cents, count }
 }
+
+// ─── what the customer owes to be up to date ─────────────────────────────────
+
+const CYCLE_MONTHS: Readonly<Record<string, number>> = {
+  Monthly: 1,
+  Quarterly: 3,
+  "Semi-Annually": 6,
+  Annually: 12,
+  Biennially: 24,
+  Triennially: 36,
+}
+
+/** Months per billing cycle; null for one-off or free products, which never recur. */
+export function cycleMonths(cycle: string | null): number | null {
+  return cycle ? (CYCLE_MONTHS[cycle] ?? null) : null
+}
+
+/** Adds whole months in UTC, clamping to the month's last day (31 Jan + 1 → 28/29 Feb). */
+export function addMonthsUtc(date: Date, months: number): Date {
+  const year = date.getUTCFullYear()
+  const month = date.getUTCMonth() + months
+  const lastDay = new Date(Date.UTC(year, month + 1, 0)).getUTCDate()
+  return new Date(Date.UTC(year, month, Math.min(date.getUTCDate(), lastDay)))
+}
+
+/** How many renewal dates, starting at `dueAt`, have arrived by `now` (0 if not due yet). */
+export function cyclesDue(dueAt: Date, months: number, now: Date): number {
+  let count = 0
+  for (let at = dueAt; at.getTime() <= now.getTime() && count < 240; count += 1) {
+    at = addMonthsUtc(dueAt, months * (count + 1))
+  }
+  return count
+}
+
+export interface OverdueLine {
+  name: string
+  /** First unpaid renewal date. */
+  since: Date
+  /** Renewal dates reached by today. */
+  periods: number
+  /** Periods WHMCS has not invoiced yet: all but the first, which is on the unpaid invoice. */
+  uninvoicedPeriods: number
+  /** Price per period, before tax, in cents. */
+  amountCents: number
+}
+
+/**
+ * One line per recurring service or domain whose renewal date has passed. WHMCS invoices
+ * only the first missed period and generates nothing more while it stays unpaid, so the
+ * rest is counted here.
+ */
+export function overdueLine(input: {
+  name: string
+  dueAt: Date | null
+  months: number | null
+  amountCents: number
+  now: Date
+}): OverdueLine | null {
+  if (input.dueAt === null || input.months === null || input.amountCents <= 0) return null
+  const periods = cyclesDue(input.dueAt, input.months, input.now)
+  if (periods === 0) return null
+  return {
+    name: input.name,
+    since: input.dueAt,
+    periods,
+    uninvoicedPeriods: periods - 1,
+    amountCents: input.amountCents,
+  }
+}

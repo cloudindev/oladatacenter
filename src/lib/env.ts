@@ -44,7 +44,7 @@ const serverSchema = z.object({
   WHMCS_API_SECRET: z.string().optional(),
   /** Fixed-IP proxy, because Vercel egress IPs are not static. */
   WHMCS_PROXY_URL: z.string().url().optional(),
-  /** Shared secret for the fixed-IP proxy (`X-Proxy-Token`). Required when the proxy is set. */
+  /** Shared secret for the fixed-IP proxy (`X-Ola-Token`). Required when the proxy is set. */
   WHMCS_PROXY_TOKEN: z.string().min(32).optional(),
   WHMCS_WRITE_ENABLED: envFlag,
   WHMCS_WEBHOOK_SECRET: z.string().optional(),

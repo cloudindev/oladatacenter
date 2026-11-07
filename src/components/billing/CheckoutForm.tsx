@@ -214,7 +214,13 @@ export function CheckoutForm({
       ) : (
         <div className="mb-5">
           <p className="label-mono text-text-muted mb-3">Datos de la tarjeta</p>
-          <div ref={cardSlot} className="min-h-[180px]" />
+          {disabled ? (
+            <p className="rounded-lg border border-dashed border-border-base px-4 py-6 text-sm text-text-muted">
+              El formulario de la tarjeta aparece en cuanto termines de verificar tu cuenta.
+            </p>
+          ) : (
+            <div ref={cardSlot} className="min-h-[180px]" />
+          )}
           {phase === "loading_card_form" ? (
             <p className="flex items-center gap-2 text-sm text-text-muted">
               <Spinner /> {PHASE_LABEL.loading_card_form}

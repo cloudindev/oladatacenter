@@ -72,7 +72,7 @@ export interface HttpWhmcsClientOptions {
   secret: string
   /** Optional fixed-IP forwarder. When set, requests go here with `X-Target-Url: apiUrl`. */
   proxyUrl?: string
-  /** Shared secret the proxy requires in `X-Proxy-Token`, so nobody else can use it. */
+  /** Shared secret the proxy requires in `X-Ola-Token`, so nobody else can use it. */
   proxyToken?: string
   /** Mirrors WHMCS_WRITE_ENABLED. When false every mutating method throws without calling. */
   writeEnabled: boolean
@@ -430,7 +430,8 @@ export class HttpWhmcsClient implements WhmcsClient {
     // The proxy only ever forwards; it must be told where. Documented in docs/whmcs-setup.md.
     if (this.proxyUrl) {
       headers["x-target-url"] = this.apiUrl
-      if (this.proxyToken) headers["x-proxy-token"] = this.proxyToken
+      // X-Ola-Token: Plesk strips headers containing "Proxy", so the old name never arrived.
+      if (this.proxyToken) headers["x-ola-token"] = this.proxyToken
     }
 
     const controller = new AbortController()

@@ -210,3 +210,22 @@ Nothing below is optional. Tick it in order; each line is verifiable.
 | Abuse report or suspicious signup | [`abuso-y-fraude.md`](./runbooks/abuso-y-fraude.md) |
 
 The runbooks are written in Spanish, for the person on call.
+
+## Importar un cliente existente de WHMCS
+
+Para dar acceso a OLA a un cliente que ya existe en WHMCS (sus pedidos nuevos quedan en la
+misma cuenta de WHMCS):
+
+```bash
+OLA_IMPORT_PASSWORD='…' npx tsx scripts/import-whmcs-client.ts --client <id de WHMCS>
+```
+
+Necesita en el entorno `DATABASE_URL`, `WHMCS_API_*`, `WHMCS_PROXY_URL` y
+`WHMCS_PROXY_TOKEN` (lee la ficha a través del reenviador de IP fija). Copia nombre,
+empresa, NIF, dirección, país y teléfono de WHMCS; marca el email como verificado; deja
+pendientes el teléfono y la tarjeta, como en cualquier alta. Se niega si el email o el id de
+WHMCS ya están en OLA, y si la contraseña no cumple la política salvo con
+`--weak-password-ok`. Deja una fila `customer_imported_from_whmcs` en la auditoría.
+
+Importados: WHMCS #16 Omnisauto LLC (2026-11-07, contraseña elegida por el operador,
+aceptada fuera de política a petición suya).

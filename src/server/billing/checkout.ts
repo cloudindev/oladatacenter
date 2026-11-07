@@ -1429,7 +1429,7 @@ async function recordRenewalFailure(
       retryDate: dateOf("retry_1", deps.now()),
       suspendDate: dateOf("suspended", deps.now()),
       deletionDate: dateOf("terminating", deps.now()),
-      updateCardUrl: `${deps.siteUrl}/app/billing`,
+      updateCardUrl: `${deps.siteUrl}/app/billing/metodos-de-pago`,
       cardBrand: card?.brand ?? null,
       cardLast4: card?.last4 ?? null,
     })

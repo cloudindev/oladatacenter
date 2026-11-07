@@ -48,7 +48,7 @@ export async function storeCardHere(setupIntentId: string): Promise<BillingActio
     if (method.customerId !== session.customer.id) {
       return { ok: false, message: "Esta tarjeta no pertenece a tu cuenta." }
     }
-    revalidatePath("/app/billing")
+    revalidatePath("/app/billing", "layout")
     return { ok: true }
   } catch (error) {
     return { ok: false, message: customerMessageFor(error) }
@@ -60,7 +60,7 @@ export async function makeCardDefault(paymentMethodId: string): Promise<BillingA
   if (!session.customer) return { ok: false, message: "Tu cuenta no está completa." }
   try {
     await setDefaultPaymentMethod(session.customer.id, paymentMethodId)
-    revalidatePath("/app/billing")
+    revalidatePath("/app/billing", "layout")
     return { ok: true }
   } catch (error) {
     return { ok: false, message: customerMessageFor(error) }
@@ -72,7 +72,7 @@ export async function removeCard(paymentMethodId: string): Promise<BillingAction
   if (!session.customer) return { ok: false, message: "Tu cuenta no está completa." }
   try {
     await detachPaymentMethod(session.customer.id, paymentMethodId)
-    revalidatePath("/app/billing")
+    revalidatePath("/app/billing", "layout")
     return { ok: true }
   } catch (error) {
     // The "no puedes quitar la última tarjeta" case lands here with its own message.

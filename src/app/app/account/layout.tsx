@@ -17,14 +17,12 @@ export default async function AccountLayout({ children }: { children: React.Reac
   await requireUser()
 
   return (
-    <div className="flex-1 bg-bg-light">
-      <div className="w-full max-w-[920px] mx-auto px-6 md:px-10 py-12 md:py-16">
-        <PageTitle description="Tus datos, tu seguridad y tus claves de acceso.">
-          Mi cuenta
-        </PageTitle>
-        <AccountTabs />
-        {children}
-      </div>
+    <div className="max-w-[920px]">
+      <PageTitle description="Tus datos, tu seguridad y tus claves de acceso.">
+        Mi cuenta
+      </PageTitle>
+      <AccountTabs />
+      {children}
     </div>
   )
 }

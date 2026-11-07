@@ -9,4 +9,5 @@ export async function discardPendingOrder(): Promise<void> {
   await requireUser()
   await clearPendingOrder()
   revalidatePath("/app")
+  revalidatePath("/app/bare-metal/vps")
 }

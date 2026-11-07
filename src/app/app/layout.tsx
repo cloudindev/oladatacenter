@@ -4,14 +4,12 @@ import Image from "next/image"
 import { redirect } from "next/navigation"
 import { destroySession } from "@/server/auth/session"
 import { customerContext } from "@/server/services/customer"
-import { AppNav } from "@/components/servers/AppNav"
+import { SideMenu, UniverseTabs } from "@/components/app/shell/AppShellNav"
 
 /**
- * Shell of the customer area.
- *
- * Deliberately not the public marketing header: inside the panel the only navigation
- * that matters is servers, billing and account. Same language as oladc.com — off-white
- * canvas, hairline borders, monospace uppercase labels.
+ * Shell of the customer area, organised like the OVHcloud manager: universes across the
+ * top (Inicio, Bare Metal Cloud, Web Cloud) and the current universe's menu on the left.
+ * Same language as oladc.com: off-white canvas, hairline borders, monospace labels.
  */
 
 export const metadata: Metadata = {
@@ -30,13 +28,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen flex flex-col bg-bg-light">
-      <header className="border-b border-border-base bg-surface-light">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="flex items-center justify-between gap-4 h-16">
+      <header className="sticky top-0 z-30 border-b border-border-base bg-surface-light">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6">
+          <div className="flex items-center gap-4 h-16">
             <Link
               href="/app"
               className="flex items-center gap-2 shrink-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
-              aria-label="Panel de OLA"
+              aria-label="Inicio del panel de OLA"
             >
               <Image
                 src="/ola-logo-panel.png"
@@ -46,16 +44,20 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                 priority
                 className="h-6 w-auto"
               />
-              <span className="label-mono text-text-base hidden sm:inline">
-                Panel de cliente
-              </span>
             </Link>
 
-            <div className="flex items-center gap-4 min-w-0">
+            <div className="hidden md:block min-w-0 flex-1 pl-4">
+              <UniverseTabs />
+            </div>
+
+            <div className="ml-auto flex items-center gap-4 min-w-0">
               {context.ok ? (
-                <span className="label-mono text-text-muted truncate max-w-[12rem] hidden sm:inline">
+                <Link
+                  href="/app/account"
+                  className="label-mono text-text-muted hover:text-text-base truncate max-w-[14rem] hidden sm:inline"
+                >
                   {context.email}
-                </span>
+                </Link>
               ) : null}
               <form action={signOut}>
                 <button
@@ -68,16 +70,24 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             </div>
           </div>
 
-          <AppNav />
+          <div className="md:hidden pb-3">
+            <UniverseTabs />
+          </div>
         </div>
       </header>
 
-      <main className="flex-1">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">{children}</div>
-      </main>
+      <div className="flex-1 mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:flex lg:gap-8">
+        <aside className="pt-5 lg:pt-8 lg:w-60 lg:shrink-0">
+          <div className="lg:sticky lg:top-24">
+            <SideMenu />
+          </div>
+        </aside>
+
+        <main className="min-w-0 flex-1 py-6 sm:py-8 lg:py-10">{children}</main>
+      </div>
 
       <footer className="border-t border-border-base">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-6 flex flex-wrap gap-x-6 gap-y-2">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 py-6 flex flex-wrap gap-x-6 gap-y-2">
           <p className="label-mono text-text-muted">OLA Datacenter</p>
           <Link href="/legal/terms" className="label-mono text-text-muted hover:text-text-base">
             Condiciones

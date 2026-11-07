@@ -47,7 +47,7 @@ export async function listBillingInvoices(
   override: BillingDepsOverride = {},
 ): Promise<BillingInvoicesResult> {
   const deps = await resolveDeps(override)
-  const rows = await deps.store.listInvoices(customerId)
+  const invoices = await listInvoiceViews(customerId, override)
 
   const customer = await deps.store.getCustomer(customerId)
   const clientAreaUrl =
@@ -55,21 +55,31 @@ export async function listBillingInvoices(
       ? await deps.ledger.invoiceAreaUrl(customer.whmcsClientId)
       : null
 
-  return {
-    invoices: rows.map((row) => ({
-      id: row.id,
-      reference: row.number ?? String(row.whmcsInvoiceId),
-      issuedAt: row.createdAt,
-      dueAt: row.dueAt,
-      paidAt: row.paidAt,
-      status: row.status,
-      statusLabel: STATUS_LABELS[row.status],
-      subtotal: row.subtotal,
-      tax: row.tax,
-      credit: row.credit,
-      total: row.total,
-      totalLabel: formatCents(row.total),
-    })),
-    clientAreaUrl,
-  }
+  return { invoices, clientAreaUrl }
+}
+
+/**
+ * The invoices alone, from our own copy: no call to WHMCS. For the dashboard, which must
+ * answer fast and keep working when WHMCS does not.
+ */
+export async function listInvoiceViews(
+  customerId: string,
+  override: BillingDepsOverride = {},
+): Promise<readonly BillingInvoiceView[]> {
+  const deps = await resolveDeps(override)
+  const rows = await deps.store.listInvoices(customerId)
+  return rows.map((row) => ({
+    id: row.id,
+    reference: row.number ?? String(row.whmcsInvoiceId),
+    issuedAt: row.createdAt,
+    dueAt: row.dueAt,
+    paidAt: row.paidAt,
+    status: row.status,
+    statusLabel: STATUS_LABELS[row.status],
+    subtotal: row.subtotal,
+    tax: row.tax,
+    credit: row.credit,
+    total: row.total,
+    totalLabel: formatCents(row.total),
+  }))
 }

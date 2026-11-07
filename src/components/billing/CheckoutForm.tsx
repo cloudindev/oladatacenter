@@ -205,7 +205,7 @@ export function CheckoutForm({
           </span>
           .{" "}
           <a
-            href="/app/billing"
+            href="/app/billing/metodos-de-pago"
             className="underline decoration-border-base hover:decoration-accent-ink"
           >
             Cambiar tarjeta

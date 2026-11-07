@@ -170,6 +170,41 @@ export async function sendPhoneOtpAction(form: FormData): Promise<never> {
   redirect("/onboarding?paso=3&ok=codigo_enviado")
 }
 
+/**
+ * Step 3 while `REQUIRE_PHONE_VERIFICATION` is off: the phone is stored as a contact
+ * detail, without an SMS code. It stays unverified, so it does not unlock the welcome
+ * credit; turning the flag on brings the code back for everyone not yet verified.
+ */
+export async function savePhoneContactAction(form: FormData): Promise<never> {
+  const session = await requireUser()
+  const meta = await requestMeta()
+  const customer = await loadCustomer(session.user.id)
+  if (!customer) redirect("/onboarding?error=interno")
+
+  const phone = parsePhone(text(form, "telefono"))
+  if (!phone) redirect("/onboarding?paso=3&error=telefono_invalido")
+
+  if (phone !== customer.phone) {
+    await db()
+      .update(customers)
+      .set({ phone, phoneVerifiedAt: null })
+      .where(eq(customers.id, customer.id))
+    await recordAudit({
+      actorId: session.user.id,
+      actorType: "user",
+      entity: "customer",
+      entityId: customer.id,
+      action: "phone_contact_saved",
+      ip: meta.ip,
+      userAgent: meta.userAgent,
+    })
+  }
+
+  await ensureDeviceCookie()
+  const completion = await maybeCompleteVerification(session.user.id)
+  redirect(completion.verified ? `/onboarding?ok=${noticeFor(completion)}` : "/onboarding?ok=telefono_guardado")
+}
+
 export async function verifyPhoneOtpAction(form: FormData): Promise<never> {
   const session = await requireUser()
   const meta = await requestMeta()

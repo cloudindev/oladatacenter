@@ -75,6 +75,12 @@ const serverSchema = z.object({
   ALERTS_EMAIL: z.string().optional(),
   ALERTS_SLACK_WEBHOOK: z.string().optional(),
 
+  /**
+   * Onboarding asks for an SMS code only when true. Off while no SMS provider is wired:
+   * the phone is then a contact detail. The welcome credit always needs a verified phone.
+   */
+  REQUIRE_PHONE_VERIFICATION: envFlag,
+
   /** Use the in-memory mocks instead of the real providers. */
   USE_MOCK_PROVIDERS: envFlag,
   /** Per-provider overrides of USE_MOCK_PROVIDERS, to switch one provider on at a time. */

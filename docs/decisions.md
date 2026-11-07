@@ -341,3 +341,16 @@ OVH con Stripe simulado también se rechaza.
 **Corrección.** La API de WHMCS está en `https://panel.cloudin.pro/includes/api.php`; `/cdin/`
 es la carpeta del panel de administración (la ruta documentada respondía 404). Verificado el
 2026-11-06 con `GetClients` (éxito) y `GetAdminDetails` (rechazada por el rol, como debe).
+
+## 2026-11-07 — Teléfono sin código SMS mientras no haya proveedor
+
+**Decisión (operador).** `REQUIRE_PHONE_VERIFICATION` (apagado por defecto): el paso 3 del
+alta pide el teléfono como dato de contacto, sin código. Encendido, vuelve el código SMS.
+
+**Por qué.** No hay proveedor de SMS contratado, así que nadie podía terminar la
+verificación ni contratar. Como solo vendemos a empresas, email verificado + NIF + tarjeta
+verificada ya filtran.
+
+**Consecuencia.** El saldo de bienvenida sigue exigiendo teléfono verificado
+(`decideWelcomeCredit` usa la regla estricta por defecto), así que queda en pausa hasta que
+haya proveedor de SMS.

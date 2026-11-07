@@ -1,9 +1,11 @@
 import { NextResponse, type NextRequest } from "next/server"
 import {
+  encodePendingOrder,
   isOrderPath,
   PENDING_ORDER_COOKIE,
   PENDING_ORDER_MAX_AGE_SECONDS,
   sanitizePendingOrder,
+  sessionOwnerTag,
 } from "@/lib/pending-order"
 
 /**
@@ -16,10 +18,11 @@ import {
  */
 const SESSION_COOKIE = "ola_session"
 
-export function proxy(request: NextRequest): NextResponse {
+export async function proxy(request: NextRequest): Promise<NextResponse> {
   const { pathname, search } = request.nextUrl
   const target = `${pathname}${search}`
-  const hasSession = Boolean(request.cookies.get(SESSION_COOKIE)?.value)
+  const sessionToken = request.cookies.get(SESSION_COOKIE)?.value
+  const hasSession = Boolean(sessionToken)
   const pending = isOrderPath(pathname) ? sanitizePendingOrder(target) : null
 
   let response: NextResponse
@@ -34,7 +37,9 @@ export function proxy(request: NextRequest): NextResponse {
   // Every visit to the order page refreshes the remembered order. It is only forgotten
   // when the customer discards it or an order is created (see clearPendingOrder).
   if (pending) {
-    response.cookies.set(PENDING_ORDER_COOKIE, pending, {
+    // Tagged with its owner so another account on the same browser never sees it.
+    const owner = sessionToken ? await sessionOwnerTag(sessionToken) : null
+    response.cookies.set(PENDING_ORDER_COOKIE, encodePendingOrder(pending, owner), {
       httpOnly: true,
       sameSite: "lax",
       secure: request.nextUrl.protocol === "https:",

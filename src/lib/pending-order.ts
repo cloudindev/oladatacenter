@@ -25,3 +25,38 @@ export function sanitizePendingOrder(value: string | undefined | null): string |
 export function isOrderPath(pathname: string): boolean {
   return pathname === ORDER_PATH
 }
+
+/**
+ * Cookie payload: `<owner>|<href>`. The owner is the sha256 of the session token that
+ * configured the order (the same value `sessions.token` stores, never the token itself),
+ * or empty when a visitor without a session configured it. Only that owner, or the same
+ * user after signing in again, is ever shown the order: one browser can be shared.
+ */
+export interface PendingOrder {
+  owner: string | null
+  href: string
+}
+
+const OWNER_PATTERN = /^[0-9a-f]{64}$/
+
+export function encodePendingOrder(href: string, owner: string | null): string {
+  return `${owner ?? ""}|${href}`
+}
+
+/** Null for anything malformed, including the old owner-less format. */
+export function decodePendingOrder(value: string | undefined | null): PendingOrder | null {
+  if (!value) return null
+  const separator = value.indexOf("|")
+  if (separator < 0) return null
+  const owner = value.slice(0, separator)
+  const href = sanitizePendingOrder(value.slice(separator + 1))
+  if (!href) return null
+  if (owner !== "" && !OWNER_PATTERN.test(owner)) return null
+  return { owner: owner === "" ? null : owner, href }
+}
+
+/** sha256 hex with Web Crypto, so the proxy can compute the owner without Node APIs. */
+export async function sessionOwnerTag(sessionToken: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(sessionToken))
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("")
+}

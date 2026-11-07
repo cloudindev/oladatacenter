@@ -364,3 +364,21 @@ Mientras se prueba con Stripe en modo test, WHMCS va simulado (`MOCK_WHMCS=true`
 El reenviador de IP fija (`proxy.oladc.com`, 54.37.17.20) quedó verificado el 2026-11-07 con
 `GetClients` a través de él. El token viaja en `X-Ola-Token` y además en el cuerpo
 (`ola_proxy_token`), porque el Plesk de srv008 elimina las cabeceras personalizadas.
+
+## 2026-11-07 — El pedido a medias pertenece a quien lo configuró, no al navegador
+
+**Problema.** La cookie `ola_pending_order` era del navegador: un cliente que entraba
+después en el mismo navegador veía el servidor que había configurado otra cuenta.
+
+**Decisión.** La cookie guarda `<dueño>|<url>`, donde el dueño es el sha256 del token de la
+sesión que lo configuró (el mismo valor que guarda `sessions.token`, nunca el token). Se
+muestra solo a esa sesión, al mismo usuario en una sesión posterior (al entrar, se pasa a
+la nueva sesión) o, si se configuró sin sesión, a quien entre a continuación. Otra cuenta no
+lo ve y tampoco lo borra. Las cookies antiguas sin dueño se descartan.
+Comprobado de punta a punta con dos cuentas en el mismo navegador.
+
+## 2026-11-07 — NIF obligatorio solo en la UE
+
+`taxIdRequiredFor(country)`: obligatorio en la UE (incluida España), opcional fuera, donde no
+repercutimos IVA y muchas empresas no tienen un identificador que nos sirva (p. ej. una LLC
+de EE. UU.). Sin NIF no se consulta VIES.

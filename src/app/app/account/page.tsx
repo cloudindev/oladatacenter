@@ -114,13 +114,16 @@ export default async function AccountPage({
             />
           </Field>
 
-          <Field label="NIF, CIF o NIE" htmlFor="taxId">
+          <Field
+            label="NIF, CIF o NIE"
+            htmlFor="taxId"
+            hint="Obligatorio en la UE. Fuera de la UE, opcional."
+          >
             <Input
               id="taxId"
               name="taxId"
               defaultValue={customer.taxId ?? ""}
               className="font-mono"
-              required
             />
           </Field>
 

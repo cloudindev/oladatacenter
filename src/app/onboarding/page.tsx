@@ -217,14 +217,13 @@ function StepBilling({ customer }: { customer: BillingCustomer }) {
         <Field
           label="NIF, CIF o NIE"
           htmlFor="taxId"
-          hint="Para empresas de otros países de la UE, el número de IVA con prefijo"
+          hint="Obligatorio en la UE (otros países de la UE: número de IVA con prefijo). Fuera de la UE, opcional."
         >
           <Input
             id="taxId"
             name="taxId"
             defaultValue={customer.taxId ?? ""}
             className="font-mono"
-            required
           />
         </Field>
 

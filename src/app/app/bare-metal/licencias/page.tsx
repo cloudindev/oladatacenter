@@ -1,11 +1,13 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { formatCents } from "@ola/core"
-import { ButtonLink, EmptyState, Notice, PageTitle, Panel, StatusBadge } from "@/components/app/ui"
+import { ButtonLink, EmptyState, Eyebrow, Notice, PageTitle, Panel, StatusBadge } from "@/components/app/ui"
 import { formatDate } from "@/components/servers/labels"
 import { customerContext } from "@/server/services/customer"
 import { load } from "@/server/services/load"
 import { listPleskLicencesForCustomer } from "@/server/services/repository"
+import { whmcsProductsOfKind } from "@/server/whmcs-products"
+import { ManagedByCloudinNote, WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
 
 /**
  * Bare Metal Cloud → Licencias. Today only Plesk, which we sell as an option of a VPS:
@@ -44,9 +46,11 @@ export default async function LicencesPage() {
     )
   }
 
-  const licences = await load("listPleskLicencesForCustomer", () =>
-    listPleskLicencesForCustomer(context.customerId),
-  )
+  const [licences, otherLicences] = await Promise.all([
+    load("listPleskLicencesForCustomer", () => listPleskLicencesForCustomer(context.customerId)),
+    whmcsProductsOfKind(context.customerId, "plesk_licence"),
+  ])
+  const hasOther = otherLicences.state === "ok" && otherLicences.items.length > 0
 
   return (
     <>
@@ -58,7 +62,7 @@ export default async function LicencesPage() {
         <Notice tone="warn" title="No hemos podido cargar tus licencias">
           {licences.message} Vuelve a intentarlo en unos minutos.
         </Notice>
-      ) : licences.data.length === 0 ? (
+      ) : licences.data.length === 0 && hasOther ? null : licences.data.length === 0 ? (
         <EmptyState
           action={
             <ButtonLink href="/vps/configurar" withArrow>
@@ -113,6 +117,19 @@ export default async function LicencesPage() {
           </div>
         </Panel>
       )}
+
+      {otherLicences.state === "unavailable" || hasOther ? (
+        <section className="mt-10">
+          <Eyebrow>Otras licencias de tu cuenta</Eyebrow>
+          <WhmcsReadNotice read={otherLicences} what="tus otras licencias" />
+          {otherLicences.state === "ok" ? (
+            <>
+              <WhmcsProductTable items={otherLicences.items} />
+              <ManagedByCloudinNote />
+            </>
+          ) : null}
+        </section>
+      ) : null}
     </>
   )
 }

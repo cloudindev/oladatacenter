@@ -251,6 +251,10 @@ export interface WhmcsService {
   /** WHMCS product id. */
   pid: number
   productName: string | null
+  /** Product group as named in WHMCS, e.g. "Hosting Web". */
+  groupName: string | null
+  /** Dedicated IP plus any assigned ones, in that order. */
+  ips: string[]
   /** WHMCS's per-line "domain" field: we store our service label there. */
   domain: string | null
   status: string
@@ -259,6 +263,20 @@ export interface WhmcsService {
   billingCycle: string | null
   recurringAmountCents: number
   paymentMethod: string | null
+}
+
+export interface WhmcsDomain {
+  domainId: number
+  domain: string
+  status: string
+  registrationDate: string | null
+  expiryDate: string | null
+  nextDueDate: string | null
+  recurringAmountCents: number
+  /** Years per renewal. */
+  registrationPeriod: number | null
+  /** True when the customer asked not to renew it. */
+  doNotRenew: boolean
 }
 
 export interface UpdateServiceInput {
@@ -328,7 +346,11 @@ export interface WhmcsClient {
   /** WRITE. Suspend / unsuspend / terminate and renewal dates. Never deletes. */
   updateService(input: UpdateServiceInput): Promise<void>
 
+  /** Every product of one client, all pages. */
   listServices(clientId: number): Promise<WhmcsService[]>
+
+  /** Every domain of one client, all pages. Needs `GetClientsDomains` in the API role. */
+  listDomains(clientId: number): Promise<WhmcsDomain[]>
 
   /** WRITE. Short-lived token so the customer reaches the WHMCS client area already logged in. */
   createSsoToken(

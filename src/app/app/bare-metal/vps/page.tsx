@@ -20,6 +20,9 @@ import { pendingOrderHref } from "@/server/pending-order"
 import { pendingOrderSummary } from "@/server/pending-order-summary"
 import { discardPendingOrder } from "../../pending-order-actions"
 import { listServicesForCustomer } from "@/server/services/repository"
+import { whmcsProductsOfKind } from "@/server/whmcs-products"
+import { ManagedByCloudinNote, WhmcsProductTable, WhmcsReadNotice } from "@/components/app/WhmcsProducts"
+import { Eyebrow } from "@/components/app/ui"
 import type { ServiceListItem } from "@/server/services/types"
 
 /**
@@ -51,6 +54,7 @@ export default async function ServersPage() {
     load("creditSummary", () => creditSummary(context.customerId)),
     pendingOrderHref(),
   ])
+  const otherVps = await whmcsProductsOfKind(context.customerId, "vps")
   const pendingSummary = pendingOrder ? await pendingOrderSummary(pendingOrder) : null
 
   return (
@@ -114,7 +118,9 @@ export default async function ServersPage() {
             </ButtonLink>
           }
         >
-          Todavía no tienes ningún servidor con nosotros.
+          {otherVps.state === "ok" && otherVps.items.some((item) => item.live)
+            ? "Todavía no has creado ningún servidor desde OLA. Abajo tienes los VPS que ya tenías con nosotros."
+            : "Todavía no tienes ningún servidor con nosotros."}
         </EmptyState>
       ) : (
         <ul className="space-y-4">
@@ -125,6 +131,19 @@ export default async function ServersPage() {
           ))}
         </ul>
       )}
+
+      {otherVps.state === "unavailable" || (otherVps.state === "ok" && otherVps.items.length > 0) ? (
+        <section className="mt-10">
+          <Eyebrow>Otros VPS de tu cuenta</Eyebrow>
+          <WhmcsReadNotice read={otherVps} what="tus otros VPS" />
+          {otherVps.state === "ok" ? (
+            <>
+              <WhmcsProductTable items={otherVps.items} showIps />
+              <ManagedByCloudinNote />
+            </>
+          ) : null}
+        </section>
+      ) : null}
     </>
   )
 }

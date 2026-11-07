@@ -14,6 +14,7 @@ import type {
   WhmcsInvoiceDetail,
   WhmcsInvoiceSummary,
   WhmcsService,
+  WhmcsDomain,
   WhmcsSsoDestination,
 } from "./client"
 
@@ -227,6 +228,8 @@ export class MockWhmcsClient implements WhmcsClient {
       clientId: input.clientId,
       orderId,
       pid: input.pid,
+      groupName: "OLA VPS",
+      ips: [],
       productName: `OLA VPS (pid ${input.pid})`,
       domain: input.domain ?? null,
       status: "Pending",
@@ -318,6 +321,18 @@ export class MockWhmcsClient implements WhmcsClient {
     if (!service) throw notFound("UpdateClientProduct", `Service ID ${input.serviceId} not found`)
     if (input.status !== undefined) service.status = input.status
     if (input.nextDueDate !== undefined) service.nextDueDate = formatDate(input.nextDueDate)
+  }
+
+  /** Test seam: domains per client. Empty unless a test adds some. */
+  private domains = new Map<number, WhmcsDomain[]>()
+
+  setDomains(clientId: number, domains: WhmcsDomain[]): void {
+    this.domains.set(clientId, domains.map((domain) => ({ ...domain })))
+  }
+
+  async listDomains(clientId: number): Promise<WhmcsDomain[]> {
+    this.guard("GetClientsDomains")
+    return (this.domains.get(clientId) ?? []).map((domain) => ({ ...domain }))
   }
 
   async listServices(clientId: number): Promise<WhmcsService[]> {

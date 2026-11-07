@@ -30,6 +30,7 @@ export type {
   WhmcsLogFields,
   WhmcsLogger,
   WhmcsService,
+  WhmcsDomain,
   WhmcsServiceStatus,
   WhmcsSsoDestination,
 } from "./client"

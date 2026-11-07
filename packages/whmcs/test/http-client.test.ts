@@ -662,3 +662,100 @@ describe("HttpWhmcsClient retries", () => {
     expect((error as WhmcsApiError).retryable).toBe(true)
   })
 })
+
+// ─── customer area reads ─────────────────────────────────────────────────────
+
+describe("HttpWhmcsClient customer area reads", () => {
+  const product = (id: number, pid: number) => ({
+    id: String(id),
+    clientid: "16",
+    pid: String(pid),
+    name: "VPS KVM Starter Int.",
+    groupname: "Servidores VPS",
+    domain: "",
+    dedicatedip: "51.75.1.2",
+    assignedips: "51.75.1.3\r\n51.75.1.4",
+    status: "Active",
+    regdate: "2024-08-06",
+    nextduedate: "2026-02-06",
+    billingcycle: "Monthly",
+    recurringamount: "72.00",
+    // Returned by WHMCS and never wanted on our side.
+    password: "service-root-password",
+    username: "root",
+  })
+
+  it("maps products with their group and IPs, and drops credentials", async () => {
+    const { instance } = client([
+      () => jsonResponse({ result: "success", totalresults: "1", products: { product: [product(463, 85)] } }),
+    ])
+
+    const [service] = await instance.listServices(16)
+
+    expect(service).toMatchObject({
+      serviceId: 463,
+      pid: 85,
+      groupName: "Servidores VPS",
+      ips: ["51.75.1.2", "51.75.1.3", "51.75.1.4"],
+      recurringAmountCents: 7200,
+    })
+    expect(JSON.stringify(service)).not.toContain("service-root-password")
+  })
+
+  it("follows the pages until it has every product", async () => {
+    const page = (start: number, count: number) =>
+      Array.from({ length: count }, (_, index) => product(start + index, 1))
+    const { instance, calls } = client([
+      () => jsonResponse({ result: "success", totalresults: "130", products: { product: page(1, 100) } }),
+      () => jsonResponse({ result: "success", totalresults: "130", products: { product: page(101, 30) } }),
+    ])
+
+    const services = await instance.listServices(16)
+
+    expect(services).toHaveLength(130)
+    expect(calls).toHaveLength(2)
+    expect(bodyParams(String(calls[1]?.body)).get("limitstart")).toBe("100")
+  })
+
+  it("reads the client's domains", async () => {
+    const { instance, calls } = client([
+      () =>
+        jsonResponse({
+          result: "success",
+          totalresults: "1",
+          domains: {
+            domain: [
+              {
+                id: "9",
+                domainname: "omnisauto.com",
+                status: "Active",
+                regdate: "2024-02-01",
+                expirydate: "2027-02-01",
+                nextduedate: "2027-02-01",
+                recurringamount: "14.99",
+                registrationperiod: "1",
+                donotrenew: "0",
+              },
+            ],
+          },
+        }),
+    ])
+
+    const domains = await instance.listDomains(16)
+
+    expect(bodyParams(String(calls[0]?.body)).get("action")).toBe("GetClientsDomains")
+    expect(domains).toEqual([
+      {
+        domainId: 9,
+        domain: "omnisauto.com",
+        status: "Active",
+        registrationDate: "2024-02-01",
+        expiryDate: "2027-02-01",
+        nextDueDate: "2027-02-01",
+        recurringAmountCents: 1499,
+        registrationPeriod: 1,
+        doNotRenew: false,
+      },
+    ])
+  })
+})

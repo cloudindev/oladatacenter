@@ -25,8 +25,8 @@ export default async function ServerLayout({
   if (page.state === "unavailable") {
     return (
       <div>
-        <Link href="/app" className="label-mono text-text-muted hover:text-text-base">
-          ← Tus servidores
+        <Link href="/app/bare-metal/vps" className="label-mono text-text-muted hover:text-text-base">
+          ← Servidores VPS
         </Link>
         <div className="mt-6">
           <Notice tone="warn" title="No hemos podido cargar este servidor">
@@ -46,10 +46,10 @@ export default async function ServerLayout({
   return (
     <div>
       <Link
-        href="/app"
+        href="/app/bare-metal/vps"
         className="label-mono text-text-muted hover:text-text-base focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
       >
-        ← Tus servidores
+        ← Servidores VPS
       </Link>
 
       <div className="mt-5 mb-6">

@@ -385,7 +385,7 @@ function StepPhoneContact({ customer }: { customer: BillingCustomer }) {
  * adds the card there and comes back, and the button below re-reads `payment_methods`.
  *
  * TODO(billing): point the link at the final payment-methods route once the billing
- * module settles on one; `/app/billing` is its entry point today.
+ * module settles on one; `/app/billing/metodos-de-pago` is its entry point today.
  */
 function StepCard() {
   return (
@@ -398,7 +398,7 @@ function StepCard() {
         contratas un servidor.
       </p>
       <div className="flex flex-wrap items-center gap-4">
-        <ButtonLink href="/app/billing" withArrow>
+        <ButtonLink href="/app/billing/metodos-de-pago" withArrow>
           Añadir tarjeta
         </ButtonLink>
         <form action={refreshVerificationAction}>

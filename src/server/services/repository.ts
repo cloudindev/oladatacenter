@@ -200,6 +200,53 @@ export async function listServiceAddons(serviceId: string): Promise<ServiceAddon
   }))
 }
 
+/** A Plesk licence, which we sell as an option of one VPS. */
+export interface PleskLicenceView {
+  id: string
+  serviceId: string
+  /** The VPS it is attached to, as the customer named it. */
+  serviceName: string
+  /** "Plesk Web Admin", "Plesk Web Pro"… */
+  edition: string
+  status: "pending" | "active" | "removed"
+  monthlyPrice: number
+  createdAt: Date
+}
+
+/** Every Plesk licence of one customer, across all their servers, newest first. */
+export async function listPleskLicencesForCustomer(
+  customerId: string,
+): Promise<PleskLicenceView[]> {
+  const rows = await db()
+    .select({
+      id: serviceAddons.id,
+      serviceId: services.id,
+      displayName: services.displayName,
+      planName: plans.name,
+      edition: addons.name,
+      status: serviceAddons.status,
+      monthlyPrice: serviceAddons.monthlyPrice,
+      createdAt: serviceAddons.createdAt,
+    })
+    .from(serviceAddons)
+    .innerJoin(addons, eq(addons.id, serviceAddons.addonId))
+    .innerJoin(services, eq(services.id, serviceAddons.serviceId))
+    .innerJoin(plans, eq(plans.id, services.planId))
+    .where(and(eq(services.customerId, customerId), eq(addons.family, "plesk")))
+    .orderBy(desc(serviceAddons.createdAt))
+
+  return rows.map((row) => ({
+    id: row.id,
+    serviceId: row.serviceId,
+    serviceName: row.displayName ?? row.planName,
+    // OVH names the option "Option Plesk Web Admin"; the customer only needs the edition.
+    edition: row.edition.replace(/^option\s+/i, ""),
+    status: row.status,
+    monthlyPrice: row.monthlyPrice,
+    createdAt: row.createdAt,
+  }))
+}
+
 export async function listSshKeysForCustomer(customerId: string): Promise<SshKeyView[]> {
   const rows = await db()
     .select({

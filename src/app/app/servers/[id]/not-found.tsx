@@ -11,7 +11,7 @@ export default function ServerNotFound() {
       <PageTitle>No encontramos este servidor</PageTitle>
       <EmptyState
         action={
-          <ButtonLink href="/app" withArrow>
+          <ButtonLink href="/app/bare-metal/vps" withArrow>
             Ver tus servidores
           </ButtonLink>
         }

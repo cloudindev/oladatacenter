@@ -102,6 +102,7 @@ function detailOf(error: unknown): string {
 function revalidateService(serviceId: string): void {
   revalidatePath(`/app/servers/${serviceId}`, "layout")
   revalidatePath("/app")
+  revalidatePath("/app/bare-metal/vps")
 }
 
 async function auditService(

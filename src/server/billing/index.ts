@@ -77,6 +77,7 @@ export {
 
 export {
   listBillingInvoices,
+  listInvoiceViews,
   type BillingInvoiceView,
   type BillingInvoicesResult,
 } from "./invoices"

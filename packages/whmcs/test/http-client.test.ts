@@ -131,6 +131,7 @@ describe("HttpWhmcsClient request shape", () => {
     expect(call.url).toBe("https://whmcs-proxy.internal/forward")
     expect(call.headers["x-target-url"]).toBe(CREDENTIALS.apiUrl)
     expect(call.headers["x-ola-token"]).toBe("proxy-token-1")
+    expect(new URLSearchParams(String(call.body)).get("ola_proxy_token")).toBe("proxy-token-1")
   })
 
   it("never logs the identifier or the secret", async () => {

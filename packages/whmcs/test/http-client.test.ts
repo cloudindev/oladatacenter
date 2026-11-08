@@ -755,6 +755,11 @@ describe("HttpWhmcsClient customer area reads", () => {
         recurringAmountCents: 1499,
         registrationPeriod: 1,
         doNotRenew: false,
+        registrationType: null,
+        registrar: null,
+        dnsManagement: false,
+        emailForwarding: false,
+        idProtection: false,
       },
     ])
   })

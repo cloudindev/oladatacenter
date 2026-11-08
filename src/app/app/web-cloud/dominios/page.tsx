@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { formatCents } from "@ola/core"
 import { EmptyState, Notice, PageTitle, Panel, StatusBadge } from "@/components/app/ui"
 import { WhmcsReadNotice } from "@/components/app/WhmcsProducts"
@@ -29,7 +30,12 @@ function DomainRows({ items }: { items: readonly WhmcsDomainView[] }) {
           {items.map((item) => (
             <tr key={item.id} className="border-b border-border-base last:border-b-0 align-top">
               <td className="px-5 py-4">
-                <p className="font-mono text-text-base">{item.domain}</p>
+                <Link
+                  href={`/app/web-cloud/dominios/${item.id}`}
+                  className="font-mono text-text-base hover:text-accent-ink underline-offset-4 hover:underline"
+                >
+                  {item.domain}
+                </Link>
                 {item.live ? (
                   <div className="mt-1.5 flex gap-2 text-xs text-text-muted">
                     <span className="label-mono pt-px">DNS</span>

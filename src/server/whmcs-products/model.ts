@@ -126,6 +126,26 @@ export function stillVisible(
   return now.getTime() - item.end.getTime() <= INACTIVE_VISIBLE_DAYS * 24 * 60 * 60 * 1000
 }
 
+/**
+ * Each renewal WHMCS has not invoiced, dated on its renewal day, tax included: what the
+ * billing widget adds so its totals match "Mi saldo".
+ */
+export function uninvoicedRenewals(
+  lines: readonly OverdueLine[],
+  taxRate: number,
+): { dueAt: Date; totalCents: number }[] {
+  const out: { dueAt: Date; totalCents: number }[] = []
+  for (const line of lines) {
+    for (let k = 1; k <= line.uninvoicedPeriods; k += 1) {
+      out.push({
+        dueAt: addMonthsUtc(line.since, line.months * k),
+        totalCents: Math.round(line.amountCents * (1 + taxRate)),
+      })
+    }
+  }
+  return out
+}
+
 /** Live first, then by next due date (soonest first), then newest. */
 export function byRelevance<T extends { live: boolean; nextDueAt: Date | null; registeredAt: Date | null }>(
   a: T,
@@ -234,6 +254,8 @@ export interface OverdueLine {
   uninvoicedPeriods: number
   /** Price per period, before tax, in cents. */
   amountCents: number
+  /** Months per period, to date each uninvoiced renewal. */
+  months: number
 }
 
 /**
@@ -257,5 +279,6 @@ export function overdueLine(input: {
     periods,
     uninvoicedPeriods: periods - 1,
     amountCents: input.amountCents,
+    months: input.months,
   }
 }

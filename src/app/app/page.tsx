@@ -47,6 +47,7 @@ import {
   type BillingMonthView,
   type BillingPeriodView,
 } from "@/components/app/BillingWidget"
+import { uninvoicedRenewals } from "@/server/whmcs-products/model"
 import {
   whmcsBalanceFor,
   whmcsDomainsFor,
@@ -189,7 +190,18 @@ export default async function DashboardPage() {
               ? ("cancelled" as const)
               : ("paid" as const),
           total: invoice.totalCents,
-        }))
+        })).concat(
+          // Renewals WHMCS has not invoiced yet (it stops after the first unpaid one), so
+          // the card adds up to the same as "Mi saldo".
+          owed
+            ? uninvoicedRenewals(owed.lines, owed.taxRate).map((renewal) => ({
+                issuedAt: renewal.dueAt,
+                status: "unpaid" as const,
+                total: renewal.totalCents,
+                estimated: true,
+              }))
+            : [],
+        )
       : invoices.ok
         ? invoices.data.map((invoice) => ({
             issuedAt: invoice.issuedAt,
@@ -206,9 +218,10 @@ export default async function DashboardPage() {
           label: option.label,
           totalLabel: formatCents(totals.total),
           countLabel:
-            totals.count === 0
+            (totals.count === 0 && totals.estimated === 0
               ? "Sin facturas en este periodo"
-              : `${totals.count} ${totals.count === 1 ? "factura" : "facturas"}`,
+              : `${totals.count} ${totals.count === 1 ? "factura" : "facturas"}`) +
+            (totals.estimated > 0 ? ` + ${formatCents(totals.estimated)} en renovaciones sin facturar` : ""),
           paidLabel: paid > 0 ? formatCents(paid) : null,
           unpaidLabel: totals.unpaid > 0 ? formatCents(totals.unpaid) : null,
         }

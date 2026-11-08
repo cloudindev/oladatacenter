@@ -35,7 +35,25 @@ describe("invoice totals", () => {
   ]
 
   it("sums last month without cancelled invoices and reports what is unpaid", () => {
-    expect(invoiceTotals(invoices, "mes-pasado", NOW)).toEqual({ total: 3746, count: 2, unpaid: 2659 })
+    expect(invoiceTotals(invoices, "mes-pasado", NOW)).toEqual({
+      total: 3746,
+      count: 2,
+      unpaid: 2659,
+      estimated: 0,
+    })
+  })
+
+  it("adds renewals not invoiced yet as pending, without counting them as invoices", () => {
+    const withRenewal = [
+      ...invoices,
+      { issuedAt: new Date("2026-10-18T00:00:00Z"), status: "unpaid" as const, total: 7200, estimated: true },
+    ]
+    expect(invoiceTotals(withRenewal, "mes-pasado", NOW)).toEqual({
+      total: 10_946,
+      count: 2,
+      unpaid: 9859,
+      estimated: 7200,
+    })
   })
 
   it("covers this month and the last twelve months", () => {

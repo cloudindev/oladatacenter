@@ -77,14 +77,19 @@ export interface InvoiceLike {
   issuedAt: Date
   status: "unpaid" | "paid" | "cancelled" | "refunded"
   total: number
+  /** A renewal owed but not invoiced yet: counts as pending, not as an invoice. */
+  estimated?: boolean
 }
 
 export interface InvoiceTotals {
   /** Sum of the invoices issued in the period, cancelled ones excluded. */
   total: number
+  /** Real invoices only. */
   count: number
-  /** Part of the total still unpaid. */
+  /** Part of the total still unpaid, renewals not yet invoiced included. */
   unpaid: number
+  /** Renewals owed but not invoiced yet, in cents. */
+  estimated: number
 }
 
 export function invoiceTotals(
@@ -96,15 +101,17 @@ export function invoiceTotals(
   let total = 0
   let count = 0
   let unpaid = 0
+  let estimated = 0
   for (const invoice of invoices) {
     if (invoice.status === "cancelled") continue
     const at = invoice.issuedAt.getTime()
     if (at < from.getTime() || at >= to.getTime()) continue
     total += invoice.total
-    count += 1
+    if (invoice.estimated) estimated += invoice.total
+    else count += 1
     if (invoice.status === "unpaid") unpaid += invoice.total
   }
-  return { total, count, unpaid }
+  return { total, count, unpaid, estimated }
 }
 
 /** True when the card expires before the end of the month `days` from now. */

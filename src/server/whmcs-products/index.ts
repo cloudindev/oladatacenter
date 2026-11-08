@@ -4,7 +4,7 @@ import { eq, isNotNull, and } from "drizzle-orm"
 import { customers, db, services } from "@ola/db"
 import type { StatusTone } from "@/components/app/ui"
 import { whmcsReader } from "@/server/providers"
-import { nameserversOf } from "./nameservers"
+import { nameserversOf, publicDnsRecords, type PublicDnsRecord } from "./nameservers"
 import {
   byRelevance,
   cycleLabel,
@@ -356,3 +356,102 @@ export const whmcsBalanceFor = cache(
     }
   },
 )
+
+// ─── detail views ────────────────────────────────────────────────────────────
+
+export interface WhmcsDomainDetail extends WhmcsDomainView {
+  registrationType: "Registro" | "Transferencia" | null
+  /** False when WHMCS has no registrar module for it: no registrar operations yet. */
+  hasRegistrar: boolean
+  dnsManagement: boolean
+  emailForwarding: boolean
+  idProtection: boolean
+  records: readonly PublicDnsRecord[] | null
+  /** Hosting plans of the customer for this same domain. */
+  hosting: readonly WhmcsProductView[]
+}
+
+/** One domain of the customer, or null when it is not theirs (or no longer shown). */
+export async function whmcsDomainDetail(
+  customerId: string,
+  domainId: number,
+): Promise<WhmcsRead<WhmcsDomainDetail> | null> {
+  const clientId = await linkedClient(customerId)
+  if (clientId === null) return null
+  const list = await whmcsDomainsFor(customerId)
+  if (list.state !== "ok") return list
+  const view = list.items.find((item) => item.id === domainId)
+  if (!view) return null
+  try {
+    const raw = (await rawDomains(clientId)).find((row) => row.domainId === domainId)
+    const products = await whmcsProductsFor(customerId)
+    const [nameservers, records] = await Promise.all([
+      view.nameservers ? Promise.resolve(view.nameservers) : nameserversOf(view.domain),
+      publicDnsRecords(view.domain),
+    ])
+    const type = raw?.registrationType?.toLowerCase()
+    return {
+      state: "ok",
+      items: [
+        {
+          ...view,
+          nameservers,
+          registrationType: type === "register" ? "Registro" : type === "transfer" ? "Transferencia" : null,
+          hasRegistrar: Boolean(raw?.registrar),
+          dnsManagement: raw?.dnsManagement ?? false,
+          emailForwarding: raw?.emailForwarding ?? false,
+          idProtection: raw?.idProtection ?? false,
+          records,
+          hosting:
+            products.state === "ok"
+              ? products.items.filter(
+                  (item) => item.kind === "web_hosting" && item.label?.toLowerCase() === view.domain.toLowerCase(),
+                )
+              : [],
+        },
+      ],
+    }
+  } catch (error) {
+    return failure(error)
+  }
+}
+
+export interface WhmcsProductDetail extends WhmcsProductView {
+  username: string | null
+  serverName: string | null
+  usage: { diskMb: number | null; diskLimitMb: number | null; bandwidthMb: number | null; bandwidthLimitMb: number | null }
+  groupName: string | null
+  /** The domain's live nameservers, for hosting plans. */
+  nameservers: readonly string[] | null
+}
+
+/** One classified product of the customer, or null when it is not theirs. */
+export async function whmcsProductDetail(
+  customerId: string,
+  serviceId: number,
+): Promise<WhmcsRead<WhmcsProductDetail> | null> {
+  const clientId = await linkedClient(customerId)
+  if (clientId === null) return null
+  const list = await whmcsProductsFor(customerId)
+  if (list.state !== "ok") return list
+  const view = list.items.find((item) => item.id === serviceId)
+  if (!view) return null
+  try {
+    const raw = (await rawServices(clientId)).find((row) => row.serviceId === serviceId)
+    return {
+      state: "ok",
+      items: [
+        {
+          ...view,
+          username: raw?.username ?? null,
+          serverName: raw?.serverName ?? null,
+          usage: raw?.usage ?? { diskMb: null, diskLimitMb: null, bandwidthMb: null, bandwidthLimitMb: null },
+          groupName: raw?.groupName ?? null,
+          nameservers: view.label ? await nameserversOf(view.label) : null,
+        },
+      ],
+    }
+  } catch (error) {
+    return failure(error)
+  }
+}

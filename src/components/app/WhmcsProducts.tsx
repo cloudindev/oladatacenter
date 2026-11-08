@@ -31,6 +31,13 @@ function money(cents: number, cycle: string): string {
   return cycle.startsWith("/") ? `${formatCents(cents)}${cycle}` : `${formatCents(cents)} ${cycle}`.trim()
 }
 
+/** The detail page of a product, for the kinds that have one. */
+function detailHref(item: WhmcsProductView): string | null {
+  if (item.kind === "web_hosting") return `/app/web-cloud/alojamiento/${item.id}`
+  if (item.kind === "vps") return `/app/bare-metal/vps/cuenta/${item.id}`
+  return null
+}
+
 function Rows({ items, showIps }: { items: readonly WhmcsProductView[]; showIps: boolean }) {
   return (
     <div className="overflow-x-auto">
@@ -50,7 +57,16 @@ function Rows({ items, showIps }: { items: readonly WhmcsProductView[]; showIps:
           {items.map((item) => (
             <tr key={item.id} className="border-b border-border-base last:border-b-0 align-top">
               <td className="px-5 py-4">
-                <p className="text-text-base">{item.label ?? item.name}</p>
+                {detailHref(item) ? (
+                  <a
+                    href={detailHref(item) ?? undefined}
+                    className="text-text-base underline-offset-4 hover:text-accent-ink hover:underline"
+                  >
+                    {item.label ?? item.name}
+                  </a>
+                ) : (
+                  <p className="text-text-base">{item.label ?? item.name}</p>
+                )}
                 {item.label ? <p className="text-xs text-text-muted">{item.name}</p> : null}
               </td>
               {showIps ? (

@@ -625,6 +625,14 @@ function toService(row: WhmcsServiceRecord): WhmcsService {
     ips: [row.dedicatedip, ...(row.assignedips ?? "").split(/[\s,]+/)].filter(
       (ip): ip is string => typeof ip === "string" && ip.length > 0,
     ),
+    username: row.username,
+    serverName: row.servername,
+    usage: {
+      diskMb: row.diskusage,
+      diskLimitMb: row.disklimit,
+      bandwidthMb: row.bwusage,
+      bandwidthLimitMb: row.bwlimit,
+    },
     domain: row.domain,
     status: row.status,
     registrationDate: row.regdate,
@@ -644,8 +652,13 @@ function toDomain(row: WhmcsDomainRecord): WhmcsDomain {
     expiryDate: row.expirydate,
     nextDueDate: row.nextduedate,
     recurringAmountCents: row.recurringamount,
-    registrationPeriod: row.registrationperiod,
+    registrationPeriod: row.registrationperiod ?? row.regperiod,
     doNotRenew: row.donotrenew,
+    registrationType: row.regtype,
+    registrar: row.registrar,
+    dnsManagement: row.dnsmanagement,
+    emailForwarding: row.emailforwarding,
+    idProtection: row.idprotection,
   }
 }
 

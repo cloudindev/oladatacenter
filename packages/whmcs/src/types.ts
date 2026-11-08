@@ -306,6 +306,14 @@ export const whmcsServiceRowSchema = z.object({
   dedicatedip: optionalText.optional().default(null),
   /** Extra IPs, one per line. */
   assignedips: optionalText.optional().default(null),
+  /** Panel/FTP username on the hosting server. Never the password. */
+  username: optionalText.optional().default(null),
+  servername: optionalText.optional().default(null),
+  /** Usage in MB as WHMCS last synced it from the server module. */
+  diskusage: whmcsOptionalInt.optional().default(null),
+  disklimit: whmcsOptionalInt.optional().default(null),
+  bwusage: whmcsOptionalInt.optional().default(null),
+  bwlimit: whmcsOptionalInt.optional().default(null),
   status: z.string(),
   regdate: whmcsDate.optional().default(null),
   nextduedate: whmcsDate.optional().default(null),
@@ -338,7 +346,14 @@ export const whmcsDomainRowSchema = z.object({
   nextduedate: whmcsDate.optional().default(null),
   recurringamount: whmcsCents.optional().default(0),
   registrationperiod: whmcsOptionalInt.optional().default(null),
+  regperiod: whmcsOptionalInt.optional().default(null),
   donotrenew: whmcsBoolean.optional().default(false),
+  /** "Register" or "Transfer". */
+  regtype: optionalText.optional().default(null),
+  registrar: optionalText.optional().default(null),
+  dnsmanagement: whmcsBoolean.optional().default(false),
+  emailforwarding: whmcsBoolean.optional().default(false),
+  idprotection: whmcsBoolean.optional().default(false),
 })
 export type WhmcsDomainRecord = z.infer<typeof whmcsDomainRowSchema>
 

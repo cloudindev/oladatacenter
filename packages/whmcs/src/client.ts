@@ -255,6 +255,12 @@ export interface WhmcsService {
   groupName: string | null
   /** Dedicated IP plus any assigned ones, in that order. */
   ips: string[]
+  /** Hosting panel username (Plesk/FTP). Never a password. */
+  username: string | null
+  /** Server name as WHMCS labels it, e.g. "srv007". */
+  serverName: string | null
+  /** MB, as last synced by WHMCS; null when the module does not report it. */
+  usage: { diskMb: number | null; diskLimitMb: number | null; bandwidthMb: number | null; bandwidthLimitMb: number | null }
   /** WHMCS's per-line "domain" field: we store our service label there. */
   domain: string | null
   status: string
@@ -277,6 +283,13 @@ export interface WhmcsDomain {
   registrationPeriod: number | null
   /** True when the customer asked not to renew it. */
   doNotRenew: boolean
+  /** How it arrived: "Register" or "Transfer". */
+  registrationType: string | null
+  /** Registrar module assigned in WHMCS; null when none (no registrar operations then). */
+  registrar: string | null
+  dnsManagement: boolean
+  emailForwarding: boolean
+  idProtection: boolean
 }
 
 export interface UpdateServiceInput {

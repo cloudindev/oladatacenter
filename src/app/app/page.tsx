@@ -27,7 +27,8 @@ import {
   cardExpiresSoon,
   INVOICE_PERIODS,
   invoiceTotals,
-  parsePeriod,
+  monthlyTotals,
+  type InvoiceLike,
   renewalState,
 } from "@/server/dashboard/model"
 import { listOrdersForCustomer } from "@/server/orders/repository"
@@ -40,6 +41,12 @@ import {
   listServicesForCustomer,
 } from "@/server/services/repository"
 import { discardPendingOrder } from "./pending-order-actions"
+import {
+  BillingWidget,
+  type BillingInvoiceRow,
+  type BillingMonthView,
+  type BillingPeriodView,
+} from "@/components/app/BillingWidget"
 import {
   whmcsBalanceFor,
   whmcsDomainsFor,
@@ -79,9 +86,7 @@ export const metadata: Metadata = {
   title: "Inicio · Panel de cliente · OLA",
 }
 
-export default async function DashboardPage(props: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
+export default async function DashboardPage() {
   const context = await customerContext()
   if (!context.ok) {
     return (
@@ -94,8 +99,6 @@ export default async function DashboardPage(props: {
     )
   }
 
-  const params = await props.searchParams
-  const period = parsePeriod(typeof params.periodo === "string" ? params.periodo : undefined)
   const { customerId } = context
   const now = new Date()
 
@@ -176,24 +179,69 @@ export default async function DashboardPage(props: {
       (a.date?.getTime() ?? Number.POSITIVE_INFINITY) - (b.date?.getTime() ?? Number.POSITIVE_INFINITY),
   )
   // A customer linked to WHMCS: its invoices are the book of record. Otherwise, OLA's own.
-  const totals =
+  const invoiceLikes: InvoiceLike[] | null =
     whmcsInvoices.state === "ok"
-      ? invoiceTotals(
-          whmcsInvoices.items.map((invoice) => ({
-            issuedAt: invoice.issuedAt ?? new Date(0),
-            status: invoice.owed
-              ? ("unpaid" as const)
-              : invoice.statusLabel === "Anulada" || invoice.statusLabel === "Reembolsada"
-                ? ("cancelled" as const)
-                : ("paid" as const),
-            total: invoice.totalCents,
-          })),
-          period,
-          now,
-        )
+      ? whmcsInvoices.items.map((invoice) => ({
+          issuedAt: invoice.issuedAt ?? new Date(0),
+          status: invoice.owed
+            ? ("unpaid" as const)
+            : invoice.statusLabel === "Anulada" || invoice.statusLabel === "Reembolsada"
+              ? ("cancelled" as const)
+              : ("paid" as const),
+          total: invoice.totalCents,
+        }))
       : invoices.ok
-        ? invoiceTotals(invoices.data, period, now)
+        ? invoices.data.map((invoice) => ({
+            issuedAt: invoice.issuedAt,
+            status: invoice.status,
+            total: invoice.total,
+          }))
         : null
+  const periodViews: BillingPeriodView[] = invoiceLikes
+    ? INVOICE_PERIODS.map((option) => {
+        const totals = invoiceTotals(invoiceLikes, option.key, now)
+        const paid = totals.total - totals.unpaid
+        return {
+          key: option.key,
+          label: option.label,
+          totalLabel: formatCents(totals.total),
+          countLabel:
+            totals.count === 0
+              ? "Sin facturas en este periodo"
+              : `${totals.count} ${totals.count === 1 ? "factura" : "facturas"}`,
+          paidLabel: paid > 0 ? formatCents(paid) : null,
+          unpaidLabel: totals.unpaid > 0 ? formatCents(totals.unpaid) : null,
+        }
+      })
+    : []
+  const monthViews: BillingMonthView[] = invoiceLikes
+    ? monthlyTotals(invoiceLikes, 12, now).map((month) => ({
+        ...month,
+        totalLabel: formatCents(month.total),
+      }))
+    : []
+  const latestInvoices: BillingInvoiceRow[] =
+    whmcsInvoices.state === "ok"
+      ? whmcsInvoices.items.slice(0, 3).map((invoice) => ({
+          id: String(invoice.id),
+          reference: invoice.reference,
+          dateLabel: formatDate(invoice.issuedAt),
+          totalLabel: formatCents(invoice.totalCents),
+          statusLabel: invoice.statusLabel,
+          tone: invoice.tone,
+          href: `/app/billing/factura/${invoice.id}`,
+        }))
+      : invoices.ok
+        ? invoices.data.slice(0, 3).map((invoice) => ({
+            id: invoice.id,
+            reference: invoice.reference,
+            dateLabel: formatDate(invoice.issuedAt),
+            totalLabel: invoice.totalLabel,
+            statusLabel: invoice.statusLabel,
+            tone: invoice.status === "paid" ? ("ok" as const) : invoice.status === "unpaid" ? ("warn" as const) : ("neutral" as const),
+            href: null,
+          }))
+        : []
   const lastOrder = orders.ok ? (orders.data[0] ?? null) : null
   const defaultCard = cards.ok ? (cards.data.find((c) => c.isDefault) ?? cards.data[0] ?? null) : null
   const needsAttention = liveServices.filter((s) =>
@@ -308,46 +356,10 @@ export default async function DashboardPage(props: {
 
         {/* Invoice totals */}
         <Card title="Facturación" link={{ href: "/app/billing", label: "Ver las facturas" }}>
-          <div className="mb-5 flex flex-wrap gap-1.5" role="group" aria-label="Periodo">
-            {INVOICE_PERIODS.map((option) => (
-              <Link
-                key={option.key}
-                href={`/app?periodo=${option.key}`}
-                scroll={false}
-                aria-current={option.key === period ? "true" : undefined}
-                className={cn(
-                  "label-mono rounded-md border px-2.5 py-1 text-[11px] transition-colors",
-                  option.key === period
-                    ? "border-text-base text-text-base"
-                    : "border-border-base text-text-muted hover:text-text-base",
-                )}
-              >
-                {option.label}
-              </Link>
-            ))}
-          </div>
-          {totals === null ? (
-            <p className="text-sm text-text-muted">{!invoices.ok ? invoices.message : ""}</p>
+          {invoiceLikes === null ? (
+            <p className="text-sm text-text-muted">No hemos podido cargar tus facturas ahora mismo.</p>
           ) : (
-            <div className="text-center py-2">
-              <p className="text-4xl font-light tracking-tight text-text-base">
-                {formatCents(totals.total)}
-              </p>
-              <p className="mt-1 text-xs text-text-muted">
-                {totals.count === 0
-                  ? "Sin facturas en este periodo"
-                  : `${totals.count} ${totals.count === 1 ? "factura" : "facturas"}`}
-              </p>
-              {totals.count > 0 ? (
-                <div className="mt-3">
-                  {totals.unpaid > 0 ? (
-                    <StatusBadge tone="warn">Pendiente {formatCents(totals.unpaid)}</StatusBadge>
-                  ) : (
-                    <StatusBadge tone="ok">Pagado</StatusBadge>
-                  )}
-                </div>
-              ) : null}
-            </div>
+            <BillingWidget periods={periodViews} months={monthViews} latest={latestInvoices} />
           )}
         </Card>
 

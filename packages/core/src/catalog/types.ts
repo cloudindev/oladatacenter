@@ -114,17 +114,17 @@ export const MVP_PLAN_CODES = Object.keys(PLAN_BRANDING)
  * in the London area).
  */
 export const SELLABLE_DATACENTERS = [
-  { code: "GRA", city: "Gravelines", country: "Francia", region: "europe" },
-  { code: "SBG", city: "Estrasburgo", country: "Francia", region: "europe" },
-  { code: "EU-WEST-RBX", city: "Roubaix", country: "Francia", region: "europe" },
-  { code: "DE", city: "Limburgo", country: "Alemania", region: "europe" },
-  { code: "UK", city: "Londres", country: "Reino Unido", region: "europe" },
-  { code: "WAW", city: "Varsovia", country: "Polonia", region: "europe" },
-  { code: "EU-SOUTH-MIL", city: "Milán", country: "Italia", region: "europe" },
-  { code: "BHS", city: "Beauharnois", country: "Canadá", region: "world" },
-  { code: "SGP", city: "Singapur", country: "Singapur", region: "world" },
-  { code: "SYD", city: "Sídney", country: "Australia", region: "world" },
-  { code: "YNM", city: "Bombay", country: "India", region: "world" },
+  { code: "GRA", countryCode: "FR", city: "Gravelines", country: "Francia", region: "europe" },
+  { code: "SBG", countryCode: "FR", city: "Estrasburgo", country: "Francia", region: "europe" },
+  { code: "EU-WEST-RBX", countryCode: "FR", city: "Roubaix", country: "Francia", region: "europe" },
+  { code: "DE", countryCode: "DE", city: "Limburgo", country: "Alemania", region: "europe" },
+  { code: "UK", countryCode: "GB", city: "Londres", country: "Reino Unido", region: "europe" },
+  { code: "WAW", countryCode: "PL", city: "Varsovia", country: "Polonia", region: "europe" },
+  { code: "EU-SOUTH-MIL", countryCode: "IT", city: "Milán", country: "Italia", region: "europe" },
+  { code: "BHS", countryCode: "CA", city: "Beauharnois", country: "Canadá", region: "world" },
+  { code: "SGP", countryCode: "SG", city: "Singapur", country: "Singapur", region: "world" },
+  { code: "SYD", countryCode: "AU", city: "Sídney", country: "Australia", region: "world" },
+  { code: "YNM", countryCode: "IN", city: "Bombay", country: "India", region: "world" },
 ] as const
 
 export type DatacenterRegion = (typeof SELLABLE_DATACENTERS)[number]["region"]

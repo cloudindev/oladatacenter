@@ -29,7 +29,7 @@ export interface ChoiceProps {
   /** Main line, e.g. "Gravelines, Francia". */
   title: string
   /** Mono caption above the title, e.g. "FRANCIA" or "+ 1,01 € / MES". */
-  caption?: string
+  caption?: React.ReactNode
   /** Small sentence under the title. */
   note?: string
   className?: string
@@ -59,7 +59,7 @@ export function ChoiceRadio({
       />
       <span className={SURFACE}>
         {caption ? (
-          <span className="font-mono text-[10px] uppercase tracking-[0.06em] opacity-60">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.06em] [color:color-mix(in_srgb,currentColor_60%,transparent)]">
             {caption}
           </span>
         ) : null}
@@ -94,7 +94,7 @@ export function ChoiceCheckbox({
       />
       <span className={SURFACE}>
         {caption ? (
-          <span className="font-mono text-[10px] uppercase tracking-[0.06em] opacity-60">
+          <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.06em] [color:color-mix(in_srgb,currentColor_60%,transparent)]">
             {caption}
           </span>
         ) : null}

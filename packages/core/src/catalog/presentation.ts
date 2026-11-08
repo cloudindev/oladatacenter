@@ -186,6 +186,8 @@ export interface PublicDatacenter {
   slug: string
   city: string
   country: string
+  /** ISO 3166-1 alpha-2, for the flag. */
+  countryCode: string
   /** "Gravelines, Francia" — the only thing a customer ever reads. */
   label: string
   /** `europe` keeps the data in the EU/EEA or the UK; `world` does not. */
@@ -223,6 +225,7 @@ export function datacentersFor(plan: PlanCost): readonly PublicDatacenter[] {
     country: dc.country,
     label: `${dc.city}, ${dc.country}`,
     region: dc.region,
+    countryCode: dc.countryCode,
     available: true,
   }))
 }

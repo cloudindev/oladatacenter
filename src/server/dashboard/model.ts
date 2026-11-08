@@ -118,3 +118,31 @@ export function cardExpiresSoon(
   const expiry = new Date(Date.UTC(card.expYear, card.expMonth, 1))
   return expiry.getTime() - now.getTime() <= days * 24 * 60 * 60 * 1000
 }
+
+/** Invoiced per calendar month (UTC), oldest first, for the last `months` months. */
+export function monthlyTotals(
+  invoices: readonly InvoiceLike[],
+  months: number,
+  now: Date,
+): { key: string; label: string; total: number; unpaid: number }[] {
+  const names = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+  const buckets = Array.from({ length: months }, (_, index) => {
+    const date = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - (months - 1 - index), 1))
+    return {
+      key: `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`,
+      label: names[date.getUTCMonth()] ?? "",
+      total: 0,
+      unpaid: 0,
+    }
+  })
+  const byKey = new Map(buckets.map((bucket) => [bucket.key, bucket]))
+  for (const invoice of invoices) {
+    if (invoice.status === "cancelled") continue
+    const key = `${invoice.issuedAt.getUTCFullYear()}-${String(invoice.issuedAt.getUTCMonth() + 1).padStart(2, "0")}`
+    const bucket = byKey.get(key)
+    if (!bucket) continue
+    bucket.total += invoice.total
+    if (invoice.status === "unpaid") bucket.unpaid += invoice.total
+  }
+  return buckets
+}

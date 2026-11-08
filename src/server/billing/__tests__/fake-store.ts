@@ -41,6 +41,8 @@ export interface FakeStoreSeed {
   credits?: CreditRecord[]
   invoices?: InvoiceRecord[]
   orders?: OrderRecord[]
+  /** The clock the store reads; the harness pins it so expiry tests do not depend on today. */
+  now?: () => Date
 }
 
 export class FakeBillingStore implements BillingStore {
@@ -59,7 +61,10 @@ export class FakeBillingStore implements BillingStore {
     error: string | null
   }[] = []
 
+  private readonly clock: () => Date
+
   constructor(seed: FakeStoreSeed = {}) {
+    this.clock = seed.now ?? (() => new Date())
     for (const customer of seed.customers ?? []) this.customers.set(customer.id, customer)
     for (const service of seed.services ?? []) this.services.set(service.id, service)
     this.paymentMethods.push(...(seed.paymentMethods ?? []))
@@ -191,7 +196,7 @@ export class FakeBillingStore implements BillingStore {
     if (amount <= 0) return 0
     let remaining = amount
     let taken = 0
-    const now = new Date()
+    const now = this.clock()
 
     for (const credit of await this.listCredits(customerId)) {
       if (remaining <= 0) break

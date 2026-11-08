@@ -335,7 +335,7 @@ export function harness(
     failingEvents?: readonly BillingEventName[]
   } = {},
 ): Harness {
-  const store = new FakeBillingStore(seed)
+  const store = new FakeBillingStore({ now: () => NOW, ...seed })
   const stripe = new MockStripe({
     webhookSecret: options.webhookSecret ?? "whsec_test",
     now: () => NOW,
